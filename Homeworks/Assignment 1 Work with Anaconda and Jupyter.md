@@ -27,4 +27,4 @@ print(arcpy.GetInstallInfo()['Version'])
 ```
 
 Screen capture 
-![[Pasted image 20230905180829.png]]
+![](<Pasted image 20230905180829.png>)

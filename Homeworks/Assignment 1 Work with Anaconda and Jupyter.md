@@ -13,10 +13,10 @@
 print("Hello World")
  ```
 
-\10. Clone the ArcGIS default environment to a new environment called "ArcPyClone"
-\11. Register the ArcPyClone environment with "ipykernel"
-\12. In the new notebook, switch the kernel to ArcPyClone
-\13. In the second block, run the following code to verify if ArcPy is working. 
+10. Clone the ArcGIS default environment to a new environment called "ArcPyClone"
+11. Register the ArcPyClone environment with "ipykernel"
+12. In the new notebook, switch the kernel to ArcPyClone
+13. In the second block, run the following code to verify if ArcPy is working. 
 
 ```
 import arcpy

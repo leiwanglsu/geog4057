@@ -5,7 +5,13 @@
 pip install jupyter notebook
 ```
 
-# Register or unregister Jupyter kernels
+# Run jupyter notebook
+- Make sure the environment where jupyter is installed is active
+- Type the following line
+```
+jupyter notebook
+```
+# Register or unregister jupyter kernels
 
 - Register a kernel by ipykernel
 ```

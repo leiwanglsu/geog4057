@@ -2,7 +2,7 @@
 
 # Install Jupyter and notebook
 ```
-pip install Jupyter notebook
+pip install jupyter notebook
 ```
 
 # Register or unregister Jupyter kernels

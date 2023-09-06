@@ -26,5 +26,7 @@ import arcpy
 print(arcpy.GetInstallInfo()['Version'])
 ```
 
-Screen capture 
+# Screen capture 
+
+
 ![](<Pasted image 20230905180829.png>)

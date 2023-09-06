@@ -1,6 +1,6 @@
 #jupyter #python #arcgis 
 
-# Install Jupyter and notebook
+# Install jupyter and notebook
 ```
 pip install jupyter notebook
 ```

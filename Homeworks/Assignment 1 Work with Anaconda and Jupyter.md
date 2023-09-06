@@ -7,9 +7,9 @@
 	1. Solution is in  [[Work with Jupyter Notebook]]
 5. Register the anaconda environment "geog4057" with the ipykernel module 
 	1. Solution is in  [[Work with Jupyter Notebook]]
-6. Run Jupyter notebook from the anaconda prompt 
+6. Run jupyter notebook from the anaconda prompt 
 7. Create a new folder in your "document" folder
-8. Create a new notebook using Jupyter and the kernel "geog4057"
+8. Create a new notebook using jupyter and the kernel "geog4057"
 9. In the first cell, print "Hello World"
 
  ```

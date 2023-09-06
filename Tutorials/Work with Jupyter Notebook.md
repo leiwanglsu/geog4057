@@ -36,4 +36,4 @@ jupyter kernelspec uninstall test_kernel
 - Open the folder and open the file "kernel.json"
 - Replace the string value in "argv": with the path to your python environment
 - Change the value of the "display_name" to the desired kernel name
-- Save and re-run Jupyter
+- Save and re-run jupyter

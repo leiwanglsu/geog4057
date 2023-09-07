@@ -8,18 +8,19 @@
 5. Register the anaconda environment "geog4057" with the ipykernel module 
 	1. Solution is in  [[Work with Jupyter Notebook]]
 6. Run jupyter notebook from the anaconda prompt 
-7. Create a new folder in your "document" folder
-8. Create a new notebook using jupyter and the kernel "geog4057"
-9. In the first cell, print "Hello World"
+7. Create a new folder called "Scripts" in your "Document" folder
+8. In the Scripts folder, create a new notebook with the name of "homework1.ipynb" and use the the kernel "geog4057"
+10. In the first cell,  type (or copy and paste) the following code
 
  ```
 print("Hello World")
  ```
 
-10. Clone the ArcGIS default environment to a new environment called "ArcPyClone"
-11. Register the ArcPyClone environment with "ipykernel"
-12. In the new notebook, switch the kernel to ArcPyClone
-13. In the second block, run the following code to verify if ArcPy is working. 
+11. Clone the ArcGIS default environment to a new environment called "ArcPyClone"
+12. Register the ArcPyClone environment with "ipykernel"
+13. In the new notebook, switch the kernel to ArcPyClone
+14. Go to menu->Inert -> Inser Cel Below to add the second cell in the notebook. 
+15. In the second cell, run the following code to verify if ArcPy is working. 
 
 ```
 import arcpy

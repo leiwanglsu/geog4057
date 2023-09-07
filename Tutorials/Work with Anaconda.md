@@ -5,16 +5,33 @@
 - Read the cheating sheet about Anaconda: https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf
 # Create new environments
 - Create a new environment in Anaconda
-- Notes: -n means the name of the new environment, python version can be specified as anything between 3.9 to 3.11
+- Notes: -n means the name of the new environment, the python version can be specified as anything between 3.9 to 3.11
 ```
 conda create -n geog4057 python=3.9
 ```
+- Remember to activate the new environment you just created
+```
+conda activate geog4057
+```
+- Install a new package (for example, numpy and pandas) to the environment
+
+```
+pip install numpy pandas
+```
+- Removing a package if needed
+
+```
+pip uninstall numpy
+```
+
 # List and manage environments
 - Use Anaconda to help you manage the environments
 - List environments
 ```
 conda env list
 ```
+
+
 - Remove an environment
 ```
 conda env remove geog4057

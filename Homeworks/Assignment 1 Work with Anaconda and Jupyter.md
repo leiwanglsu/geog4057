@@ -10,7 +10,7 @@
 6. Run jupyter notebook from the anaconda prompt 
 7. Create a new folder called "Scripts" in your "Document" folder
 8. In the Scripts folder, create a new notebook with the name of "homework1.ipynb" and use the the kernel "geog4057"
-10. In the first cell,  type (or copy and paste) the following code
+9. In the first cell,  type (or copy and paste) the following code
 
  ```
 print("Hello World")

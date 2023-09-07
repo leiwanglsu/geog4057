@@ -1,12 +1,12 @@
 # Requirements
-1. Use the these two tutorials as reference: [Work with Anaconda](../Tutorials/Work with Anaconda.md) and [[Work with Jupyter Notebook]]
+1. Use the these two tutorials as reference: [Work with Anaconda](../Tutorials/Work_with_Anaconda.md) and [Work with Jupyter Notebook](../Tutorials/Work_with_Jupyter_Notebook.md)
 2. Install Anaconda on your work/home computer
 3. Create a new environment using Anaconda with the name of "geog4057" and python 3.9 (remember to activate if you want to install packages) 
-	1. Hint: find the solution from [[Work with Anaconda]] 
+	1. Hint: find the solution from [Work with Anaconda](../Tutorials/Work_with_Anaconda.md)
 4. Install jupyter notebook using pip or conda 
-	1. Solution is in  [[Work with Jupyter Notebook]]
+	1. Solution is in  [Work with Jupyter Notebook](../Tutorials/Work_with_Jupyter_Notebook.md)
 5. Register the anaconda environment "geog4057" with the ipykernel module 
-	1. Solution is in  [[Work with Jupyter Notebook]]
+	1. Solution is in  [Work with Jupyter Notebook](../Tutorials/Work_with_Jupyter_Notebook.md)
 6. Run jupyter notebook from the anaconda prompt 
 7. Create a new folder called "Scripts" in your "Document" folder
 8. In the Scripts folder, create a new notebook with the name of "homework1.ipynb" and use the the kernel "geog4057"

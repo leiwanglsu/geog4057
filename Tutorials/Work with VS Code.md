@@ -1,11 +1,7 @@
 # Get started with a workspace
 - Open a folder as the workspace by pressing ctrl-o or clicking the open button
 # Check out the activity bar
-<<<<<<< Updated upstream
-- On the left size of the interface, there is an activity bar containing several buttons, including Explore, Find, Source Control, Run and debug, and Extensions
-=======
 - On the left side of the interface, there is an activity bar containing several buttons, including Explore, Find, Source Control, Run and debug, and Extensions
->>>>>>> Stashed changes
 - These are the buttons of the essential functions of VS Code
 # The command palette 
 - From the menu->View, find the command palette
@@ -37,10 +33,7 @@ git commit -m "initial commit"
 # Open a jupyter notebook from VS Code
 - Install the extension of jupyter
 - Download some notebooks from the Github website by using git or the browser
-<<<<<<< Updated upstream
-=======
   - 
->>>>>>> Stashed changes
 - Open a notebook
 - Select a kernel
 - Run the cells in the notebook

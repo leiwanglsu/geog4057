@@ -33,6 +33,7 @@ git commit -m "initial commit"
 # Open a jupyter notebook from VS Code
 - Install the extension of jupyter
 - Download some notebooks from the Github website by using git or the browser
+  - 
 - Open a notebook
 - Select a kernel
 - Run the cells in the notebook

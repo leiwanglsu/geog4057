@@ -29,14 +29,12 @@ pip uninstall numpy
 ```
 conda env list
 ```
+
 - Remove an environment
 ```
 conda env remove geog4057
 ```
-- Add an existing environment
-```
-conda config --append envs_dirs "C:\Program Files\ArcGIS\Pro\bin\Python\envs"
-```
+
 - Cloning an environment
 ```
 conda create --name arcpy_clone --clone "C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3"
@@ -44,11 +42,18 @@ conda create --name arcpy_clone --clone "C:\Program Files\ArcGIS\Pro\bin\Python\
 
 ## Optional: change the default path for Anaconda to create new environments
 - Open the file .condarc under c:\users\yourname using notepad or other text editors
-- Add these lines to the file:
+- Add these lines to the file ("D:\envs" is the default folder in this example)
 - Save the file
 
 ```
 envs_dirs:
-  - C:\Users\leiwang\anaconda\envs
-  - C:\Program Files\ArcGIS\Pro\bin\Python\envs
+  - D:\envs
 ```
+
+- Add an existing environment path to the list
+```
+conda config --append envs_dirs "C:\Program Files\ArcGIS\Pro\bin\Python\envs"
+```
+
+- After that, you will see C:\Program Files\ArcGIS\Pro\bin\Python\envs in the default path list of .condarc
+

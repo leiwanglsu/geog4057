@@ -1,5 +1,5 @@
 # Requirements
-1. Use the these two tutorials as reference: [[Work with Anaconda]] and [[Work with Jupyter Notebook]]
+1. Use the these two tutorials as reference: [Work with Anaconda](../Tutorials/Work with Anaconda.md) and [[Work with Jupyter Notebook]]
 2. Install Anaconda on your work/home computer
 3. Create a new environment using Anaconda with the name of "geog4057" and python 3.9 (remember to activate if you want to install packages) 
 	1. Hint: find the solution from [[Work with Anaconda]] 

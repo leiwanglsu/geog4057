@@ -4,7 +4,7 @@ This assignment will give you the instruction to set up your assignment reposito
 - You need to have both VS Code and git installed on your computer
 - If you just installed git and did nothing, you need to run "git config" to set up the git environment
 - You only need to run "git config" once
-- open a command prompt, and run the following code. (replace the name and email with yours)
+- open a command prompt and run the following code. (replace the name and email with yours)
 
 ```
 git config --global user.name "John Doe"

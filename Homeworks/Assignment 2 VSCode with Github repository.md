@@ -61,6 +61,6 @@ import arcpy
 
 ![Alt text](image-2.png)
 - Click Commit
-- Click the refresh button to synchronize the changes to the server
+- Click the Sync Changes button to synchronize the changes to the server
 
 

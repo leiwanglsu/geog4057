@@ -34,10 +34,10 @@ git config --global user.email johndoe@example.com
 - Past the URL from Step 1 to here to clone the respository 
 - If you are asked to open the clone repository in VS Code, answer "YES"
 - Click trust if you see the page like below
--  ![Alt text](image.png)
+-  ![Alt text](../img/image.png)
 -  Now you should have a copy of the repository on your computer and opened by VS Code
 -  Check the Source control section in VS Code, it should look like
-![Alt text](image-1.png)
+![Alt text](../img/image-1.png)
 
 
 # Create your first jupyter notebook and synchronize it to github.com
@@ -48,7 +48,7 @@ git config --global user.email johndoe@example.com
 - The notebook will be automatically created with the name "untitled-1.ipynb"
 - Ctrl-s or in the menu->File->Save, to save the notebook to your current folder
 - In the notebook, click "Kernels" and select "ArcPyClone" (the one you did in the first assignment) as the kernel
-- In the first cell, try the following code:
+- In the first cell, try to run the following code:
 
 ```
 import arcpy
@@ -59,7 +59,7 @@ print(arcpy.GetInstallInfo()['Version'])
 - Click Source Control
 - Type some message in the Commit message box
 
-![Alt text](image-2.png)
+![Alt text](../img/image-2.png)
 - Click Commit
 - Click the Sync Changes button to synchronize the changes to the server
 

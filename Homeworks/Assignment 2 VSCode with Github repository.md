@@ -1,5 +1,6 @@
 # Overview
-This assignment will give you the instruction to set up your assignment repository on github.com and work with git in VSCode
+This assignment will give you the instruction to set up your assignment repository on github.com and work with git in VSCode.
+Submit a report with screen captures of each step in the following instruction:
 # Prerequisite
 - You need to have both VS Code and git installed on your computer
 - If you just installed git and did nothing, you need to run "git config" to set up the git environment

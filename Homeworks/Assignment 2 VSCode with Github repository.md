@@ -10,7 +10,6 @@ This assignment will give you the instruction to set up your assignment reposito
 git config --global user.name "John Doe"
 git config --global user.email johndoe@example.com
 
-
 ```
 
 # Step 1 Create a gitHub.com repository
@@ -20,12 +19,13 @@ git config --global user.email johndoe@example.com
 - Open the repository and click the green "Code" button
 - Check the HTTPS url
 - Copy the URL to the clipboard for the next step
-- 
+ 
 # Open a folder as the workspace
 - Find your Documents folder and create a new folder called "programming"
 - Run VS Code
 - In menu File->Open Folder
 - Find the "programming" folder and open it
+- The folder is empty for now. 
 
 
 # Step 2 Synchronize a local repository with github.com
@@ -48,11 +48,11 @@ git config --global user.email johndoe@example.com
 - The notebook will be automatically created with the name "untitled-1.ipynb"
 - Ctrl-s or in the menu->File->Save, to save the notebook to your current folder
 - In the notebook, click "Kernels" and select "ArcPyClone" (the one you did in the first assignment) as the kernel
--  In the first cell, try the following code:
+- In the first cell, try the following code:
 
 ```
 import arcpy
-
+print(arcpy.GetInstallInfo()['Version'])
 ```
 - The notebook has been saved by VS Code. It should have an "U" letter next to it in the Explorer window
 - These are uncommitted changes

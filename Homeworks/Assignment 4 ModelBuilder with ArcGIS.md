@@ -2,7 +2,7 @@
 
 ## Introduction
 
-ModelBuilder is a powerful graphic designer of models that run in ArcGIS Pro defined in the Geoprocessing framework. In this tutorial, you will go through several advanced features of ModelBuilder, including constructing an iterator in a model, and so on.
+ModelBuilder is a powerful graphic designer of models that run in ArcGIS Pro defined in the Geoprocessing framework. In this tutorial, you will go through several advanced features of ModelBuilder, including iterators, collect values, and calculate value tools in a model. Three iterators will be used, including the Iterate Feature Class tool, Iterate Feature tool, and Iterate For tool.
 
 ## Data
 
@@ -14,13 +14,17 @@ The database and folder look like these below:
 
 ![Alt text](./images/image.png)) ![Alt text](./images/image-1.png)
 
+## Requirement
+
+***For each of the following steps, screen capture your model and results for your report***
+
 ## Tutorials
 
 ### Task 1 Use the Iterate Feature Class tool
 
 The *Iterate Feature Classes* tool iterates over feature classes in a workspace or feature dataset.
 
-***For each of the following steps, screen capture your model and results for your report***
+
 
 #### Add tools
 

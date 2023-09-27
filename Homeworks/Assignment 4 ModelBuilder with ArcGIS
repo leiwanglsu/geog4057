@@ -1,0 +1,37 @@
+# Modelbuilder with ArcGIS Pro
+
+## Introduction
+
+ModelBuilder is a powerful graphic designer of models that run in ArcGIS Pro defined in the Geoprocessing framework. In this tutorial, you will go through several advanced features of ModelBuilder, including constructing an iterator in a model, and so on.
+
+## Data
+
+Data can be obtained from the data subfolder of the class repository: [data for the assignment](../data/assignment4data.zip). Extract the data to a workspace and add the geodatabase "ToolData" to your ArcGIS Pro project database. Also, add the folder where the data are extracted to, to the folder list of ArcGIS Pro
+
+The database and folder look like these below:
+
+![Alt text](image.png) ![Alt text](image-1.png)
+
+## Tutorials
+
+### Task 1 Use the Iterate Feature Class tool
+
+The *Iterate Feature Classes* tool iterates over feature classes in a workspace or feature dataset.
+
+- Go to the Catalog pane, find the toolboxes item, and right-click it to create a new model
+- Right-click the model and select properties
+- Modify the name and description of the model to: 
+
+![Alt text](images/image-2.png)
+
+- Click the modelbuilder tab
+- Click "save"
+- Click Iterator and find *iterate feature class* and add it to the model
+- Click Tools and find "project" and insert the project tool to the model
+
+![Alt text](images/image-3.png)
+
+- Click "Utilities", find "Collect Values", and insert it to the model
+
+![Alt text](images/image-4.png)
+

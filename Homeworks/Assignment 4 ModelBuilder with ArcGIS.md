@@ -22,7 +22,7 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 
 ***For each of the following steps, screen capture your model and results for your report***
 
-#### Add the model items
+#### Add tools
 
 - Go to the Catalog pane, find the toolboxes item, and right-click it to create a new model
 - Right-click the model and select properties
@@ -43,18 +43,27 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 
 #### Change the parameters
 
-- Double-click the Iterate Feature Classes iterator to open the iterator's dialog box
-- For the Workspace or Feature Dataset parameter, browse to the Folders->ParisData
-- Check the Recursive check box to iterate over all the feature classes in all subfolders.
-- Leave the rest of the parameters empty and click OK.
+- Specify the parameters for the Ierature Feature Class tool
+  >Double-click the Iterate Feature Classes iterator to open the iterator's dialog box
+
+  >For the Workspace or Feature Dataset parameter, browse to the Folders->ParisData
+  
+  >Check the Recursive check box to iterate over all the feature classes in all subfolders.
+  
+  >Leave the rest of the parameters empty and click OK.
 ![Alt text](images/image-5.png)
-- Click the Input Dataset or Feature Class parameter drop-down arrow and select Metro_Entrances.shp.
-- For the Output Dataset or Feature Class parameter, browse to the default .gdb geodatabase and type %Name%_Project.
-- Click the Coordinate System button Coordinate System on the Output Coordinate System parameter to open the Coordinate System dialog box. Select Projected Coordinate System > Continental > Europe > Europe Albers Equal Area Conic. Click OK to close the dialog box.
+
+- Specify the project tool parameters
+
+ >Click the Input Dataset or Feature Class parameter drop-down arrow and select Metro_Entrances.shp.
+  
+  >For the Output Dataset or Feature Class parameter, browse to the default .gdb geodatabase and type %Name%_Project.
+
+  >Click the Coordinate System button Coordinate System on the Output Coordinate System parameter to open the Coordinate System dialog box. Select Projected Coordinate System > Continental > Europe > Europe Albers Equal Area Conic. Click OK to close the dialog box.
 
 ![Alt text](images/image-6.png)
 
-- Hover over the Project tool output variable. Click and drag to draw a connector line to the Collect Values tool element. Release the mouse and click Input Value on the pop-up menu.
+  >Hover over the Project tool output variable. Click and drag to draw a connector line to the Collect Values tool element. Release the mouse and click Input Value on the pop-up menu.
 
 #### Refine the appearance
 

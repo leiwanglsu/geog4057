@@ -6,7 +6,9 @@ ModelBuilder is a powerful graphic designer of models that run in ArcGIS Pro def
 
 ## Data
 
-Data can be obtained from the data subfolder of the class repository: [data for the assignment](../data/assignment4data.zip). Extract the data to a workspace and add the geodatabase "ToolData" to your ArcGIS Pro project database. Also, add the folder where the data are extracted to, to the folder list of ArcGIS Pro
+Data can be obtained from the [data subfolder](../data) of the class repository witht the name: assignment4data.zip.
+
+Extract the data to a workspace and add the geodatabase "ToolData" to your ArcGIS Pro project database. Also, add the folder where the data are extracted to, to the folder list of ArcGIS Pro
 
 The database and folder look like these below:
 

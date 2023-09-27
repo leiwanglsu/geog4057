@@ -1,4 +1,4 @@
-# Modelbuilder with ArcGIS Pro
+# ModelBuilder with ArcGIS Pro
 
 ## Introduction
 

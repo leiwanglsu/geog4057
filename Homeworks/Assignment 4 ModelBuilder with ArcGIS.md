@@ -43,7 +43,7 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 
 #### Change the parameters
 
-- Specify the parameters for the Ierature Feature Class tool
+- Specify the parameters for the Iterature Feature Class tool
   >Double-click the Iterate Feature Classes iterator to open the iterator's dialog box
 
   >For the Workspace or Feature Dataset parameter, browse to the Folders->ParisData

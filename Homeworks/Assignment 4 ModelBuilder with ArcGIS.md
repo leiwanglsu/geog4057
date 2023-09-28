@@ -20,7 +20,7 @@ The database and folder look like these below:
 
 ## Tutorials
 
-### Task 1 Use the Iterate Feature Class tool
+### Task 1 Use the Iterate Feature Class tool (30 pnts)
 
 The *Iterate Feature Classes* tool iterates over feature classes in a workspace or feature dataset.
 
@@ -86,8 +86,13 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 
 ![Alt text](images/image-8.png)
 
----
+#### Reporting
 
+- Screen capture each step of your work
+- Capture the final model graph
+- Capture the database with updated feature classes created from the model
+
+---
 
 ### Task 2 Iterate Feature Selection
 
@@ -151,6 +156,11 @@ In this workflow, you'll create a model to iterate over features grouped by regi
 ![Alt text](images/image-13.png)
 - Each of the feature classes was a subregion in the input feature class. 
 - This concluses the task 2
+#### Reporting
+
+- Screen capture each step of your work
+- Capture the final model graph
+- Capture the database with updated feature classes created from the model
 
 ---
 
@@ -232,3 +242,8 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 ![Alt text](images/image-18.png)
 
 
+#### Reporting
+
+- Screen capture each step of your work
+- Capture the final model graph
+- Capture the database with updated feature classes created from the model

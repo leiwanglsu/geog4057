@@ -54,6 +54,10 @@ Sharing module (arcpy.sharing)
 Spatial Analyst module (arcpy.sa)
 Workflow Manager (Classic) module (arcpy.wmx)
 
+- To use a module in ArcPy, just use the format of
+
+``` ArcPy.Module```
+- Use ```print(dir(ArcPy))``` to see a list of modules and classes in the package
 ## Setting up a workspace
 
 - A *workspace* is a default location for files you work with in the python session. 
@@ -69,3 +73,8 @@ arcpy.env.workspace = "c:/data"
 - Note that use the forward slash / in the path name
 - If you really want to use backslash, use double backslashes. Or use the raw string operator: <q> r"c:\data"</q>
 - To check the current workspace name, use print(arcpy.env.workspace)
+- Check your knowledge of python classes:
+  - env is the class name for environment
+  - Workspace is one property of class env
+  - By running the statement "arcpy.env.workspace = "c:/data", you set the property "workspace" of "env" python object to "c:/data"
+  - 

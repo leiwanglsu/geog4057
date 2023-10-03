@@ -1,4 +1,4 @@
-# Geoprocessing with ArcPy
+-# Geoprocessing with ArcPy
 
 ## Introduction
 
@@ -298,3 +298,20 @@ sr = arcpy.SpatialReference("NAD 1983 StatePlane Texas Central FIPS
 ```
 - List the names of spatial references:
   - arcpy.ListSpatialReferences({wild_card}, {spatial_reference_type})
+
+## Create custom tools using python script
+
+- A Python script file can run as a standalone script or as a tool in ArcGIS
+-Using the python script as a tool enables the user to enter parameters easier with user interface
+- Steps:
+  - Create a script (.py)
+  - Create a toolbox (.tbx) to store the tool
+  - Add a tool to the toolbox using the Add Script Wizard
+  - Modify the script with input and output variables so that it is seamlessly integrated into the geoprocessing framework
+
+### Create a .py file
+
+-  files with extension of .py are python script files  intepreted by python language
+- python files can be created by any text editors (not Microsoft Word)
+- It is recommended to use VS Code or other python integrated development environments (IDEs) because they have features of intelliSence to help identify and correct syntax errors
+- 

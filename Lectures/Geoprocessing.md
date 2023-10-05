@@ -299,19 +299,58 @@ sr = arcpy.SpatialReference("NAD 1983 StatePlane Texas Central FIPS
 - List the names of spatial references:
   - arcpy.ListSpatialReferences({wild_card}, {spatial_reference_type})
 
-## Create custom tools using python script
+## Create a python script tool
 
-- A Python script file can run as a standalone script or as a tool in ArcGIS
--Using the python script as a tool enables the user to enter parameters easier with user interface
-- Steps:
-  - Create a script (.py)
-  - Create a toolbox (.tbx) to store the tool
-  - Add a tool to the toolbox using the Add Script Wizard
-  - Modify the script with input and output variables so that it is seamlessly integrated into the geoprocessing framework
+### What is a script tool 
+Creating a script tool allows you to turn your Python scripts and functionality into your own geoprocessing tools. Once created, a script tool provides many advantages
+- A script tool works under the geoprocessing framework of ArcGIS Pro
+- The tool can be used in the same way as other built-in tools
+- You can write messages to the Geoprocessing history
+- ArcPy is fully aware of the application it was called from and applies the settings to the script tool
 
-### Create a .py file
+### How to create a script tool
 
--  files with extension of .py are python script files  intepreted by python language
-- python files can be created by any text editors (not Microsoft Word)
-- It is recommended to use VS Code or other python integrated development environments (IDEs) because they have features of intelliSence to help identify and correct syntax errors
+To Create a script tool in a custom toolbox, you need three things:
+- A script
+- A custom toolbox
+- A precise definition of the parameters of your script
+
+### Create a script tool
+
+- In a toolbox, right click and create -> new script
+  - In General: Name the script "CopyFeatureClasses" and the same for the label
+  - In parameters, add two parameters: InputWorkspace and OutputWorkspace
+    - InputWorkspace: String type, Required, and Input
+    - OutputWorkspace: String type, Required, and Output
+
+![Alt text](images/image-1.png)
+  - In Execution, paste the following code
+```
+import arcpy
+import os
+from arcpy import env
+env.workspace = arcpy.GetParameterAsText(0)
+outgdb = arcpy.GetParameterAsText(1)
+fclist = arcpy.ListFeatureClasses()
+for fc in fclist:
+    fcdesc = arcpy.Describe(fc)
+    arcpy.CopyFeatures_management(fc,os.path.join(outgdb,fcdesc.basename))
+
+```
+- Try to run the tool from the catalog pane
+
+## Create a Python toolbox
+
+### What is a Python toolbox
+- Python toolboxes are geoprocessing toolboxes that are created entirely in Python. 
+- Python toolboxes have the file extension of .pyt
+- Python toolboxes can be created under a foler in the project
+
+![Alt text](images/image-2.png)
+
+### Create a Python toolbox
+
+- In catalog pane, right click Toolboxes and select new Python toolbox
+- Select a folder where the toolbox will be saved to
+- Type a name for the toolbox.
 - 

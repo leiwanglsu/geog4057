@@ -342,6 +342,7 @@ for fc in fclist:
 ## Create a Python toolbox
 
 ### What is a Python toolbox
+
 - Python toolboxes are geoprocessing toolboxes that are created entirely in Python. 
 - Python toolboxes have the file extension of .pyt
 - Python toolboxes can be created under a foler in the project
@@ -353,4 +354,199 @@ for fc in fclist:
 - In catalog pane, right click Toolboxes and select new Python toolbox
 - Select a folder where the toolbox will be saved to
 - Type a name for the toolbox.
-- 
+
+### Understand the structure of the toolbox
+- A .pyt file is not different from a regular python .py script file
+- In the pyt file, tools are defined as classes (remember the object-oriented programming concept?)
+
+### Define a custom class
+
+- A class is defined by the keyword class and the name of the class.
+- A class defines its attributes
+- A class defines its behaviors
+- Multiple objects can be created from the class with different identities but share the similar behaviors and comparable attributes
+
+```python
+class Dog:
+ 
+    # A simple class
+    # attribute
+    attr1 = "mammal"
+    attr2 = "dog"
+ 
+    # A sample method
+    def fun(self):
+        print("I'm a", self.attr1)
+        print("I'm a", self.attr2)
+# Object instantiation
+Rodger = Dog()
+ # Accessing class attributes
+# and method through objects
+print(Rodger.attr1)
+Rodger.fun()
+```
+### __init__() method (dunder)
+
+- The dunder function init is similar to constructors in C++
+- Constructors are used to initializing an object when it is created
+- For example, when a dog object is created, the "age" attribute of the dog should be initlized with a non-negative value.
+- The constructor function execute some statements at the time of the object construction
+
+```python
+class Person:
+ 
+    # init method or constructor
+    def __init__(self, name):
+        self.name = name
+ 
+    # Sample Method
+    def say_hi(self):
+        print('Hello, my name is', self.name)
+ 
+ 
+p = Person('Nikhil')
+p.say_hi()
+```
+
+### self parameter
+
+- When a function in the class is executed, the first parameter is always referring to object itself
+-  The user specified parameters are listed as the second, third, and so on.
+  
+### __str__() method (dunder)
+
+- The dunder method __str__() is executed when an object is printed as a string
+- It is useful for debugging and information about the classes
+```python
+class GFG:
+    def __init__(self, name, company):
+        self.name = name
+        self.company = company
+ 
+    def __str__(self):
+        return f"My name is {self.name} and I work in {self.company}."
+ 
+ my_obj = GFG("John", "GeeksForGeeks")
+print(my_obj)
+```
+
+
+### Class inheritance
+
+- Inheritance allow us to define a class that inherits all the methods and the properties from another class
+- The class being inherited from is called the parent class or the base class
+- The class that inherits from another class is called the child class or derived class
+
+#### Method overriding
+
+- The method inherited from the parent class can be modified by the child class. This is called method overriding
+- Method overriding allows for the child class to inherit some methods from the parents while modifying some others
+- For example, the Dog class can be inherited from the Animal class
+- The Animal class has a move() function, but the Dog class overrides the move() function by defining the specific behavior of Dog.move(), not the Animal.move()
+
+
+```python
+class Person:
+  def __init__(self, fname, lname):
+    self.firstname = fname
+    self.lastname = lname
+  def printname(self):
+    print(self.firstname, self.lastname)
+x = Person('John', 'Doe')
+x.printname()
+
+class Student (Person):
+  pass
+x = Student("Mike", "Olsen")
+x.printname()
+
+class Student(Person):
+  def __init__(self, fname, lname, year):
+    self.firstname = fname
+    self.lastname = lname
+    self.GraduationYear = year
+  def printname(self):
+    print(self.firstname, self.lastname,self.GraduationYear)
+```
+
+### The object class in ArcGIS ArcPy
+
+- The object class is the parent class for all other ArcPy classes
+- The toolbox class is also inherited from the object class
+
+
+### Toolbox class
+
+- The toolbox class is used by ArcGIS to define the properties and  behaviors of a toolbox, including the alias, label, and description. 
+- The name of the toolbox is defined by the name of the .pyt file
+- The tools property must be set to a list containing all tool classes defined in the toolbox
+
+### Editing the toolbox class generated from a template
+
+- When creating a new toolbox, the python code is copied from a template with a stubbed-out tool named Tool
+- The Tool should be renamed, and can be duplicated and edited to create additional tools in your toolbox
+- The tool name and the toolbox alias must begin with a letter and only consist of letters and numbers
+
+### Methods used to define a working tool class
+
+#### __init__()
+
+- Required function
+- to define the initialization (constructor) of the tool class
+#### getPrameterInfo()
+- Optional
+- Define the parameters used by the tool
+
+#### updateParameters()
+
+- optional
+- Define the behavior of the tool when the parameters are changed
+
+#### execute()
+- Required
+- The tool's source code to run its function
+
+
+### Defining parameters in a python toolbox
+
+- Override the getParameter() function and create arcpy.Parameter objects and setting their properties
+- arcpy.Parameter class properties
+  - name: the name of parameter as shown in the tool's syntax 
+  - datatype: define the the valid parameter type such as "GPCoordinateSystem", "GPLayer", "DERasterDataset", etc. For a complete list of the datatypes, go to: https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm
+  - parameterType: Required, Optional, or Derived
+  - direction: Input or Output
+  - multivalue: True or False 
+- Parameters are returned by getParameter() as a list
+
+### Accessing parameters in the execute() function
+
+- The main body of the tool is found in the execute method
+- You can call other tools and access ArcPy other custom or third party python functionality
+- the syntax is def execue(self, parameters, messages):
+- Each parameter's value can be access from the list using the valueAsText method: parameters[0].valueAsText
+
+### Python toolbox messages
+
+- When a tool is run, ArcPy defines the application it is called from and reads the messages from it and display them in the tool dialog box of ArcGIS Pro
+- In a python toolbox, a message object can be accessed in the execute method to add messages back to the tool
+- The five methods for writing the messages are:
+  - addMessage(message)
+  - addWarningMessage(message): a warning message will be shown in ArcGIS
+  - addErrorMessage(message): an error message is added to the tool's message
+  - addIDMessage: using geoprocessing message codes
+  - addGPMessages(): message from the last geoprocessing tool run are added to the tools' messages
+
+```python
+def execute(self, parameters, messages):
+    input = parameters[0].valueAsText
+    output = parameters[1].valueAsText
+        
+    # If the input has no features, add an error message, and raise
+    #  an arcpy.ExecuteError
+    if int(arcpy.GetCount_management(input)[0]) == 0:
+        messages.addErrorMessage("{0} has no features.".format(input))
+        raise arcpy.ExecuteError
+            
+    return
+```
+

@@ -1,0 +1,43 @@
+# Spatial data analysis with ArcPy
+
+
+## Exploring and manipulating spatial data
+
+### Checking for the existence of data
+
+#### arcpy.Exists() function
+
+- If your input dataset does not exist, the script will return an error message and prevent the script to be executed further. 
+- Using arcpy.Exists() function can help the script check the problem before calling any other functions to use the data. 
+- It return a boolean value of True of False
+- The Exists() fucntion can determine the existence of feature classes, tables, datasets, workspaces, layers, and so on
+
+```python
+import arcpy
+print(arcpy.Exists("C:/Data/streams.shp"))
+```
+
+#### System path and catalog path
+
+- System paths - recognized by the Windows system
+- The existence of a system path can be determined by os.path.exists()
+- Catalog paths - recognized by ArcGIS Pro
+- For example, the path: "C:/data/study.gdb/final/streets" is a catalog path and cannot be understood by system path functions
+
+#### Base name of a path
+
+- The path name "C:/data/study.gdb/final/streets" has two components: the path name and the base name
+- The base name is the feature class name
+- However, it might be confusing for "C:/data/study.gdb/final". Is "final" a feature class or a feature dataset?
+
+### Describe() function
+
+- arcpy.Describe() returns a Describe() object
+- arcpy.da.Describe() returns a dictionary object
+
+
+## Working with geometries
+
+
+
+## Working with rasters

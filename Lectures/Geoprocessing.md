@@ -1,4 +1,4 @@
--# Geoprocessing with ArcPy
+# Geoprocessing with ArcPy
 
 ## Introduction
 
@@ -13,13 +13,11 @@
 - You can use conda list to find arcpy in the package list
 - To add the environment of arcgispro-py3 to anaconda environment list
 
-
 ```python
 conda config --append envs_dirs "C:\Program Files\ArcGIS\Pro\bin\Python\envs"
 ```
 
 - To clone the environment
-
 
 ```conda
 conda create --name arcpy_clone --clone "C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3"
@@ -43,6 +41,7 @@ RuntimeError: NotInitialized
 ## ArcPy modules
 
 - In ArcPy, functionality is organized into modules
+
 >Charts module (arcpy.charts)
 Data Access module (arcpy.da)
 Geocoding module (arcpy.geocoding)
@@ -58,6 +57,7 @@ Workflow Manager (Classic) module (arcpy.wmx)
 
 ``` ArcPy.Module```
 - Use ```print(dir(ArcPy))``` to see a list of modules and classes in the package
+
 ## Setting up a workspace
 
 - A *workspace* is a default location for files you work with in the python session. 
@@ -83,7 +83,7 @@ arcpy.env.workspace = "c:/data"
 
 - Geoprocessing tools are accessed through their names
   >For example: addField
-- *Toolbox alias*: 
+- *Toolbox alias*:
   - One Geoprocessing tool could exist in multiple modules
   - Clip tool are avaiable from management, analysis, etc.
   - The Clip tool in the Analysis toolbox is referenced as Clip_analysis()
@@ -108,21 +108,26 @@ arcpy.env.workspace = "c:/data"
 ## Understanding the python syntax documents in ArcGIS
 
   ### Tool arguments (parameters)
+
 - Name
 - Type: feature class, integer, string, or raster
 - Direction: input or output
 - Required: whether a value must be provided or it is optional
   - Required argument come first
   - Optional argument are in parenthese {}
-```
+
+```python
 Buffer(in_features, out_feature_class, 
        buffer_distance_or_field, {line_side}, 
        {line_end_type}, {dissolve_option}, {dissolve_field})
 ```
+
 ### Skipping some optional argument
+
 - For example, you want to specify the dissolve field paramete but not  other optional argument
 - Use empty string, the number sign ("#"), or the value None for the skipped argument
-```
+
+```python
 arcpy.Buffer_analysis("roads", "buffer", "100 METERS", "", "", 
                       "LIST", "CODE")
 arcpy.Buffer_analysis("roads", "buffer", "100 METERS", "#", "#", 
@@ -132,27 +137,32 @@ arcpy.Buffer_analysis("roads", "buffer", "100 METERS", None, None,
 ```
 
 ### Python argument types
+
 - non-default vs. default arguments: 
   - a default argument is defined in the function with a default value assignment
   - the default value is used if the caller does not provide one
   - None-default arguments must be provided by the caller
   - Non-default arguments must be specified before the default arguments
 
-```
+```python
 def divide_two(a, b = 1):
     return a / b
 print(divide_two(3))
 print(divide_two(3,2))
 ```
+
 - positional vs. keyword arguments
   - Positional arguments are specified by their order
   - keyword arguments can stand by their own without following the order
-```
+  
+```python
 print(divide_two(5,2))
 print(divide_two(b = 2, a = 5))
 ```
+
 - Use keyword arguments to specify the values of default parameters without following the order
-```
+
+```python
 arcpy.Buffer_analysis("roads", "buffer", "100 METERS", 
                       dissolve_option="LIST", dissolve_field="CODE")
 ```
@@ -171,6 +181,7 @@ arcpy.Buffer_analysis("roads", "buffer", "100 METERS",
 - use arcpy.GetParameterAsText() function to obtain user input
 
 ### Use variables
+
 - Variable names can consist of any combination of valid characters
 - Using naming styles is recommended. 
 - For example, use only lower-case characters and combine words with underscores
@@ -185,10 +196,12 @@ arcpy.Buffer_analysis("roads", "buffer", "100 METERS",
 - A new toolbox will be assigned by the system with a default alias (e.g. NewToolbox)
 - It is a good practice to define a custom toolbox alias together with the tool name and label
 - You can also set a temporary alias when importing a toolbox
-```
+
+```python
 arcpy.ImportToolbox("Sampletools.tbx", "mytools")
 arcpy.MyMode_mytools(<parameters>)
 ```
+
 ### ArcPy non-tool functions
 
 - All geoprocessing tools are functions of ArcPy, but not all functions of ArcPy are geoprocessing tools
@@ -202,6 +215,7 @@ print(arcpy.Exists("C:/Data.streams.shp"))
 ```
 
 ## Work with tool output messages
+
 ### Access the tool messages
 
 - Tools' output messages are written about the success or failure of execution.
@@ -213,6 +227,7 @@ print(arcpy.Exists("C:/Data.streams.shp"))
 - Use arcpy.GetMessages() function to display the messages in python
 
 ### Severity level of messages
+
 - Severity = 0: there is no problem with the tool run. 
 - severity = 1: warning messages indicate a possible problem. Warning messages do not stop the tool from running
 - severity = 2: error messages indicate a situation prevents the tool from execution
@@ -222,33 +237,39 @@ print(arcpy.Exists("C:/Data.streams.shp"))
 ## Work with licences
 
 ### Licence levels
-- ArcView (Basic) 
+
+- ArcView (Basic)
 - ArcEditor (Standard)
 - ArcInfo (Advanced)
+  
 ### License types
+
 - Single use
 - Concurrent
 
-```
+```python
 arcpy.CheckProduct("arcinfo")
 ```
 
-
 ### Check out extension license
+
 - When using concurrent license, use arcpy.CheckOutExtensions() to enable the extensions on the current computer
 
 
 ## Work with spatial reference
 
 ### SpatialReference class
+
 - SpatialReference class is a frequently used ArcPy class
 - Properties: GCS, XYResolution, XYTolerance, domain, name, projectionName, etc.
 - Methods: create, createfromFile(prj_file), loadFromString(string), setDomain, etc.
 - Can be accssed from existing datasets using Describe()
-```
+  
+```python
 dataset = "c:/data/landbase.gdb/Wetlands"
 spatial_ref = arcpy.Describe(dataset).spatialReference
 ```
+
 - SpatialReference objects can be compared to others using == or !=
 
 
@@ -261,6 +282,7 @@ spatial_ref = arcpy.Describe(dataset).spatialReference
 - Create from a well-known text (WKT)
 
 #### Well-known IDs
+
 - Unique ID assigned for each coordinate system
 - Two authorities: EPSG and ESRI
     - EPSG - European Petroleum Survey Group 
@@ -280,29 +302,36 @@ spatial_ref = arcpy.Describe(dataset).spatialReference
 - Use the "factorCode" property to get the WKID
 
 #### Well-known text
+
 - Well-known text (WKT) is a text markup language for representation of geometry and coordinate systems
 - WKT strings are formatted by keywords and elements enclosed by square brackets. 
 - The brackets are hierarchical 
-```
+
+```python
 wkt = "GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],\
               PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]];\
               -400 -400 1000000000;-100000 10000;-100000 10000;8.98315284119522E-09;\
               0.001;0.001;IsHighPrecision"
 ```
+
 ### projection names
+
 - Names of coordinate systems can be used to create a SpatialReference object
 
-```
+```python
 sr = arcpy.SpatialReference("NAD 1983 StatePlane Texas Central FIPS 
                             4203 (US Feet)")
 ```
+
 - List the names of spatial references:
   - arcpy.ListSpatialReferences({wild_card}, {spatial_reference_type})
 
 ## Create a python script tool
 
-### What is a script tool 
+### What is a script tool
+
 Creating a script tool allows you to turn your Python scripts and functionality into your own geoprocessing tools. Once created, a script tool provides many advantages
+
 - A script tool works under the geoprocessing framework of ArcGIS Pro
 - The tool can be used in the same way as other built-in tools
 - You can write messages to the Geoprocessing history
@@ -311,6 +340,7 @@ Creating a script tool allows you to turn your Python scripts and functionality 
 ### How to create a script tool
 
 To Create a script tool in a custom toolbox, you need three things:
+
 - A script
 - A custom toolbox
 - A precise definition of the parameters of your script
@@ -324,8 +354,10 @@ To Create a script tool in a custom toolbox, you need three things:
     - OutputWorkspace: String type, Required, and Output
 
 ![Alt text](images/image-1.png)
-  - In Execution, paste the following code
-```
+
+- In Execution, paste the following code
+
+```python
 import arcpy
 import os
 from arcpy import env
@@ -337,9 +369,10 @@ for fc in fclist:
     arcpy.CopyFeatures_management(fc,os.path.join(outgdb,fcdesc.basename))
 
 ```
+
 - Try to run the tool from the catalog pane
 
-## Create a Python toolbox
+## Python toolbox
 
 ### What is a Python toolbox
 
@@ -356,6 +389,7 @@ for fc in fclist:
 - Type a name for the toolbox.
 
 ### Understand the structure of the toolbox
+
 - A .pyt file is not different from a regular python .py script file
 - In the pyt file, tools are defined as classes (remember the object-oriented programming concept?)
 
@@ -385,7 +419,7 @@ Rodger = Dog()
 print(Rodger.attr1)
 Rodger.fun()
 ```
-### __init__() method (dunder)
+### \__init\__() method (dunder)
 
 - The dunder function init is similar to constructors in C++
 - Constructors are used to initializing an object when it is created
@@ -417,6 +451,7 @@ p.say_hi()
 
 - The dunder method __str__() is executed when an object is printed as a string
 - It is useful for debugging and information about the classes
+
 ```python
 class GFG:
     def __init__(self, name, company):
@@ -493,7 +528,9 @@ class Student(Person):
 
 - Required function
 - to define the initialization (constructor) of the tool class
+- 
 #### getPrameterInfo()
+
 - Optional
 - Define the parameters used by the tool
 
@@ -503,6 +540,7 @@ class Student(Person):
 - Define the behavior of the tool when the parameters are changed
 
 #### execute()
+
 - Required
 - The tool's source code to run its function
 
@@ -512,7 +550,8 @@ class Student(Person):
 - Override the getParameter() function and create arcpy.Parameter objects and setting their properties
 - arcpy.Parameter class properties
   - name: the name of parameter as shown in the tool's syntax 
-  - datatype: define the the valid parameter type such as "GPCoordinateSystem", "GPLayer", "DERasterDataset", etc. For a complete list of the datatypes, go to: https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm
+  - datatype: define the the valid parameter type such as "GPCoordinateSystem", "GPLayer", "DERasterDataset", etc. For a complete list of the datatypes, go to: <https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm>
+
   - parameterType: Required, Optional, or Derived
   - direction: Input or Output
   - multivalue: True or False 

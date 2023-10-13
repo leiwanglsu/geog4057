@@ -1,10 +1,10 @@
 # Create a script tool and python toolbox for random sampling
 
-A script tool or sometimes referred to as a "Python script tool", uses a single python script (.py) to execute the funcionality coded by a user. The appearance of the tool, including label, alias, and input and output are all handled by the ArcGIS Pro geoprocessing framework. User only focuses on using the input and output parameters obtained from the user interface provided by ArcGIS Pro geoprocessing framework.
+A script tool or sometimes referred to as a "Python script tool", uses a single python script (.py) to execute the funcionality coded by users. The appearance of the tool, including label, alias, and input and output are all handled by the ArcGIS Pro geoprocessing framework. User only focuses on using the input and output parameters obtained from the user interface provided by ArcGIS Pro geoprocessing framework.
 
-A python toolbox is defined by a python script file with an extension of .pyt. In the pyt file, users define the input and output arguments and the behavior of the toolbox and the tools in the toolbox. It provides a more flexible coding features for the user to customize the toolbox and tools. 
+A python toolbox is defined by a python script file with an extension of .pyt. In the pyt file, users define the input and output arguments and the behavior of the toolbox and the tools in the toolbox. It provides a more flexible coding features for users to customize the toolbox and tools.
 
-In this exercise, you will start with a python script tool called "Random Sample" and then construct a similar toolbox with the function to generate a random subset of input feature class
+In this exercise, you will start with a python script tool called "Random Sample" and then construct a similar toolbox with the function to generate a random subset of an input feature class
 
 ![Alt text](images/image-19.png)
 

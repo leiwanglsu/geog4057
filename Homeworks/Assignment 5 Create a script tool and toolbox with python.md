@@ -1,6 +1,6 @@
 # Create a script tool and python toolbox for random sampling
 
-A script tool or sometimes referred to as a "Python script tool", uses a single python script (.py) to execute the funcionality coded by users. The appearance of the tool, including label, alias, and input and output are all handled by the ArcGIS Pro geoprocessing framework. User only focuses on using the input and output parameters obtained from the user interface provided by ArcGIS Pro geoprocessing framework.
+A script tool or sometimes referred to as a "Python script tool", uses a single python script (.py) to execute the functionality coded by users. The appearance of the tool, including label, alias, and input and output are all handled by the ArcGIS Pro geoprocessing framework. User only focuses on using the input and output parameters obtained from the user interface provided by ArcGIS Pro geoprocessing framework.
 
 A python toolbox is defined by a python script file with an extension of .pyt. In the pyt file, users define the input and output arguments and the behavior of the toolbox and the tools in the toolbox. It provides a more flexible coding features for users to customize the toolbox and tools.
 
@@ -24,7 +24,7 @@ In this exercise, you will start with a python script tool called "Random Sample
 - In the third row (row 2), put Number of Features, Number_of_Features, Long, Required, Input
 - Click the Filter box of the third parameter, and select Range
 - Put 1 as Minimum and 100000 as maximum
-- Click Ok to close the script defintion window
+- Click Ok to close the script definition window
 - In the catalog pane, find the "Random Sample" script tool and double click on it.
 - Do you see the parameter interface you just defined? Capture the screen of it.
 
@@ -35,7 +35,7 @@ In this exercise, you will start with a python script tool called "Random Sample
 - Reopen the script tool for editing by right-clicking it and Properties
 - Click on the Execution tab
 - Click "Open in Script Editor"
-- What script editor was opened? 
+- What script editor was opened?
 - Optional: you can go to the environment setting to change the default editor if you need to.
 
 > Go to Menu->Project->Options, check the Geoprocessing tab. 
@@ -98,7 +98,7 @@ arcpy.AddMessage("{0} random features selected from {1}".format(outcount,inputfc
 ```
 
 - Run the tool again. After it, click "View Details" to check if the message was added to the Message list.
-- Capture the screep of the message
+- Capture the screen of the message
 
 ## Create a python toolbox
 
@@ -172,7 +172,7 @@ class RandomSampleTool(object):
 
 - Save the script
 - In the catalog pane, right click the toolbox and refresh to update the toolbox and tools
-- Double click the Random Sampling Tool to run it. 
+- Double click the Random Sampling Tool to run it.
 - Make a screen capture of the interface
 
 ### Edit the tool execution
@@ -201,12 +201,12 @@ class RandomSampleTool(object):
 
 - Before running the tool, you need to add one more line at the top section of the script: "import random". If not, the script will give an error message
 - Save the script
-- Double click the Ranom Sampleing Tool to run
+- Double click the Random Sampling Tool to run
 - Screen capture the toolbox and the result map of your tool's output
 
 ### Add the tool message
 
-- In the function execute, add one line before the line "return". Again, when pasting the code into the function, take care of the identation
+- In the function execute, add one line before the line "return". Again, when pasting the code into the function, take care of the indentation
 
 ```python
 messages.addMessage("{0} random features selected from {1}".format(outcount,inputfc))

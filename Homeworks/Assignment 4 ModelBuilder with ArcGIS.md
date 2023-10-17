@@ -94,7 +94,7 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 
 ---
 
-### Task 2 Iterate Feature Selection
+### Task 2 Iterate Feature Selection (30 pnts)
 
 In this workflow, you'll create a model to iterate over features grouped by regions in a feature class (USA states) and create eight feature classes, one for each group or region. The field value (region) used to split the feature class is also used as the name of the output feature class.
 
@@ -164,7 +164,7 @@ In this workflow, you'll create a model to iterate over features grouped by regi
 
 ---
 
-### Task 3 Iterator For tool
+### Task 3 Iterator For tool (30 pnts)
 
 In this workflow, you'll create a simple model that identifies the impact of proposed roads based on vegetation type and proximity to the road. In the model, the roads are first buffered three times with distance values of 500 feet, 1,000 feet, and 1,500 feet. These distance values are derived from the For iterator. The buffer zones are then used to clip the vegetation data using the Clip tool to create a dataset of vegetation types within the buffer polygons. The Summary Statistic tool then summarizes the affected area by vegetation type within the buffer polygons around the proposed roads. The Collect Values tool collects all the outputs of the iterations and adds them to the Contents pane for display in ArcGIS Pro.
 

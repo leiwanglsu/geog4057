@@ -230,6 +230,24 @@ with arcpy.da.SearchCursor(fc,["SHAPE@XY"],whereclause) as cursor:
 
 - Geometry tokens:```type, extent, centroid, firstPoint, lastPoint, length, isMultipart, and partCount```
 
+### Other usefual field tokens
+ - ArcPy provides several field tokens that allow you to access specific attributes and geometries within feature classes or feature layers in Esri's ArcGIS software. Here are some commonly used field tokens:
+
+SHAPE@: This token is used to access the geometry of a feature, including its shape type, coordinates, and other geometry-related properties.
+
+SHAPE@XY: As discussed earlier, this token allows you to access the X and Y coordinates of the feature's geometry.
+
+OID@: This token represents the Object ID field, which provides a unique identifier for each feature in the feature class.
+
+SHAPE@AREA: This token retrieves the area of the feature's geometry, which is particularly useful for polygons.
+
+SHAPE@LENGTH: This token retrieves the length of the feature's geometry, typically used for line or polyline features.
+
+SHAPE@WKB: This token retrieves the Well-Known Binary (WKB) representation of the feature's geometry, which is a binary format representing geometric shapes.
+
+SHAPE@JSON: This token retrieves the geometry in JSON format, which can be useful for working with web mapping and other applications that use JSON for data exchange.
+
+
 ### Use CalculateField()
 
 - Syntax ```CalculateField(in_table, field, expression,  expression_type}, {code_block})```

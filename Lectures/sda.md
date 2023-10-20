@@ -1,4 +1,6 @@
-# Spatial data analysis with ArcPy
+Spatial data analysis with ArcPy
+===
+
 
 - Reference: Chapters 6, 8, 9, and 10 of Python Scripting for ArcGIS Pro
 
@@ -164,11 +166,11 @@ for row in cursor:
     print("County: {0}, Population Density = {1}".format(row[0],row[1]))
 ```
 
-- In fact, the SQL expression should be "STATE_NAME" = 'Louisiana'. But it is impossible to type the double quote in a string with double quotation marks
+- In some versions of ArcGIS, the SQL expression should be "STATE_NAME" = 'Louisiana'. But it is impossible to type the double quote in a string with double quotation marks
 - A solution is type \\" to get the " in the expression
 
 ```python
-whereclause =  "\"STATE_NAME\" = 'Louisiana'" 
+whereclause =  " \"STATE_NAM \" = 'Louisiana'" 
 print(whereclause)
 ```
 
@@ -185,7 +187,7 @@ print(whereclause)
 import arcpy
 fc = "GWR_obesity"
 fields =  ["Name","POP00_SQMI"]
-whereclause =  "\"STATE_NAME\" = 'Louisiana'" 
+whereclause =  "STATE_NAME = 'Louisiana'" 
 mylist = []
 with arcpy.da.SearchCursor(fc, fields,whereclause) as cursor:
     for row in cursor:

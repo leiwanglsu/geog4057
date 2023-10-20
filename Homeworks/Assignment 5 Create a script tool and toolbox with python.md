@@ -217,4 +217,4 @@ messages.addMessage("{0} random features selected from {1}".format(outcount,inpu
 
 ## Summarize
 
-- In a paragraph or two, summarize your experience of coding with both the script tool and the python toolbox in ArcGIS Pro. Compare the similarity and differences between these two features of ArcGIS Pro Geoprocessing framework.
+- In a paragraph or two, summarize your experience of coding with both the script tool and the python toolbox in ArcGIS Pro. Compare the similarity and differences between these two features of the ArcGIS Pro Geoprocessing framework.

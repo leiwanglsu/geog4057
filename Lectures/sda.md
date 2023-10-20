@@ -44,7 +44,7 @@ import os
 walk = arcpy.da.Walk(r"C:\Users\leiwang\Documents\ArcGIS\Projects\GEOG7973\GEOG7973.gdb",datatype="FeatureClass")
 for dirpath, dirnames, filenames in walk:
     for file in filenames:
-        print(os.path.join(dirpath, file))ames)
+        print(os.path.join(dirpath, file))
 ```
 
 ### *Describe()* function

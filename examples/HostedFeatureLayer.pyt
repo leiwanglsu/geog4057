@@ -74,9 +74,9 @@ class DowloadHFL(object):
         messages.addMessage(f"Featurelayer Type {fl.properties.type}")
       
         # Query features from the hosted feature layer
-        features = fl.query(where="OBJECTID > 0", out_fields="*")
+        features = fl.query(where="1=1", out_fields="*")
         # Save features as a shapefile
-        arcpy.AddMesseage(f"Saving feature class: {output}")
+        arcpy.AddMessage(f"Saving feature class: {output}")
         sdf = features.sdf
         sdf.spatial.to_featureclass(location=output)
         return

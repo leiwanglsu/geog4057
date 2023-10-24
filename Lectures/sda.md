@@ -333,6 +333,9 @@ f.readline()
 - The logic of working with text files is: open file, read/write, close file
 - You could forget to close the file and causing unexpected errors
 - Use with statement, the file will be automatically closed without the need for the close() function
+- the 'with' statement is used by context managers - objects that defines the __enter__ and __exit__ functions
+- Context managers examples are opening and closing files, acquiring and releasing locks, or setting up and tearing down database connections
+- In Python, you can use two general approaches to deal with resource management: with and try...finally
   
 ```pyton
 with open(<file>) as <variable>:

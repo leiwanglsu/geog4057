@@ -1,6 +1,4 @@
-Spatial data analysis with ArcPy
-===
-
+# Spatial data analysis with ArcPy
 
 - Reference: Chapters 6, 8, 9, and 10 of Python Scripting for ArcGIS Pro
 
@@ -8,7 +6,7 @@ Spatial data analysis with ArcPy
 
 ### Checking for the existence of data
 
-#### *arcpy.Exists()* function
+### *arcpy.Exists()* function
 
 - If your input dataset does not exist, the script will return an error message and prevent the script to be executed further.
 - Using the *arcpy.Exists()* function can help the script check the problem before calling any other functions to use the data.
@@ -20,14 +18,14 @@ import arcpy
 print(arcpy.Exists("C:/Data/streams.shp"))
 ```
 
-#### System path and catalog path
+### System path and catalog path
 
 - System paths - recognized by the Windows system
 - The existence of a system path can be determined by os.path.exists()
 - Catalog paths - recognized by ArcGIS Pro
 - For example, the path: "C:/data/study.gdb/final/streets" is a catalog path and cannot be understood by system path functions
 
-#### Base name of a path
+### Base name of a path
 
 - The path name "C:/data/study.gdb/final/streets" has two components: the path name and the base name
 - The base name is the feature class name
@@ -232,7 +230,7 @@ with arcpy.da.SearchCursor(fc,["SHAPE@XY"],whereclause) as cursor:
 
 - Geometry tokens:```type, extent, centroid, firstPoint, lastPoint, length, isMultipart, and partCount```
 
-### Other usefual field tokens
+### Other useful field tokens
 
 - ArcPy provides several field tokens that allow you to access specific attributes and geometries within feature classes or feature layers in Esri's ArcGIS software. Here are some commonly used field tokens:
 
@@ -249,7 +247,6 @@ SHAPE@LENGTH: This token retrieves the length of the feature's geometry, typical
 SHAPE@WKB: This token retrieves the Well-Known Binary (WKB) representation of the feature's geometry, which is a binary format representing geometric shapes.
 
 SHAPE@JSON: This token retrieves the geometry in JSON format, which can be useful for working with web mapping and other applications that use JSON for data exchange.
-
 
 ### Use CalculateField()
 
@@ -282,7 +279,7 @@ arcpy.CalculateField_management(fc, "Poverty", expression, "", codeblock)
 
 ## Work with text file
 
-Sometimes, data are located in text files and other tabular formats. Python has several functions to work with different formats. 
+Sometimes, data are located in text files and other tabular formats. Python has several functions to work with different formats.
 
 ### Open a text file
 
@@ -297,6 +294,7 @@ open(name,{mode},{buffering})
   - Mode can be combined. For example, if you want to read a binary file, you can use rb
 
 ### Create a new text file
+
 ```open(filename, "w")```
 
 try the following code
@@ -324,6 +322,7 @@ f.readline()
 - use <q> \n </q> as the line separator
 
 #### close the file
+
 - use close() to close the file
 - If the file is not closed appropriately, it could be damaged or unavailable for other programs to use.
 - However, some situations such as exceptions or error could cause the file not closed before the exception is thrown and halts the code
@@ -337,7 +336,7 @@ f.readline()
 - Context managers examples are opening and closing files, acquiring and releasing locks, or setting up and tearing down database connections
 - In Python, you can use two general approaches to deal with resource management: with and try...finally
   
-```pyton
+```python
 with open(<file>) as <variable>:
     <code to process file>
 ```
@@ -364,7 +363,8 @@ finally:
 
 ### Example: rewrite a text file
 
-- You have text file with the following lines for latitute and longitude values
+- You have text file with the following lines for latitude and longitude values
+  
 ```
 ID: 1, Latitude: 35.099722, Longitude: -106.527550
 ID: 2, Latitude: 35.133015, Longitude: -106.583581
@@ -391,7 +391,7 @@ with open("C:/Data/coordinates.txt") as input:
             output.write(mystr)
 ```
 
-## Work with csv files
+### Work with csv files
 
 - csv stands for comma-separated values
 - A csv file is made by plain texts separated by commas
@@ -434,9 +434,9 @@ arcpy.XYTableToPoint_management(csvfile, outfc, "POINT_X", "POINT_Y")
 ## Work with geometries
 
 - Each feature in a feature class consists of vertices. 
-- A vertex is a pair of x,y coordinates. 
-- These vertices can be accessed using geometry objects, such as points, polylines, and polygons. 
-- You can work with geometry objects and their properties by setting a cursor on the geometry field, typically named Shape, of a feature class. 
+- A vertex is a pair of x,y coordinates.
+- These vertices can be accessed using geometry objects, such as points, polylines, and polygons.
+- You can work with geometry objects and their properties by setting a cursor on the geometry field, typically named Shape, of a feature class.
 - Setting a cursor is accomplished by using a geometry token instead of a field name.
   
 ```python
@@ -452,7 +452,8 @@ with arcpy.da.SearchCursor(fc, "SHAPE@LENGTH") as cursor
 ### Geometry class
 
 - The arcpy.Geometry class creates geometry objects
-```
+
+```python
 arcpy.Geometry(geometry, inputs, {spatial_reference}, {has_z}, {has_m})
 ```
 
@@ -469,9 +470,10 @@ for geom in geoms:
 print(length)
 ```
 
-- The four types of geometrys are: MultiPoint, PointGeometry, Polygon, Polyline
+- The four types of geometry are: MultiPoint, PointGeometry, Polygon, Polyline
 
 ### Point object
+
 - A point is defined by arcpy.Point class
   
 ```arcpy.Point({X}, {Y}, {Z}, {M}, {ID})```
@@ -486,6 +488,7 @@ point = arcpy.Point(4.900160, 52.378424)
 point = arcpy.Point(4.900160, 52.378424)
 pointgeo = arcpy.PointGeometry(point, 4326)
 ```
+
 - 4326 is the factory code for the GCS with WGS84 datum (You could use "GCS_WGS_1984" instead this number)
 
 - A point object does not have spatial reference as a PointGeometry object does
@@ -596,7 +599,7 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 - Another example is massive lidar dataset created as multipoint feature class
 
-#### USe isMultipart and partCount
+### USe isMultipart and partCount
 
 - isMultipart can determine is the feature is multipart
 - partCount returns the number of parts

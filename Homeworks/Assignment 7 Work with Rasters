@@ -46,3 +46,17 @@ Render the output raster in your Jupyter Notebook and discuss the changes observ
 - Convert the chosen raster dataset to a NumPy array using the arcpy.RasterToNumPyArray() function.
 - Use the min(), max(), mean(), and std() functions from Numpy to compute the raster data statistics.
 - Discuss the advantages and applications of using NumPy arrays for raster data processing in GIS.
+
+## Submission Guidelines:
+
+- Present a well-documented Jupyter Notebook containing all your code, outputs, observations, and analysis for each part of the assignment. 
+- Use the markdown blocks to include detailed explanations and interpretations of the results obtained from various raster operations.
+- Provide visualizations wherever necessary to support your analysis.
+
+## Evaluation Criteria:
+
+- Accuracy and completeness of the documentation regarding raster properties and functionalities utilized.
+- Effective use of geoprocessing tools and libraries (arcpy.sa and NumPy) for raster manipulation and analysis.
+- Critical analysis and interpretations of the transformed raster dataset.
+
+Note: Experiment with various operations, conduct comparisons, and explore the practical utility of each function or tool on the chosen raster dataset to broaden your understanding of working with raster data in ArcPy.

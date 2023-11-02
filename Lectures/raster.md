@@ -65,6 +65,7 @@ newRaster = Raster(r_information)
 ```
 
 ### Render the raster in the Jupter notebook
+
 - Render() function
 - Render (elev, colormap="Elevation #1")
 
@@ -124,8 +125,9 @@ else:
 ```python
 Raster(inRaster, {is_multidimensional})
 ```
-- The multidimensional raster is for multidimenional datasts such as netCDF and HDF
-- Raster objects have many properties including ```bandCount, compressionType, format, height, width, pxielType, noDataValue, spatialReference, etc.```
+
+- The multidimensional raster is for multidimenional datasets such as netCDF and HDF
+- Raster objects have many properties including ```bandCount, compressionType, format, height, width, pixelType, noDataValue, spatialReference, etc.```
 - These properties can also be obtained by da.Describe() function
 
 ```python
@@ -377,4 +379,3 @@ print(raster.standardDeviation)
 - In fact, not only rasters, feature class attribute tables can also be converted to numpy using ```arcpy.da.FeatureClassToNumPyArray()```
 
 - NumPy array can also be used to create feature classes ```arcpy.da.NumPyArrayToFeatureClass()```
-

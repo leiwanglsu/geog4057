@@ -760,5 +760,3 @@ for geometry in geolist:
     length += geometry.length
 print(f"Total length: {length}")
 ```
-
-

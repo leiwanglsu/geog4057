@@ -88,6 +88,12 @@ from arcgis.gis import GIS
 mygis = GIS("pro")
 ```
 
+```python
+playground_gis = GIS(url="https://pythonapi.playground.esri.com/portal", username='arcgis_python', password='amazing_arcgis_123',
+                     profile='python_playground_prof')
+print("profile defined for {}".format(playground_gis))
+```
+
 ### Start with a map
 
 - You can view a map in the Jupyter Notebook by defining a GIS object and the map class associated with it

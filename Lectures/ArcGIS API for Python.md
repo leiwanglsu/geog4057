@@ -525,7 +525,51 @@ map5.add_layer(freeway_fset, {'renderer':'ClassedSizeRenderer',
 - To access these services, you need an ArcGIS organizational account with the network analysis privilege, and the application must be connected to ArcGIS Online.
 - These services consume credits when they are run.
 
-### Find route 
+### Find route
 
 Run this [notebook](../examples/part2_find_routes.ipynb)
 
+### lambda function 
+
+- A lambda function is a small anonymous function
+- It can take any number of arguments, but can only have one expression
+- Syntax: ```lambda arguments: expression```
+
+Example:
+This will add 10 to argument a and return the result
+
+```python
+x = lambda a: a + 10
+print(x(5))
+```
+
+This will multiply a and b in the argument
+
+```python
+x = lambda a, b: a * b
+print(x(5,6))
+```
+
+### Python map() function
+
+- the map() function returns a map object of the result after applyging the given function to each item of the given iterable (tuple, list, ect)
+- Syntax ```map(fun, iter)```
+  
+For example, this code will return a list of the result from the function addition
+
+```python
+def addition(n):
+    return n + n
+ 
+# We double all numbers using map()
+numbers = (1, 2, 3, 4)
+result = map(addition, numbers)
+print(list(result))
+```
+
+Explain this code in the notebook
+
+```python
+re_ordered_stops_cities = list(map(lambda x: x.attributes['NAME'], re_ordered_stops_cities_fset))
+print(re_ordered_stops_cities)
+```

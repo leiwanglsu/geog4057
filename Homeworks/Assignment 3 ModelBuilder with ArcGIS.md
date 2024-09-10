@@ -6,7 +6,7 @@ ModelBuilder is a powerful graphic designer of models that run in ArcGIS Pro def
 
 ## Data
 
-Data can be obtained from the [data subfolder](../data) of the class repository witht the name: assignment4data.zip.
+Data can be obtained from the [data subfolder](../data) of the class repository with the name: ModelBuilder_data.zip.
 
 Extract the data to a workspace and add the geodatabase "ToolData" to your ArcGIS Pro project database. Also, add the folder where the data are extracted to, to the folder list of ArcGIS Pro
 
@@ -154,8 +154,10 @@ In this workflow, you'll create a model to iterate over features grouped by regi
 - Refresh your database. The new feature classes should be created like these:
 
 ![Alt text](images/image-13.png)
+
 - Each of the feature classes was a subregion in the input feature class. 
-- This concluses the task 2
+- This concludes the task 2
+
 #### Reporting
 
 - Screen capture each step of your work
@@ -171,7 +173,7 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 #### Add tools
 
 - Create a new model called "IteratorFor"
-- From Iteratores, add iterator For Tool to the model
+- From Iterators, add iterator For Tool to the model
 - In the Utilities list, click Collect Values
 - In the model, click anywhere and type "Buffer" and add the Buffer Tool to the model
 - Similarly, add the Clip and Summary Statistics tools to the model
@@ -180,7 +182,6 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 
 - Specify the parameters for the For iterator
     > Double-click the For iterator to open the iterator's dialog box.
-    
     >For From Value, To Value, and By Value, type 500, 1500, and 500, respectively.
 ![Alt text](images/image-14.png)    
 

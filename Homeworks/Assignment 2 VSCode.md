@@ -159,8 +159,8 @@ arcpy.analysis.Buffer(
 
 - Go to the Source control button in the activities bar
 - In the message bar, type "Assignment 2"
-- Press Commit 
-- Press Syn Changes
+- Press Commit
+- Press Sync Changes
 
 
-## Submit your github repository url. The TA will check the synchronized codes in the folder: assignment 1
+## Submit your github repository url. The TA will check the synchronized codes in the folder: assignment 2

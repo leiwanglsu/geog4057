@@ -1,3 +1,5 @@
+# Basic Python knowledge
+
 ## Object-oriented programming language
 
 - Everything is an **object** in python
@@ -19,6 +21,12 @@ dog1.bark()
 - Dunders (double underscore) (magic) methods are to support internal Python behaviors, such as documentation, module names, etc.
 - For example ```__name__``` calls a magic function to evaluates the name of the current module. The returned value is ```"__main__"``` when the module is excuted by ```python module.py```. It becomes the module file name if the module is imported by another module. 
 - ```__file__``` shows the path to the module that is currently being imported
+
+## Docstring
+
+- The text at the beginning of a module, function, or a class enclosed by trip quotes are called docstrings
+- The text are not executed by Python
+- Docstrings are used to print help documents using the ```__doc__``` dunder
 - ```__doc__``` shows the doc string (if any)in a function or class. A doc string is the triple-quote string at the beginning of a function or class definition. 
 ```python
 def bark():
@@ -28,6 +36,69 @@ def bark():
     pass
 print(bark.__doc__)
 ```
+- Google style docstrings: the specific format  in Google's documentation style guide
+
+```python
+def multiply_numbers(a, b):
+    """
+    Multiplies two numbers and returns the result.
+
+    Args:
+        a (int): The first number.
+        b (int): The second number.
+
+    Returns:
+        int: The product of a and b.
+    """
+    return a * b
+print(multiply_numbers(3,5))
+```
+- Docstrings in a class: use the help() function to access the docstring
+
+
+```python
+class ComplexNumber:
+    """
+    This is a class for mathematical operations on complex numbers.
+
+    Attributes:
+        real (int): The real part of the complex number.
+        imag (int): The imaginary part of the complex number.
+    """
+
+    def __init__(self, real, imag):
+        """
+        The constructor for ComplexNumber class.
+
+        Parameters:
+            real (int): The real part of the complex number.
+            imag (int): The imaginary part of the complex number.
+        """
+        self.real = real
+        self.imag = imag
+
+    def add(self, num):
+        """
+        The function to add two Complex Numbers.
+
+        Parameters:
+            num (ComplexNumber): The complex number to be added.
+
+        Returns:
+            ComplexNumber: A complex number which contains the sum.
+        """
+        re = self.real + num.real
+        im = self.imag + num.imag
+
+        return ComplexNumber(re, im)
+
+# Access the Class docstring using help()
+help(ComplexNumber)
+
+# Access the method docstring using help()
+help(ComplexNumber.add)
+```
+
 
 ## Packages and modules
 - In Python, the programming is also called module programming
@@ -261,6 +332,282 @@ False
 True
 ```
 
+## Python data structures
+
+- Data structures are a way of organizing data so that it can be effeciently handled 
+- Basic structures: Lists, tuples, dictionaries, sets
+- Advanced structures: trees, graphs, queues, etc.
+
+### Lists
+
+- A python list is a set of items store by some order
+    - For example, a list of all the shapefile names in the directory
+
+        ```["county", "State", "City"]```
+
+- The items in a list do not need to be of the same type
+- A list can add new items, but it will be costly because all the elements will be shifted after it. The timie complexity for insertation and deletion is *O(n)*
+- Items of a list can be accessed by an index number, starting at 0 and ending at N-1
+- A negative index is counting from the last element
+
+```python
+# Creating a List with 
+# the use of multiple values 
+List = ["GIS", "Programming", "Class"] 
+print("\nList containing multiple values: ") 
+print(List)
+
+# Creating a Multi-Dimensional List 
+# (By Nesting a list inside a List) 
+List2 = [['GIS', 'Programming'], ['Class']] 
+print("\nMulti-Dimensional List: ") 
+print(List2) 
+
+# accessing a element from the  
+# list using index number 
+print("Accessing element from the list") 
+print(List[0])  
+print(List[2]) 
+
+# accessing a element using 
+# negative indexing 
+print("Accessing element using negative indexing") 
+    
+# print the last element of list 
+print(List[-1]) 
+    
+# print the third last element of list  
+print(List[-3])
+```
+#### List slicing
+
+- List slicing is the most used tecnique for programmers to solve most problems
+- Slicing allow for accessing a range of elements in a list
+- Lists are created by using square brackets[]
+- List slicing uses colon(:) to define start,end, and step of the slicing
+
+syntax: ```List[Initial:End:Step]```
+- Note, the End element is not included in the result
+- For positive slicing, the first element is 0 and the last element is N-1
+- For negative slicing, the last element is -1 and the first element is -N
+- An negative step will produce a reserved list
+- Use slicing can insert and delete list elements
+- Count a list using ```len()```
+- List comprehension: an expression excuded for each element along with the for loop to form a list ```newList = [ expression(element) for element in oldList if condition ] ```
+
+```python
+# Initialize list
+Lst = [50, 70, 30, 20, 90, 10, 50]
+
+# Display list
+print(Lst[1:5])
+```
+```[70, 30, 20, 90]```
+
+```python
+print(Lst[::])
+print(Lst[-7::1])
+print(Lst[::-1])
+Lst[:6] = []
+Lst[2:4] = ["Added", "New", "Elements",0,0]
+numbers = [12, 13, 14,] 
+doubled = [x *2  for x in numbers] 
+print(doubled)
+list = [i for i in range(11) if i % 2 == 0] 
+print(list)
+
+```
+### Tuples
+
+- Like Lists, Tuples are collections of Python objects but are immutable
+- Tuple elements cannot be added or removed once created
+- Tuples are created by placing a sequence of values separated by comma WITH or WITHOUT parenthese for grouping them
+- If no parenthese is used on a single element-Tuple, the element must have a tailing comma
+- Tuples can be created from a List and sliced similarly
+- Tuples are usually used in passing function arguments and return values
+
+```python
+Tuple = ('GIS', 'Programming')
+print("\nTuple with the use of String: ")
+print(Tuple)
+    
+# Creating a Tuple with
+# the use of list
+list1 = [1, 2, 4, 5, 6]
+print("\nTuple using List: ")
+Tuple = tuple(list1)
+
+# Accessing element using indexing
+print("First element of tuple")
+print(Tuple[0])
+
+# Accessing element from last
+# negative indexing
+print("\nLast element of tuple")
+print(Tuple[-1])
+  
+print("\nThird last element of tuple")
+print(Tuple[-3])
+```
+
+### Sets
+
+- Sets are unorderred collections of data that is mutable and does not allow duplications
+- Sets are used to include membership testing and eliminating duplcated entries
+- Sets are indicated by curly braces {}
+```python
+Set = set([1, 2, 'GIS', 4, 'For', 6, 'Programming']) 
+print("\nSet with the use of Mixed Values") 
+print(Set) 
+
+# Accessing element using 
+# for loop 
+print("\nElements of set: ") 
+for i in Set: 
+    print(i, end =" ") 
+print()
+
+# Checking the element 
+# using in keyword 
+print("GIS" in Set) 
+```
+
+### Dictionaries
+
+- Python **dictionary** is a collection of data made by key:value pairs grouped by curly braces{}
+- Keys are used to index the elements and therefore cannot have duplication
+- Use enumerate() to access elements 
+- Dictionrary comprehension: create dictionaries using simple expressions
+```{key: value for (key, value) in iterable}```
+```python
+Dict = {'Name': 'GIS', 1: [1, 2, 3, 4]}
+print("Creating Dictionary: ")
+print(Dict)
+
+# accessing a element using key 
+print("Accessing a element using key:") 
+print(Dict['Name']) 
+
+# accessing a element using get() 
+# method 
+print("Accessing a element using get:") 
+print(Dict.get(1)) 
+
+# enumerate()
+employees = {'E001': 'James', 'E002': 'Bobby', 'E003': 'Charles', 'E004': 'Vincent'}
+for index, (key, value) in enumerate(employees.items()):
+    print(f"Index {index}: ID = {key}, Name = {value}")
+# or using key 
+index = 0
+for key in employees:
+    value = employees[key]
+    print(f"Index of '{key}': {value} is {index}")
+    index += 1
 
 
+# creation using Dictionary comprehension
+myDict = {x: x**2 for x in [1,2,3,4,5]}
+print(myDict)
+# comprehension
+myDict = {x: x**2 for x in [1,2,3,4,5]}
+print (myDict)
+```
 
+## If Else condtional statements
+
+- The If-Else statement provides a way to execute different blocks based on specific conditions
+```
+if(condition):
+    statement
+elif (condition):
+    statement
+.
+.
+else:
+    statement
+```
+- if condition can be used in List comprehension
+
+```python
+# Initializing list
+List = [367, 111, 562, 945, 6726, 873]
+
+# Using the function on odd elements of the list
+newList = [digitSum(i) for i in List if i & 1]
+
+# Displaying new list
+print(newList)
+```
+
+## For loops in Python
+
+- For Loop is a special type of loop statement that is used for sequential traversal
+- For Loop only implement the collection-based iteration
+- Syntax 
+```python
+for var in iterable:
+    #statement
+    pass
+```
+- For Loop with String
+
+```python
+# Iterating over a String
+print("String Iteration")
+
+s = "Programming"
+for i in s:
+    print(i)
+```
+- For loop with range
+```python
+for i in range(0, 10, 2):
+    print(i)
+```
+
+- For Loop with Enumerate(): emuerate will iterate over an iterable and provides the index
+
+```python
+list1 = ["GIS", "Programming", "Class"]
+
+for count, ele in enumerate(l1):
+    print (count, ele)
+```
+
+- For Loop comprehension
+
+```python
+Numbers =[x for x in range(11)]
+print(Numbers)
+```
+- For Loop with dictionary
+
+```python
+dict = {1:"GIS",2:"Programming",3:"Class"}
+for key in dict:
+    print(f"The key is {key}, and the value is {dict[key]}")
+```
+
+- Continue, break,and pass
+    - continue: skip the rest of the block and move on to the next iteration
+    - break: stop the iteration
+    - pass: do nothing
+
+```python
+for letter in 'gisprogramming':
+
+    if letter == 'g' or letter == 's':
+        continue
+    print('Current Letter :', letter)
+
+for letter in 'gisprogramming':
+
+    if letter == 'g' or letter == 's':
+        break
+    print('Current Letter :', letter)
+for letter in 'gisprogramming':
+
+    if letter == 'g' or letter == 's':
+        pass
+    print('Current Letter :', letter)
+```

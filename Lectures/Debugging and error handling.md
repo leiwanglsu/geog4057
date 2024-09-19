@@ -199,6 +199,7 @@ divisor = 0
 division_example(dividend, divisor)
 
 ```
+
 - the else block is activated if no exception occurred
 - the finally block is activated after all the statements were run and regardless if there were error or not.
 

@@ -741,6 +741,19 @@ def myFun(*argv):
 myFun('Hello', 'Welcome', 'to', 'GIS')
 ```
 
+- Unpacking a list for a function arugments using *list
+
+```python
+def print_coordinates(x, y, z, w):
+    print(f"X: {x}, Y: {y}, Z: {z}, W: {w}")
+ 
+# Create a list of coordinates
+coordinates = [1, 2, 3, 4]
+ 
+# Unpack the list into four arguments for a function
+print_coordinates(*coordinates)
+```
+
 ##### Arbitrary keyword argument: **kwargs
 
 - If you don't know how many keyword arguments to be passed to your function, add two asterisk: ** before the parameter name in the function definition
@@ -754,6 +767,22 @@ def my_function(**kid):
 
 my_function(fname = "Tobias", lname = "Refsnes")
 ```
+
+- Unpacking a dictionary for a function arguments using **dictionary
+
+```python
+# Define a function with 4 arguments and print their values
+def print_values(a, b, c, d):
+    print(a, b, c, d)
+ 
+# Create a dictionary with values for the function arguments
+arguments = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+ 
+# Call the function and unpack the dictionary
+print_values(**arguments)
+
+```
+
 
 #### Pass by Reference 
 
@@ -794,3 +823,140 @@ print(lst)
 
 - Add docstring at the beginning of your function definition
 - It is optional but considered a good practice
+
+## Classes
+
+- Classes define templates of objects in object-oriented programming
+- A class defines the structure and behavior that the objects created from the class will have
+- Classes have **attributes** and **methods**
+- Attributes are variables stored in each object
+- Methods are functions belong to a class
+
+### Defining a class
+
+- A class is defined by ```class classname:``` syntax
+- class is a keyword. classname is a name for the class. 
+- As a common practice, class names begin with captial letters
+
+```python
+class Dog:
+    pass
+```
+
+#### Attributes
+
+- Attributes are defined in the class and accessible from objects by the dot notation
+- Class attributes are accessible and shared by all instances
+- Instance attributes are accessbile from each object
+  - Instance attributes are defined by the **self** keyword
+
+```python
+class Circle:
+    pi = 3.14159  # Class variable
+
+    def __init__(self, radius):
+        self.radius = radius  # Instance variable
+        self.area = Circle.pi * radius ** 2
+        self.perimeter = 2 * self.pi * radius
+        
+c1 = Circle(5)
+c2 = Circle(10)
+print(c1.area,c2.area)
+```
+
+- Encapsulation: attributes (or methods) can be made private to the class itself if the name starts with a double-underscore. This is called class encapsulation.
+
+```python
+class Car:
+    def __init__(self, model):
+        self.__model = model  # Private attribute
+
+    def get_model(self):
+        return self.__model
+car1 = Car("Toyota")
+print(car1.get_model())
+print(car1.__model)
+```
+
+#### Methods
+
+- Methods are functions belong to a class
+- The first parameter of class methods is always **self** to refer the instance calling the method
+- Initialization method ```__init__(self,*arg):```
+
+```python
+def bark(self):
+    return f"My color is {self.color}"
+```
+
+### Instantiation of a class
+
+- Create an object from a class by calling the initialization method of the class
+
+```python
+class Dog:
+    def __init__(self,*arg):
+        self.name = arg[0]
+        self.age = arg[1]
+
+my_dog = Dog("Buddy", 5)
+print( f"name: {my_dog.name}, age: {my_dog.age}")
+
+```
+
+### Class inheritance
+
+- A new class can be defined by inheriting attributes and methods from an existing class. It is called an inherited class. 
+- The class being inherited is a Parent class or base class. The new class is a Child class or derived class
+- For example, a Person class can be inherited by a Student class so that the attributes and methods from Person can be used in Student
+- To create a child class, just put the name of the Parent class in the parenthesis of the class definition. ```class Student(Person)```
+
+```python
+class Person:
+  def __init__(self, fname, lname):
+    self.firstname = fname
+    self.lastname = lname
+
+  def printname(self):
+    print(self.firstname, self.lastname)
+
+#Use the Person class to create an object, and then execute the printname method:
+
+x = Person("John", "Doe")
+x.printname()
+```
+
+#### Funtion override
+
+- It is usually to override some of the Parent class methods so that the behaviors of the Child class are different from the Parent class
+- The function ```__init__(self,*args)``` is usually overridden by the Child class
+
+```python
+class Student(Person):
+  def __init__(self, fname, lname, year):
+    Person.__init__(self, fname, lname)
+    self.year = year
+```
+
+#### Polymorphism
+
+- Polymorphism allows methods to have different implementations by the mechanism of function override
+
+```python
+class Animal:
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+dog1 = Dog()
+cat1 = Cat()
+print(dog1.speak())
+print(cat1.speak())
+```

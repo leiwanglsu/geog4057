@@ -1,3 +1,13 @@
+# Advanced features in Python
+
+- Syntax errors
+- Handling exceptions
+- Debugging
+- Lambda functions
+- Numpy array
+- Pandas dataframe
+  
+
 ## Work with syntax errors
 
 ### Common syntax errors
@@ -8,7 +18,7 @@
 - To avoid syntax errors, try to use an IDE that have built-in checking tools such as the intellisense in VS Code
 - Try this code in the notebook and observe the error message
 
-``` python
+```python
 import arcpy
 arcpy.env.workspace = "C:/Data/mydata.gdb"
 fclist = arcpy.ListFeatureClasses()
@@ -16,6 +26,7 @@ for fc in fclist
     count = arcpy.GetCount_management(fc)
     print(count)
 ```
+
 ### Locate the error by the line number
 
 - In the notebook, you can toggle the line numbers
@@ -245,8 +256,7 @@ except:
 
 - You can handle both named and unnamed exceptions in your script. But you need to catch named exceptions first.
 
-
-### Using python trackback
+### Using python traceback
 
 - In larger scripts, it can be difficult to determine the precise location of an error. You can use the Python traceback module to isolate the location and cause of an error.
 

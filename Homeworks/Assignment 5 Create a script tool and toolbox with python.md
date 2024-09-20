@@ -26,7 +26,7 @@ In this exercise, you will start with a python script tool called "Random Sample
 - Put 1 as Minimum and 100000 as maximum
 - Click Ok to close the script definition window
 - In the catalog pane, find the "Random Sample" script tool and double click on it.
-- Do you see the parameter interface you just defined? Capture the screen of it.
+- Do you see the parameter interface you just defined? Capture the screen of it. (10 pnts)
 
 ![Alt text](images/image-20.png)
 
@@ -84,8 +84,9 @@ arcpy.Select_analysis(inputfc, outputfc, sqlexp)
 - For the Input Features, select any feature class you have
 - For the Output Features, select a geodatabase and put the name of "random_Select" for the feature class
 - In number of Features, put 100 (or any number that makes sense)
-- Click Run. 
-- Screen capture the map with the random_Select layer in it that was created by the script tool
+- Screen capture the tool interface and arguments you filled in the boxes. (10 pnts)
+- Click Run.
+- Screen capture the map with the random_Select layer in it that was created by the script tool (10 pnts)
 
 ### Add messages to the tool
 
@@ -98,7 +99,7 @@ arcpy.AddMessage("{0} random features selected from {1}".format(outcount,inputfc
 ```
 
 - Run the tool again. After it, click "View Details" to check if the message was added to the Message list.
-- Capture the screen of the message
+- Capture the screen of the message (10 pnts)
 
 ## Create a python toolbox
 
@@ -173,7 +174,7 @@ class RandomSampleTool(object):
 - Save the script
 - In the catalog pane, right click the toolbox and refresh to update the toolbox and tools
 - Double click the Random Sampling Tool to run it.
-- Make a screen capture of the interface
+- Make a screen capture of the interface (10 pnts)
 
 ### Edit the tool execution
 
@@ -202,7 +203,7 @@ class RandomSampleTool(object):
 - Before running the tool, you need to add one more line at the top section of the script: "import random". If not, the script will give an error message
 - Save the script
 - Double click the Random Sampling Tool to run
-- Screen capture the toolbox and the result map of your tool's output
+- Screen capture the toolbox and the result map of your tool's output (10 pnts)
 
 ### Add the tool message
 
@@ -213,8 +214,9 @@ messages.addMessage("{0} random features selected from {1}".format(outcount,inpu
 ```
 
 - Run the tool again and check if the message was returned by the tool 
-- Capture the screen of the message
+- Capture the screen of the message (10 pnts)
 
 ## Summarize
 
-- In a paragraph or two, summarize your experience of coding with both the script tool and the python toolbox in ArcGIS Pro. Compare the similarity and differences between these two features of the ArcGIS Pro Geoprocessing framework.
+- In a paragraph or two, summarize your experience of coding with both the script tool and the python toolbox in ArcGIS Pro (20 pnts). Compare the similarity and differences between these two features of the ArcGIS Pro Geoprocessing framework (10 pnts).
+- Submit your report to Moodle (10 pnts)

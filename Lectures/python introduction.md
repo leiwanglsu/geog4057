@@ -926,9 +926,9 @@ x = Person("John", "Doe")
 x.printname()
 ```
 
-#### Funtion override
+#### Funtion override and polymorphism
 
-- It is usually to override some of the Parent class methods so that the behaviors of the Child class are different from the Parent class
+- It is usually to override some of the Parent class methods so that the behaviors of the Child class are different from the Parent class and other siblings
 - The function ```__init__(self,*args)``` is usually overridden by the Child class
 
 ```python
@@ -936,9 +936,13 @@ class Student(Person):
   def __init__(self, fname, lname, year):
     Person.__init__(self, fname, lname)
     self.year = year
-```
+class Worker(Person):
+    Person.__init__(self,fname,lname,salary)
+    self.salary = salary
 
-#### Polymorphism
+student1 = Student(Mike, Jones, 2023)
+worker1 = Worker(Aron, Jones, 100000)
+```
 
 - Polymorphism allows methods to have different implementations by the mechanism of function override
 

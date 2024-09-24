@@ -232,6 +232,9 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 - Follow the same procedure to connect the Summary Statistics tool output variable and the Collect Values tool.
 - Click Auto Layout
 - Rename some the items to let the model match the screenshot below
+
+![alt text](images/image-23.png)
+
 - Save the model
 
 #### Run the model

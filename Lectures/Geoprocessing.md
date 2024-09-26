@@ -372,6 +372,144 @@ for fc in fclist:
 
 - Try to run the tool from the catalog pane
 
+### Another example - select random features from input feature class and write out
+
+- First, create a tool called Random Sample in your toolbox
+- Second, create parameters for the tool like this
+
+![alt text](images/image-9.png)
+
+- The orginial script .py fromt the textbook:
+
+```python
+# Python script: random_sample.py
+# Author: Paul Zandbergen
+# This script creates a random sample of input features based on
+# a specified count and saves the results as a new feature class.
+# Import modules.
+import arcpy
+import random
+# Set inputs and outputs. Inputfc can be a shapefile or geodatabase
+# feature class. Outcount cannot exceed the feature count of inputfc.
+inputfc = "C:/Random/Data.gdb/points"
+outputfc = "C:Random/Data.gdb/random"
+outcount = 5
+# Create a list of all the IDs of the input features.
+inlist = []
+with arcpy.da.SearchCursor(inputfc, "OID@") as cursor:
+    for row in cursor:
+        id = row[0]
+        inlist.append(id)
+# Create a random sample of IDs from the list of all IDs.
+randomlist = random.sample(inlist, outcount)
+# Use the random sample of IDs to create a new feature class.
+desc = arcpy.da.Describe(inputfc)
+fldname = desc["OIDFieldName"]
+sqlfield = arcpy.AddFieldDelimiters(inputfc, fldname)
+sqlexp = f"{sqlfield} IN {tuple(randomlist)}"
+arcpy.Select_analysis(inputfc, outputfc, sqlexp)
+```
+
+### Edit tool code to receive parameters
+
+- The python script should read from user-specified arguments to run correctly
+- The provided .py code only take hard-coded names for input and output and will not run if the input and output do not make sense (non-exist or incorrect path name)
+- Change your default code editor in ArcGIS
+![alt text](images/image-10.png)
+
+- Right-click the script tool in the toolbox and click Edit. 
+- Use GetParameterAsText() or GetParameter() to get user inputs because the latter will return an object (such as a number)
+- When the input is not a text, use GetParameter() can return a value rather than a text
+- Replace these lines in the code
+
+```python
+inputfc = GetParameterAsText(0)
+outputfc = GetParameterASText(1)
+outcount = GetParameter(2)
+```
+
+### Working with messages
+
+- Messages from the script tool can be printed in the detailed view of the excuted tool 
+- As other geoprocessing tools in ArcGIS Pro, your tool can return some messages to the users
+- AddMessage - for general inforamtion
+- AddWarning - for warning messages
+- AddError - for error messages
+- AddIDMessage - for both warning and error
+- AddReturnMessage - for all messages and enables hyperlinks for errors in your script
+- In the random feature tool example, if user put a number larger than the number of features available, the tool will fail. Therefore, we need to check if the number is appropriate
+- If the number is too large or negative, we return an error message to the user and not running the rest of the code
+- Add the following lines right after the lines you changed in the last time
+
+```python
+fcount = arcpy.GetCount_management(inputfc)[0]
+if outcount > int(fcount):
+  sys.exit(1)
+elif outcout == int(fcount):
+  arcpy.AddWarning("The number of features to be selected"
+                     "is the same as the number of input features."
+                     "This means the tool created a copy of the"
+                     "input features without creating a sample.")
+```
+
+#### ID Messages
+
+- ID messages are messages with ESRI system message ID 
+- For example, ID = 12 indicates the output feature already exists
+
+```python
+import arcpy
+infc = arcpy.GetParameterAsText(0)
+outfc = arcpy.GetParameterAsText(1)
+if arcpy.Exists(outfc):
+    arcpy.AddIDMessage("ERROR", 12, outfc)
+else:
+    arcpy.CopyFeatures_management(infc, outfc)
+```
+
+- To list the IDs associated with a topic (e.g. Projection), you can use GetIDMessage() 
+
+```python
+import arcpy
+dict_id = {}
+for k in range(1000000):
+    v = arcpy.GetIDMessage(k)
+    if v:
+        dict_id[k] = v
+for k,v in dict_id.items():
+    if "Projection" in v:
+        print(k, v)      
+```
+
+### Show a progress information bar
+
+- When running a tool that takes long time to finish, it is a good practice to show a progress indicator in the iinterface
+- ArcPy progressor is the tool for this purpose. The methods include SetProgressor(), SetProgressorLable(), SetProgressorPosition(), and ResetProgressor()
+- SetProgessor(type, {messsage},{min_range},{max_range},{step_value})
+- Two types of progressors: default and step
+- The message argument show a text  at the beginning of the tool execution.
+- SetProgressorLabel() is to update the label of the progressor
+- SetProgressorPosition() will move the step progressor by an increment 
+- Once the progressor finishes, you can use ResetProgressor() to reset its position
+- Let's use a progressor for copy features tool:
+
+```python
+import arcpy
+import os
+arcpy.env.workspace = arcpy.GetParameterAsText(0)
+outworkspace = arcpy.GetParameterAsText(1)
+fclist = arcpy.ListFeatureClasses()
+fcount = len(fclist)
+arcpy.SetProgressor("step", "Copying shapefiles to geodatabase...", 
+                    0, fcount, 1)
+for fc in fclist:
+    arcpy.SetProgressorLabel("Copying " + fc + "...")
+    fcdesc = arcpy.Describe(fc)
+    outfc = os.path.join(outworkspace, fcdesc.baseName)
+    arcpy.CopyFeatures_management(fc, outfc)
+    arcpy.SetProgressorPosition()
+```
+
 ## Python toolbox
 
 ### What is a Python toolbox
@@ -419,6 +557,7 @@ Rodger = Dog()
 print(Rodger.attr1)
 Rodger.fun()
 ```
+
 ### \__init\__() method (dunder)
 
 - The dunder function init is similar to constructors in C++
@@ -512,42 +651,76 @@ class Student(Person):
 
 ### Toolbox class
 
-- The toolbox class is used by ArcGIS to define the properties and  behaviors of a toolbox, including the alias, label, and description. 
-- The name of the toolbox is defined by the name of the .pyt file
+- The Toolbox class is used by ArcGIS to define the properties and  behaviors of a toolbox, including the alias, label, and description.
+- The name of the Toolbox is defined by the name of the .pyt file
 - The tools property must be set to a list containing all tool classes defined in the toolbox
+- The Toolbox class is inherited from the object class in ArcPy that defines the toolbox label, alias, and the tools it contains
+- self.tools stores a list of Tools defined in the .pyt file
 
-### Editing the toolbox class generated from a template
+```python
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+        self.tools = [MyTool]
+```
+
+#### Editing the toolbox class generated from a template
 
 - When creating a new toolbox, the python code is copied from a template with a stubbed-out tool named Tool
 - The Tool should be renamed, and can be duplicated and edited to create additional tools in your toolbox
 - The tool name and the toolbox alias must begin with a letter and only consist of letters and numbers
 
-### Methods used to define a working tool class
+### The Tool Class:
 
-#### __init__()
+- Each tool class within the toolbox also inherits from object.
+- It defines the tool's label, description, parameters, and execution logic
+- You can override some methods such as getParameterInfo(), isLicensed(), updateParameters(), updateMessages()
+- Override the execute() is always needed, as it defines the behavior of a tool
 
-- Required function
-- to define the initialization (constructor) of the tool class
-- 
-#### getPrameterInfo()
+```python
+class MyTool(object):
+    def __init__(self):
+        self.label = "My Tool"
+        self.description = "Description of my tool"
+        self.canRunInBackground = False
 
-- Optional
-- Define the parameters used by the tool
+    def getParameterInfo(self):
+        # Define parameters here
+        return parameters
 
-#### updateParameters()
+    def execute(self, parameters, messages):
+        # Tool execution logic here
+        pass
+```
 
-- optional
-- Define the behavior of the tool when the parameters are changed
+- Define as many Tool classes as you need, and add them in the Toolbox class's self.tool attribute list
 
-#### execute()
+```python
+class Toolbox(object):
+    def __init__(self):
+        self.label = "My Cool Tools"
+        self.alias = "mycooltools"
+        self.tools = [CoolTool1, CoolTool2]
+class CoolTool1(object):
+    def __init__(self):
+        self.label = "Cool Tool 1"
+    def getParameterInfo(self)
+        # Parameter definition
+    def execute(self, parameters, messages):
+        # Source code
+class CoolTool2(object):
+    def __init__(self):
+        self.label = "Cool Tool 2"
+    def getParameterInfo(self)
+        # Parameter definition
+    def execute(self, parameters, messages):
+        # Source code
+```
 
-- Required
-- The tool's source code to run its function
+#### Defining parameters in a python toolbox
 
-
-### Defining parameters in a python toolbox
-
-- Override the getParameter() function and create arcpy.Parameter objects and setting their properties
+- Override the getParameterInfo() function and create arcpy.Parameter objects and setting their properties
 - arcpy.Parameter class properties
   - name: the name of parameter as shown in the tool's syntax 
   - datatype: define the the valid parameter type such as "GPCoordinateSystem", "GPLayer", "DERasterDataset", etc. For a complete list of the datatypes, go to: <https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm>
@@ -555,16 +728,84 @@ class Student(Person):
   - parameterType: Required, Optional, or Derived
   - direction: Input or Output
   - multivalue: True or False 
-- Parameters are returned by getParameter() as a list
+- Parameters are returned by getParameterInfo() as a list
 
-### Accessing parameters in the execute() function
+```python
+def getParameterInfo(self):
+    input_features = arcpy.Parameter(
+        name="input_features",
+        displayName="Input Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Input")
+    parameters = [input_features]
+    return parameters
+```
+
+### Define a parameter
+
+- Use the arcpy.Parameter class
+- Arguments include name, displayName, datatype,parameterType, direction
+- Define filters for a parameter: type and list
+  - type defines the type of the input that user can enter in the box
+  - list can be defined by a ValueList, Range, FeatureClass, File, Field, or Workspace type
+- Refer to this page for paramter types: https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm
+
+
+```python
+import arcpy
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+        self.tools = [RandomSample]
+class RandomSample(object):
+    def __init__(self):
+        self.label = "Random Sample"
+    def getParameterInfo(self):
+        input_features = arcpy.Parameter(
+        name="input_features",
+        displayName="Input Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Input")
+    output_features = arcpy.Parameter(
+        name="output_features",
+        displayName="Output Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Output")
+    no_of_features = arcpy.Parameter(
+        name="number_of_features",
+        displayName="Number of Features",
+        datatype="GPLong",
+        parameterType="Required"
+        direction="Input")
+    no_of_features.filter.type = "Range"
+    no_of_features.filter.list = [1, 1000000000]
+    parameters = [input_features, output_features, no_of_features]
+    return parameters
+
+```
+
+#### Accessing parameters in the execute() function
 
 - The main body of the tool is found in the execute method
 - You can call other tools and access ArcPy other custom or third party python functionality
-- the syntax is def execue(self, parameters, messages):
-- Each parameter's value can be access from the list using the valueAsText method: parameters[0].valueAsText
+- the syntax is ```def execue(self, parameters, messages):```
+- Each parameter's value can be access from the list using the valueAsText method like ```parameters[0].valueAsText```
 
-### Python toolbox messages
+```python
+def execute(self, parameters, messages):
+    in_fc = parameters[0].valueAsText
+    out_fc = parameters[1].valueAsText
+```
+
+#### Python toolbox messages
 
 - When a tool is run, ArcPy defines the application it is called from and reads the messages from it and display them in the tool dialog box of ArcGIS Pro
 - In a python toolbox, a message object can be accessed in the execute method to add messages back to the tool
@@ -577,15 +818,28 @@ class Student(Person):
 
 ```python
 def execute(self, parameters, messages):
-    input = parameters[0].valueAsText
-    output = parameters[1].valueAsText
-        
-    # If the input has no features, add an error message, and raise
-    #  an arcpy.ExecuteError
-    if int(arcpy.GetCount_management(input)[0]) == 0:
-        messages.addErrorMessage("{0} has no features.".format(input))
-        raise arcpy.ExecuteError
-            
-    return
+    inputfc = parameters[0].valueAsText
+    outputfc = parameters[1].valueAsText
+    outcount = parameters[2].value
+    inlist = []
+    with arcpy.da.SearchCursor(inputfc, "OID@") as cursor:
+        for row in cursor:
+            id = row[0]
+            inlist.append(id)
+    randomlist = random.sample(inlist, outcount)
+    desc = arcpy.da.Describe(inputfc)
+    fldname = desc["OIDFieldName"]
+    sqlfield = arcpy.AddFieldDelimiters(inputfc, fldname)
+    sqlexp = f"{sqlfield} IN {tuple(randomlist)}"
+    arcpy.Select_analysis(inputfc, outputfc, sqlexp)
+    messages.addMessage(f"Random features are selected and written to {outputfc}")
 ```
 
+### Comparison between script tools and python toolboxes
+
+- Both script tools and Python toolboxes can be used to create custom tools using Python
+- Both are integrated in the geoprocessing framework
+- A script tool is a part of a custom toolbox (.tbx) and an associated python script file (.py)
+- The design of the script tool is saved in the tbx file
+- A single python toolbox (.pyt) stores both the tools design and functionality by the tools
+- .pyt can standalone without an ArcGIS toolbox (.tbx)

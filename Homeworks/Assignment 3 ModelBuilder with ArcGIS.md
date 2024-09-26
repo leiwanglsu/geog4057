@@ -245,7 +245,6 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 
 ![Alt text](images/image-18.png)
 
-
 #### Reporting
 
 - Screen capture each step of your work

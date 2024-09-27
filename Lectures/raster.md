@@ -1,10 +1,18 @@
 # Working with Rasters
 
+- ArcPy includes two modules arcpy.sa and arcpy.ia to work with raster and imagery data
+
 ## Raster data structure
+
+- Raster cells or pixels are the basic units of raster data
+- Each cell represents a certail portion of the earth with a value
+- The size of the area occupied by a cell is called cell size, usually represented by the length of the cell edge. Sometime is also referred to as spatial resolution
+- The storate of a raster is a 2D array in the computer
+- Some raster datasets contain more than one 2D arrays, and each is called a raster band
+- Raster dataset with only one band is called a single-band raster; otherwise, it is a multiband raster
 
 ### Raster and imagery
 
-- The surface is represented as a grid of equally spaced cells or pixels
 - The terms imagery and raster are often used interchangeably, but they are not identical.
   - An image is a two-dimensional pictorial representation
   - A raster is a the data model in GIS to store information in the form of cells
@@ -69,7 +77,6 @@ newRaster = Raster(r_information)
 - Render() function
 - Render (elev, colormap="Elevation #1")
 
-
 ### Raster data formats
 
 - Raster datasets can be stored in several formats, including TIFF (.tf), Imagine image (.img), JPEG (.jpg), or in a geodatabase (geodatabase raster)
@@ -126,7 +133,7 @@ else:
 Raster(inRaster, {is_multidimensional})
 ```
 
-- The multidimensional raster is for multidimenional datasets such as netCDF and HDF
+- A multidimensional raster is for multidimenional datasets such as netCDF and HDF
 - Raster objects have many properties including ```bandCount, compressionType, format, height, width, pixelType, noDataValue, spatialReference, etc.```
 - These properties can also be obtained by da.Describe() function
 
@@ -155,6 +162,7 @@ outraster.save("slope")
 ### Use da.Describe() for raster datasets
 
 - Like other GIS datasets, raster datasets can be understood by the da.Describe() function
+- The function returns a Describe object, which stores inforamtion as a dictionary with keys correspond to properties
 - The keys from the Describe() function are:
   - bandCount—the number of bands in the raster dataset
   - compressionType—the compression type (LZ77, JPEG, JPEG2000, or None), where compression reduces the size of the file on disk
@@ -262,7 +270,46 @@ for raster in rasterlist:
     print(myras.format)
 ```
 
-## Raster analysis using geoprocessing tools
+### The Raster class
+
+- The Raster class is used for certain type of analysis to access the raster bands
+- By iterating over the bands, each band can create a Raster object
+
+```python
+import arcpy
+arcpy.env.workspace = "C:/Raster"
+landsat = "tm.img"
+desc = arcpy.da.Describe(landsat)
+for rband in desc["children"]:
+    name = rband["name"]
+    ras = arcpy.Raster("tm.img" + "/" + name)
+    print(ras.catalogPath)
+```
+
+## Raster analysis using arcpy.sa and arcpy.ia classes
+
+- The sa module contains some classes to define parameters of raster tools
+- For example, the Reclassify tool uses a parameter defined by the Remap class
+
+```python
+Reclassify(in_raster, reclass_field, remap, {missing_values})
+```
+
+- To create a Remap object, you can use the table defined by a Python list of lists, with each list containing two elements
+
+```python
+import arcpy
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Raster"
+myremap = RemapValue([["Brush/transitional", 2],
+                      ["Water", 0], ["Barren land", 1],
+                      ["Built up", 1], ["Agriculture", 3],
+                      ["Forest", 5], ["Wetlands", 4]])
+outreclass = Reclassify("landuse", "LANDUSE", myremap)
+outreclass.save("lu_reclass")
+```
+
+#### Slope
 
 - The Slope() function does not require an output as in the syntax ```Slope(in_raster, {output_measurement}, {z_factor}, {method}, {z_unit})```
 - The following code runs a Slope() function in arcpy.sa
@@ -286,7 +333,7 @@ elev_clip = Clip(elev, "bh_wshds83")
 elev_clip
 ```
 
-### Using map algebra operators
+#### Map algebra operators
 
 - The Math toolset in the geoprocessing toolboxes have python script in arcpy.sa and arcpy.ia to do map algebra
 - The script below converts the vertical units from meters to feet using the Times() tool
@@ -324,7 +371,7 @@ goodelev = (elev < 1000) | (elev > 1500)
 
 - Remember to put parentheses around the relational operators
 
-### Using Raster Cell Iterator
+#### Using Raster Cell Iterator
 
 - The arcpy.sa module includes the Raster Cell Iterator (RCI) to work with individual cells
 - You can read and write individual cell values by referring to their locations in the raster using an indexing system
@@ -346,6 +393,26 @@ for i, j in vegras:
     if slopecon[i, j] == 1:
         slopecon[i, j] = 2
 slopecon.save()
+```
+
+### Using arcpy.ia and arcpy.sa functions
+
+- Additional functions in the two modules provide functionalities for Raster
+- In ArcGIS Pro, you can access these functions through Imagery->Raster Functions
+- The functions may overlap with the tools defined in the system toolboxes, and some are unique functions such as "Wind Chill"
+- The interface of the Raser Functions are similar to geoprocessing tools
+- The major difference is that the output from a Raster Function is a new virtual raster layer (the Run button is replaced by "Create new layer" button)
+- Raster functions are written in Python scripts located at your ArcGIS installation folder->Resources->Raster->Functions->System
+- These Raster Functions do not import arcpy, and therefore will be dependent on other packages such as numpy
+
+```python
+# example of using Raster Functions
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Raster"
+t = "temperature.tif"
+ws = "windspeed.tif"
+chill = WindChill(t, ws)
+chill.save("windchill.tif")
 ```
 
 ### Work with NumPy arrays
@@ -377,5 +444,4 @@ print(raster.standardDeviation)
 ```
 
 - In fact, not only rasters, feature class attribute tables can also be converted to numpy using ```arcpy.da.FeatureClassToNumPyArray()```
-
 - NumPy array can also be used to create feature classes ```arcpy.da.NumPyArrayToFeatureClass()```

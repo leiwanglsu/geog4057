@@ -30,6 +30,7 @@ Below is a graphic of the `gis` module and its various classes:
 - The arcgis package is installed as part of the arcgispro-py3 default environment of ArcGIS Pro, which makes it easy to get started using the API.
 - In older versions of ArcGIS Pro, you were required to install the arcgis package using either the Python Package Manager or conda using command prompt
 - The API is platform agnostic, which means you can install it on Windows, Linux, or macOS operating systems
+- ArcGIS API can run without ArcGIS Pro. 
 - To take full advantage of the API, however, it is beneficial to have Esri user credentials.
 
 ## Using arcgis
@@ -81,7 +82,7 @@ myFun('Hello', 'Welcome', 'to', 'GeeksforGeeks')
 - If the optional arguments are used, you are using an anonymous login to ArcGIS Online
 - Without credential, you have limited access to the ArcGIS Online resources
 - Alternative ways to authenticate your user credentials are provided
-- One useful alternative is the connect using pro authentication, with ArcGIS Pro installed locally and running concurrently
+- One useful alternative is the connect using pro authentication, with ArcGIS Pro installed locally and running concurrently, known as the pro authentication scheme.
 
 ```python
 from arcgis.gis import GIS
@@ -105,23 +106,143 @@ mymap = mygis.map("Baton Rouge")
 mymap
 ```
 
-- To change the basemap
+- To change the basemap, find the basemap list here: https://developers.arcgis.com/javascript/3/jsapi/esri.basemaps-amd.html
 
-```mymap.basemap = "gray-vector```
+```pyhon
+mymap.basemap = "gray-vector
+mymap.basemap = "streets-vector"
+# mymap.basemap = "streets-navigation-vector"
+# mymap.basemap = "topo-vector"
+# mymap.basemap = "gray-vector"
+# mymap.basemap = "satellite"
+```
 
 ### Search for contents
 
+- To add contents to a map, you can find items from your content search function
+
 ```python
 from IPython.display import display
-
-items = gis.content.search('Palm Springs Trails', item_type='feature layer')
+mygis = GIS()
+items = mygis.content.search('NYC taxi', item_type='feature layer')
 for item in items:
     display(item)
 ```
 
-## Using features
+### Get layers from the searched contents
 
-### Features module
+- If an item found by search is a feature layer, you can use .layers to get individual layers from the item
+
+```python
+from IPython.display import display
+mygis = GIS()
+items = mygis.content.search('NYC taxi', item_type='feature layer')
+for item in items:
+    display(item)
+for layer in items[0].layers:
+    print(layer)
+mymap = mygis.map("New York City")
+mymap.basemap = "satellite"
+mymap.add_layer(items[2].layers[0])
+mymap
+
+```
+
+### Creating a content in ArcGIS Online
+
+- You can create your own content on your account of ArcGIS online
+- For example, you can convert a .csv file to a feature content
+- Download the tree database from here:
+https://data.nola.gov/Parks-Parkways/Tree-Locations/g94y-wr47
+
+```python
+from arcgis.gis import GIS
+mygis = GIS("pro")
+van_map = mygis.map("Vancouver, BC Canada")
+import pandas as pd
+df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
+sample_df = df.sample(100)
+sample_df['Shape'] = sample_df['Shape'].apply(lambda x: eval(x))
+sample_df['Latitude'] = sample_df['Shape'].apply(lambda x: x[0])  # Extract latitude
+sample_df['Longitude'] = sample_df['Shape'].apply(lambda x: x[1])  # Extract longitude
+
+tree_df = sample_df[["TREE_ID", "COMMON", "Longitude","Latitude"]]
+tree_fc = mygis.content.import_data(tree_df)
+tree_fc
+```
+
+### Publish and use the new content
+
+```python
+import json
+tree_fc_dict = dict(tree_fc.properties)
+trees_json = json.dumps({"featureCollection":{"layers":[tree_fc_dict]}})
+tree_item_properties = {"title":"Street trees in New Orleans",
+                        "description":"100 trees for testing",
+                        "tags":"trees,New Orleans,csv",
+                        "text":trees_json,
+                        "type":"Feature Collection"}
+tree_items = mygis.content.add(tree_item_properties)
+tree_items.publish()
+
+```
+
+### Deleting a content item
+
+- To delete an item on your GIS account, use the delete function
+- Be careful when using this function, because it might remove something still useful
+
+```python
+from arcgis.gis import GIS
+mygis = GIS("pro")
+items = mygis.content.search("New Orleans Trees")
+for itm in items:
+    result = itm.delete()
+    print(result)
+
+```
+
+### Publish the entire csv without using GeoJSON
+
+- As GeoJSON has a limited number of records for uploading to ArcGIS, we can use the csv file directly to ArcGIS
+
+```python
+from datetime import datetime
+from arcgis.gis import GIS
+mygis = GIS("pro")
+no_map = mygis.map("New Orleans")
+no_map.basemap = "satellite"
+# define the properties of the item
+csv = r"C:\Users\leiwang\Downloads\Tree_locations.csv"
+df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
+df['Shape'] = df['Shape'].apply(lambda x: eval(x)) # Convert this shape string to a tuple and then put it back to shape as numbers (lat and long)
+df['Latitude'] = df['Shape'].apply(lambda x: x[0])  # Extract latitude
+df['Longitude'] = df['Shape'].apply(lambda x: x[1])  # Extract longitude
+df.drop('Shape',axis = 1,inplace = True)
+df.to_csv(r"C:\Users\leiwang\Downloads\Tree_locations_new.csv")
+# Get the current timestamp to ensure a unique title
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+new_title = f"New Orleans Trees {timestamp}"
+
+csv = r"C:\Users\leiwang\Downloads\Tree_locations_new.csv"
+item_properties = {
+    "title": new_title,
+    "description": "New Orleans trees from nola.gov",
+    "tags": "trees, New Orleans, urban forestry",
+    "type": "CSV",
+    "overwrite": True  # Set to True if you want to overwrite an existing item with the same name
+}
+tree_item = mygis.content.add(item_properties, data=csv)
+
+tree_feature_layer = tree_item.publish(overwrite=True)
+
+# Print the URL of the hosted feature layer
+print("Hosted Feature Layer URL:", tree_feature_layer.url)
+```
+
+
+
+## Using features
 
 - In a GIS, 'features' refer to entities located in space with a set of properties.
 - Each city in a cities dataset, for example, is a feature object
@@ -283,7 +404,7 @@ print("JSON Data:")
 print(json_data)
 ```
 
-
+- Show a json content returned from the server
 
 ```python
 import requests
@@ -310,14 +431,15 @@ except Exception as e:
     print(f"An error occurred: {e}")
 ```
 
-
 ### Properties of FeatureLayer
+
 - The `properties` field on a `FeatureLayer` object provides a dictionary representation of all its properties. 
 
 ```python
 feature_layer = major_cities_item.layers[0]
 feature_layer.properties.extent
 ```
+
 {
     "xmin": -17608123.3895845,
     "ymin": 2237818.89912024,
@@ -500,7 +622,47 @@ map5.add_layer(freeway_fset, {'renderer':'ClassedSizeRenderer',
                               'opacity':0.75})
 ```
 
-## Performing network analyses using ArcGIS Online
+## Use ArcGIS Online API to perform analysis
+
+- Many tasks can be performed using the ArcGIS API for Python on the server
+- Examples like geocoding, image analysis, and network analysis
+- Modules include arcgis.raster, arcgis.network, arcgis.geoanalytics, and arcgis.features
+
+### Module arcgis.features
+
+- The arcgis.features module allows you to access vector data from ArcGIS Online and perform some analysis
+- The modules in ArcGIS API for Python is different from arcpy
+- For example, the Buffer() function in arcpy has become create_buffers() in ArcGIS API for Python "use_proximity" module
+- The input_layer argument is required, and others are optional
+
+
+```python
+use_proximity.create_buffers(input_layer, distances=[], field=None, 
+                             units='Meters', dissolve_type='None', 
+                             ring_type='Disks', side_type='Full', 
+                             end_type='Round', output_name=None, 
+                             context=None, gis=None, estimate=False, 
+                             future=False)
+```
+
+- The following example will create buffers using an online item
+- Use the search function in ArcGIS to find the item id: 5d93352406744d658d9c1f43f12b560c as the input features
+- The airport_buf item is not published on the contents and only for visualization at this time. 
+
+```python
+from arcgis.gis import GIS
+mygis = GIS("pro")
+airports = mygis.content.get("5d93352406744d658d9c1f43f12b560c")
+airport_lyr = airports.layers[0]
+from arcgis.features import use_proximity
+airport_buf = use_proximity.create_buffers(airport_lyr,distances=[50],units="Miles")
+airport_map = mygis.map("USA",zoomlevel=4)
+airport_map.add_layer(airport_buf)
+airport_map
+```
+
+
+## Advanced topic: Performing network analyses using ArcGIS Online
 
 - `Network Analysis`, in ArcGIS API for Python, is designed to help users answer questions like the following:
 

@@ -80,6 +80,44 @@ del aprx
 - Methods include addBasemap(), addDataFromPath(), addLayer(), addTable(), moveLayer(), removeLayer(), listLayers(), listTables(), listFeatureClasses(), etc.
 - You can get a layer object from a map by listLayers()
 
+#### Work with basemaps
+
+- Basemaps can be added to a map by ```Map.addBaseMap()``` method
+- Basemaps serve as reference maps when users added data as layers in a map
+- An individual basemap can have multiple feature, raster, or web layers
+- 3D basemaps are designed or local or global scenes 
+- The following example code replaces the existing basemap with a different one
+
+```python
+m = arpx.listMaps()[0]
+m.addBasemap("Imagery")
+aprx.save()
+del aprx
+```
+
+#### Add data from file as layers and remove layers
+
+- As you can use the Add data button in ArcGIS Pro to add a dataset to the map as a layer, you can do it in Python using ```Map.addLayerFromPath()``` method
+
+```python
+m.addDataFromPath("C:/Mapping/Data.gdb/sidewalks")
+aprx.save()
+del aprx
+```
+
+- Remove a layer by ```Map.removeLayer(lyr)```
+- The basemap is a layer in a map, and therefore you can remove the basemap by the ```Map.removeLayer()``` method
+
+#### Add a layer from a layerfile
+
+- Layers can be saved to files and restored as Layer objects
+- To restore a Layer object from a layer file, use the LayerFile class
+- The syntax is ```arcpy.mp.LayerFile(Lyf_fil_path)```
+- The LayerFile class can help users deal with different layer file conditions, including group layers or multiple layers in a layer file
+- To add a layer to a map, use ```Map.addLayer()``` method
+- The Syntax is ```Map.addLayer(layer_or_layerfile)```
+- You can use a Layer object created from another map or use the LayerFile object created from a layer file
+
 ### Layers
 
 - A layer can be referenced from within a project using listLayers method on the Map class or from a layer file (.lyr or lyrx) on the LayerFile class
@@ -99,4 +137,128 @@ for lyr in lyrs:
     if lyr.isRasterLayer:
         print(lyr.name + " is a raster layer")
 del aprx
+```
+
+#### Save a layer to a layer file
+
+- Layer objects have symbology, definition query, and other properties changed by users
+- The changes can be saved to a layer file (.lyrx) on the hard disk of the computer and reused
+- Use ```saveACopy()``` can save the layer to a layer file
+
+#### Layer symbology
+
+- The most important feature of layers is their symbology
+- Users modify a layer's symbology by the Symbology class
+- Once a layer is created either by adding from a data file or restored from a layer file, you can access its symbology attribute and make modification to the symbology
+- The Symbology class has two properties: colorizer and renderer that are used for Raster and Vector data respectively
+- Check the layer type before making changes by either colorizer (raster) or renderer (vector)
+- It is also better to check if the layer supports a colorizer or renderer using the hasattr() function
+- The hasattr() function is a Python builtin function to check if an object contains a certain property by a name
+
+```python
+import arcpy
+aprx = arcpy.mp.ArcGISProject(r"C:\Users\leiwang\Documents\ArcGIS\Projects\GEOG4057\GEOG4057.aprx")
+m = aprx.listMaps()[0]
+lyrs = m.listLayers()
+for lyr in lyrs:
+    sym = lyr.symbology
+    if lyr.isFeatureLayer:
+        if hasattr(sym, "renderer"):
+            print(lyr.name + ": " + sym.renderer.type)
+    if lyr.isRasterLayer:
+        if hasattr(sym, "colorizer"):
+            print(lyr.name + ": " + sym.colorizer.type)
+```
+
+#### Apply a graduated color symbology to a Polygon feature class layer
+
+- Polygons can be displayed as a "choropleth map" that shows polygon features in a color progression defined by intervals of polygon values
+- The polygon values could be normalized by another field such as area to improve the visualization quality
+- The intervals are defined by certain algorithms such as Jenk's Natural Breaks, Geometric Interval, Standard Deviation, etc.
+- All these definitions of the symbology are implemented by the ```GraduatedColorsRenderer``` class
+- Other renderer classes include ```SimpleRenderer```, ```GraduatedSymbolsRenderer```, ```UniqueValueRenderer```, etc.
+- Use ```Symbology.updateRenderer()``` function to change the default renderer (SimpleRenderer) to GraduatedColorsRenderer. 
+- The following example assumes you have a map called "State" and a Feature layer called "Counties" in the map. You run the script in the ArcGIS Project
+
+```python
+import arcpy
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+mymap = aprx.listMaps("State")[0]
+lyr = mymap.listLayers("Counties")[0]
+sym = lyr.symbology
+if lyr.isFeatureLayer and hasattr(sym, "renderer"):
+    sym.updateRenderer("GraduatedColorsRenderer")
+lyr.symbology = sym
+```
+
+- Once the renderer is changed to a GraduatedColorsRenderer, you can also modify its definition, including the field, normalizationField, classificationMethod, breakCount, and colorRamp
+- The classification method can be "DefinedInterval", "EqualInterval", "GeometricalInterval", "NaturalBreaks", "Quantile", "StandardDeviation", "Manual".
+  
+```python
+sym.renderer.classificationField = "VACANT"
+sym.renderer.normalizationField = "HSE_UNITS"
+sym.renderer.classificationMethod = "NaturalBreaks"
+sym.renderer.breakCount = 5
+sym.renderer.colorRamp = aprx.listColorRamps("Yellow-Orange-Red (5 Classes)")[0]
+lyr.symbology = sym
+                                      
+```
+
+#### Apply a symbology to raster layers
+
+- Raster layers supports several colorizers: RasterClassifyColorizer, RasterUniqueValueColorizer, RasterStretchColorizer
+- For categorical raster, such as Land use data, use RasterUniqueValueColorizer.
+- For continuous raster, such as elevation, use RasterClassifyColorizer
+- RasterClassifyColorizer works similarly to the GraduatedColorRenderer for polygon data
+- The following example is to colorize a land use raster using the RasterUniqueValueColorizer
+- It assumes your project contains a map called "Study" with a raster layer "landcover"
+- The groups attribute of the colorizer returns the group of unique labels of each category in the raster
+
+```python
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+studymap = aprx.listMaps("Study")[0]
+lyr = studymap.listLayers("landcover")[0]
+sym = lyr.symbology
+if sym.colorizer.type == "RasterUniqueValueColorizer":
+  sym.colorizer.field = "Covertype"
+  for group in sym.colorizer.groups:
+        for item in group.items:
+            if item.label == "Open Water":
+                item.color = {'RGB': [0, 0, 255, 100]}
+lyr.symbology = sym
+```
+
+### Working with layouts
+
+- Layouts are used to produce printable maps and digital map products
+- the Layout objects refer to individual single-page layouts in the project
+- Layouts are identified by their ```name``` property. Therefore, it is a good practice to name layouts uniquely
+- Layout elements include mapframe, legend, north arrow, title, etc.
+- Use Layout.listElements() to list all elements in a layout
+
+#### Adjusting map frames in a layout
+
+- A map frame is a container for a map on the layout
+- A MapFrame object has a map object by ```MapFrame.map```
+- The other important property of a map frame is the ```camera``` property to access a ```Camera``` object
+- For a 2D map frame, the Camera object is controlled by X, Y, and scale properties
+- Also, the extent of a map frame can be accessed by getExtent() and setExtent() functions
+- Useful attributes of a map frame include anchor, camera, map, name, type, visible
+
+#### Exporting a layout
+
+- Layouts can be exported to different digital formats such as tiff, bmp, eps, gif, etc.
+
+```python
+exportToAIX()
+exportToBMP()
+exportToEMF()
+exportToEPS()
+exportToGIF()
+exportToJPEG()
+exportToPDF()
+exportToPNG()
+exportToSVG()
+exportToTGA()
+exportToTIFF()
 ```

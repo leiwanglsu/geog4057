@@ -423,9 +423,9 @@ arcpy.Select_analysis(inputfc, outputfc, sqlexp)
 - Replace these lines in the code
 
 ```python
-inputfc = GetParameterAsText(0)
-outputfc = GetParameterASText(1)
-outcount = GetParameter(2)
+inputfc = arcpy.GetParameterAsText(0)
+outputfc = arcpy.GetParameterAsText(1)
+outcount = arcpy.GetParameter(2)
 ```
 
 ### Working with messages
@@ -454,7 +454,7 @@ elif outcout == int(fcount):
 
 #### ID Messages
 
-- ID messages are messages with ESRI system message ID 
+- ID messages are messages with ESRI system message ID
 - For example, ID = 12 indicates the output feature already exists
 
 ```python
@@ -558,7 +558,7 @@ print(Rodger.attr1)
 Rodger.fun()
 ```
 
-### \__init\__() method (dunder)
+### ```__init__()``` method (dunder)
 
 - The dunder function init is similar to constructors in C++
 - Constructors are used to initializing an object when it is created

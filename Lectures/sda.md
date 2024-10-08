@@ -238,6 +238,14 @@ SHAPE@: This token is used to access the geometry of a feature, including its sh
 
 SHAPE@XY: As discussed earlier, this token allows you to access the X and Y coordinates of the feature's geometry.
 
+SHAPE@X – X coordinate of the centroid.
+
+SHAPE@Y – Y coordinate of the centroid.
+
+SHAPE@Z – Z coordinate (elevation).
+
+SHAPE@M – M value (measure).
+
 OID@: This token represents the Object ID field, which provides a unique identifier for each feature in the feature class.
 
 SHAPE@AREA: This token retrieves the area of the feature's geometry, which is particularly useful for polygons.
@@ -277,160 +285,6 @@ def reclass(povertyPer):
 arcpy.CalculateField_management(fc, "Poverty", expression, "", codeblock)
 ```
 
-## Work with text file
-
-Sometimes, data are located in text files and other tabular formats. Python has several functions to work with different formats.
-
-### Open a text file
-
-```python
-open(name,{mode},{buffering})
-```
-
-- The required argument is a file name. 
-- If you want to open a text file to write, you need to specify the mode
-  - The mode can be r (read), w (write), + (read and write), b (binary), and a (append)
-  - If no mode is provided, the default value is r (read)
-  - Mode can be combined. For example, if you want to read a binary file, you can use rb
-
-### Create a new text file
-
-```open(filename, "w")```
-
-try the following code
-
-```python
-f = open("C:/Data/mytext.txt", "w")
-f.write("Geographic Information Systems")
-f.close()
-```
-
-### Use readline or readlines
-
-```python
-f = open("C:/Data/sqltext.txt")
-f.read()
-f = open("C:/Data/sqltext.txt")
-f.readline()
-```
-
-- readlines() will return a list of text strings
-
-### writelines()
-
-- Use writelines to write multiple lines to a text file
-- use <q> \n </q> as the line separator
-
-#### close the file
-
-- use close() to close the file
-- If the file is not closed appropriately, it could be damaged or unavailable for other programs to use.
-- However, some situations such as exceptions or error could cause the file not closed before the exception is thrown and halts the code
-
-### Use with statement
-
-- The logic of working with text files is: open file, read/write, close file
-- You could forget to close the file and causing unexpected errors
-- Use with statement, the file will be automatically closed without the need for the close() function
-- the 'with' statement is used by context managers - objects that defines the __enter__ and __exit__ functions
-- Context managers examples are opening and closing files, acquiring and releasing locks, or setting up and tearing down database connections
-- In Python, you can use two general approaches to deal with resource management: with and try...finally
-  
-```python
-with open(<file>) as <variable>:
-    <code to process file>
-```
-
-```python
-with open("C:/Data/with.txt", "w") as f:
-    f.write("Use more with statements.")
-```
-
-### Use the try-finally structure
-
-- Another approach is more robust than the with statement, which is the try-finally structure
-
-```python
-f = open("mytext.txt")
-try:
-    <code to process file>
-finally:
-    f.close()
-
-```
-
-- the try-finally structure will ensure the file is closed regardless what happens in the code
-
-### Example: rewrite a text file
-
-- You have text file with the following lines for latitude and longitude values
-  
-```
-ID: 1, Latitude: 35.099722, Longitude: -106.527550
-ID: 2, Latitude: 35.133015, Longitude: -106.583581
-ID: 3, Latitude: 35.137142, Longitude: -106.650632
-ID: 4, Latitude: 35.093650, Longitude: -106.573590
-```
-
-- The task is to rewrite the lines to the format of 
-
-```
-1 35.099722 -106.527550
-2 35.133015 -106.583581
-3 35.137142 -106.650632
-4 35.093650 -106.573590
-```
-
-```python
-with open("C:/Data/coordinates.txt") as input:
-    with open("C:/Data/coordinates_clean.txt", "w") as output:
-        for line in input:
-            mystr = line.replace("ID: ", "")
-            mystr = mystr.replace(", Latitude:", "")
-            mystr = mystr.replace(", Longitude:", "")
-            output.write(mystr)
-```
-
-### Work with csv files
-
-- csv stands for comma-separated values
-- A csv file is made by plain texts separated by commas
-- Use the csv module to read and write csv files
-
-### Use the csv module
-
-```python
-import csv
-with open("C:/Data/csv_example.csv") as f:
-    reader = csv.reader(f)
-    for row in reader:
-        print(row)
-```
-
-- Sometimes you want to skip the first line
-
-```python
-import csv
-with open("C:/Data/csv_example.csv") as f:
-    reader = csv.reader(f)
-    next(reader)
-    for row in reader:
-        ID = row[0]
-        xcoord = row[1]
-        ycoord = row[2]
-        print(ID, xcoord, ycoord)
-```
-
-### Geoprocessing tools that creates csv files
-
-```python
-import arcpy
-arcpy.env.workspace = "C:/Data"
-csvfile = "csv_example.csv"
-outfc = "testpoints.shp"
-arcpy.XYTableToPoint_management(csvfile, outfc, "POINT_X", "POINT_Y")
-```
-
 ## Work with geometries
 
 - Each feature in a feature class consists of vertices. 
@@ -448,6 +302,46 @@ with arcpy.da.SearchCursor(fc, "SHAPE@LENGTH") as cursor
         length += row[0]
         print(length)
 ```
+
+### Using cursors to set the spatial reference
+
+- Your input coordinates might be in a different coordinate system from the feature class's coordinate system
+- You can set the coordinate system of the insert cursor for writing the geometries to the feature class by converting from the insert cursor to the feature class
+- Similarly, you can also set the coordinate system of the search cursor so that the returned geometry has a different coordinate system
+
+```python
+import arcpy
+arcpy.env.workspace = "C:/Data"
+mytext = "C:/Data/result.txt"
+fc = "hospitals.shp"
+prjfile = "C:/Projections/GCS_NAD_1983.prj"
+sr = arcpy.SpatialReference(prjfile)
+with arcpy.da.SearchCursor(fc, ["SHAPE@"], "", sr) as cursor:
+    output = open("result.txt", "w")
+    for row in cursor:
+        point = row[0]
+        output.write(f"{point.X} {point.Y}\n")
+    output.close()
+```
+
+#### Spatial reference
+
+- In ArcPy, spatial references are defined by the SpatialReference class
+- A SpatialReference object can also be accessed from the arcpy.da.Describe() or arcpy.Describe() functions
+
+```python
+dataset = "c:/data/landbase.gdb/Wetlands"
+spatial_ref = arcpy.Describe(dataset).spatialReference
+```
+
+- A SpatialReference object can be created from a projection file, name, or factory code
+  - A projection file is a file with the extension of .prj that is written with the projection definition well-known text
+    `sr = arcpy.SpatialReference("c:/coordsystems/NAD 1983.prj")`
+  - A name can be used to create a SpatialReference: `sr = arcpy.SpatialReference("Hawaii Albers Equal Area Conic"`
+  - Use a factory code: `sr = arcpy.SpatialReference(8519)`
+- A list of GCS names and codes: https://pro.arcgis.com/en/pro-app/latest/arcpy/classes/pdf/geographic_coordinate_systems.pdf
+- A list of projected CS names and codes: https://pro.arcgis.com/en/pro-app/latest/arcpy/classes/pdf/geographic_coordinate_systems.pdf
+
 
 ### Geometry class
 
@@ -567,6 +461,11 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
             print("{0}, {1}".format(point.X, point.Y))
 
 ```
+
+### Get the spatial refeference
+
+- You can get the SpatialReference object from the geomoetry by using `spatailReference`
+
 
 ### getPart()
 
@@ -707,27 +606,6 @@ with arcpy.da.InsertCursor(fc, ["SHAPE@"]) as cursor:
 
 ```
 
-### Using cursors to set the spatial reference
-
-- Your input coordinates might be in a different coordinate system from the feature class's coordinate system
-- You can set the coordinate system of the insert cursor for writing the geometries to the feature class by converting from the insert cursor to the feature class
-- Similarly, you can also set the coordinate system of the search cursor so that the returned geometry has a different coordinate system
-
-```python
-import arcpy
-arcpy.env.workspace = "C:/Data"
-mytext = "C:/Data/result.txt"
-fc = "hospitals.shp"
-prjfile = "C:/Projections/GCS_NAD_1983.prj"
-sr = arcpy.SpatialReference(prjfile)
-with arcpy.da.SearchCursor(fc, ["SHAPE@"], "", sr) as cursor:
-    output = open("result.txt", "w")
-    for row in cursor:
-        point = row[0]
-        output.write(f"{point.X} {point.Y}\n")
-    output.close()
-```
-
 ### Using geometry objects to work with the geoprocessing tool
 
 - Geoprocessing tools can directly use Geometry objects 
@@ -760,3 +638,165 @@ for geometry in geolist:
     length += geometry.length
 print(f"Total length: {length}")
 ```
+
+## Work with text file for geometries
+
+
+### Geoprocessing tools that creates csv files
+
+```python
+import arcpy
+arcpy.env.workspace = "C:/Data"
+csvfile = "csv_example.csv"
+outfc = "testpoints.shp"
+arcpy.XYTableToPoint_management(csvfile, outfc, "POINT_X", "POINT_Y")
+```
+
+Sometimes, data are located in text files and other tabular formats. Python has several functions to work with different formats.
+
+
+### Case example: the text file contains information not usable by ArcGIS
+
+- You have text file with the following lines for latitude and longitude values
+  
+```csv
+ID: 1, Latitude: 35.099722, Longitude: -106.527550
+ID: 2, Latitude: 35.133015, Longitude: -106.583581
+ID: 3, Latitude: 35.137142, Longitude: -106.650632
+ID: 4, Latitude: 35.093650, Longitude: -106.573590
+```
+
+- The task is to rewrite the lines to the format of csv
+
+```csv
+1, 35.099722, -106.527550
+2, 35.133015, -106.583581
+3, 35.137142, -106.650632
+4, 35.093650, -106.573590
+```
+
+```python
+with open("C:/Data/coordinates.txt") as input:
+    with open("C:/Data/coordinates_clean.txt", "w") as output:
+        for line in input:
+            mystr = line.replace("ID: ", "")
+            mystr = mystr.replace(", Latitude:", ",")
+            mystr = mystr.replace(", Longitude:", ",")
+            output.write(mystr)
+```
+
+
+### Open a text file
+
+```python
+open(name,{mode},{buffering})
+```
+
+- The required argument is a file name. 
+- If you want to open a text file to write, you need to specify the mode
+  - The mode can be r (read), w (write), + (read and write), b (binary), and a (append)
+  - If no mode is provided, the default value is r (read)
+  - Mode can be combined. For example, if you want to read a binary file, you can use rb
+
+### Create a new text file
+
+```open(filename, "w")```
+
+try the following code
+
+```python
+f = open("C:/Data/mytext.txt", "w")
+f.write("Geographic Information Systems")
+f.close()
+```
+
+### Use readline or readlines
+
+```python
+f = open("C:/Data/sqltext.txt")
+f.read()
+f = open("C:/Data/sqltext.txt")
+f.readline()
+```
+
+- readlines() will return a list of text strings
+
+### writelines()
+
+- Use writelines to write multiple lines to a text file
+- use <q> \n </q> as the line separator
+
+#### close the file
+
+- use close() to close the file
+- If the file is not closed appropriately, it could be damaged or unavailable for other programs to use.
+- However, some situations such as exceptions or error could cause the file not closed before the exception is thrown and halts the code
+
+### Use with statement
+
+- The logic of working with text files is: open file, read/write, close file
+- You could forget to close the file and causing unexpected errors
+- Use **with** statement, the file will be automatically closed without the need for the close() function
+- the 'with' statement is used by context managers - objects that defines the `__enter__` and `__exit__` functions
+- Context managers examples are opening and closing files, acquiring and releasing locks, or setting up and tearing down database connections
+- In Python, you can use two general approaches to deal with resource management: with and try...finally
+  
+```python
+with open(<file>) as <variable>:
+    <code to process file>
+```
+
+```python
+with open("C:/Data/with.txt", "w") as f:
+    f.write("Use more with statements.")
+```
+
+### Use the try-finally structure
+
+- Another approach is more robust than the with statement, which is the try-finally structure
+
+```python
+f = open("mytext.txt")
+try:
+    <code to process file>
+finally:
+    f.close()
+
+```
+
+- the try-finally structure will ensure the file is closed regardless what happens in the code
+
+### Work with csv files
+
+- csv stands for comma-separated values
+- A csv file is made by plain texts separated by commas
+- Use the csv module to read and write csv files
+
+### Use the csv module
+
+```python
+import csv
+with open("C:/Data/csv_example.csv") as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)
+```
+
+- Sometimes you want to skip the first line
+
+```python
+import csv
+with open("C:/Data/csv_example.csv") as f:
+    reader = csv.reader(f)
+    next(reader)
+    for row in reader:
+        ID = row[0]
+        xcoord = row[1]
+        ycoord = row[2]
+        print(ID, xcoord, ycoord)
+```
+
+## Homework assignment
+
+- Use the [Homework 6 notebook](../Homeworks/Assignment%206%20Spatial%20Data%20Manipulation.ipynb) to read coorindates from the [point.csv](../Homeworks/points.csv)
+

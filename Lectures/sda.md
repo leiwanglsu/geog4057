@@ -342,7 +342,6 @@ spatial_ref = arcpy.Describe(dataset).spatialReference
 - A list of GCS names and codes: https://pro.arcgis.com/en/pro-app/latest/arcpy/classes/pdf/geographic_coordinate_systems.pdf
 - A list of projected CS names and codes: https://pro.arcgis.com/en/pro-app/latest/arcpy/classes/pdf/geographic_coordinate_systems.pdf
 
-
 ### Geometry class
 
 - The arcpy.Geometry class creates geometry objects
@@ -383,9 +382,14 @@ point = arcpy.Point(4.900160, 52.378424)
 pointgeo = arcpy.PointGeometry(point, 4326)
 ```
 
-- 4326 is the factory code for the GCS with WGS84 datum (You could use "GCS_WGS_1984" instead this number)
-
+- In the above code: 4326 is the factory code for the GCS with WGS84 datum (You could use "GCS_WGS_1984" instead this number)
 - A point object does not have spatial reference as a PointGeometry object does
+- A point object can be printed as string
+
+```python
+pnt = arcpy.Point(X=100,Y=20)
+print(pnt)
+```
 
 ### Polyline and polygon geometry
 
@@ -466,13 +470,6 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 - You can get the SpatialReference object from the geomoetry by using `spatailReference`
 
-
-### getPart()
-
-- The method returns only the part of the geometry by the index value in the argument
-- For a single-part feature, only the index 0 is valid
-- For a multi-part feature, getPart can return other parts
-
 ### Printing with precision 
 
 - The coordinate values often contain long decimals
@@ -498,7 +495,7 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 - Another example is massive lidar dataset created as multipoint feature class
 
-### USe isMultipart and partCount
+#### USe isMultipart and partCount
 
 - isMultipart can determine is the feature is multipart
 - partCount returns the number of parts
@@ -518,6 +515,22 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
             for point in part:
                 print("{0}, {1}".format(point.X, point.Y))
             partnum += 1
+```
+
+#### getPart()
+
+- The method returns only the part of the geometry by the index value in the argument
+- For a single-part feature, only the index 0 is valid
+- For a multi-part feature, getPart can return other parts
+- The returned object is an array of Point objects
+- Use an iteration to print the point coordinates
+
+```python
+for point in row[1].getPart(0):
+    if point:
+        print(point)
+    else:
+        print("Interior ring")
 ```
 
 ### Writing geometries

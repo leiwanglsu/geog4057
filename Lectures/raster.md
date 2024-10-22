@@ -346,7 +346,7 @@ outras = Times(inras, 3.28)
 outras.save("elev_ft")
 ```
 
-- You can actually use the operator (*) instead of Times()
+- You can actually use the multiplication operator (*) instead of Times()
 
 ```python
 import arcpy

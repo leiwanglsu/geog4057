@@ -45,14 +45,40 @@
 
 ### Raster Cell Iterator: (15 pnts)
 
-- Demonstrate how to use the Raster Cell Iterator to access and modify individual cell values in the raster dataset.
-- Provide explanations of the specific cells you modified, the reasoning behind the modification, and the significance of these changes in the context of the raster data.
+- Modify Cell Iterator example below to create a new raster called 'elev_reclass' based on the "elevation" dataset if the elevation is greater than 2000, assigned the cell with 1; otherwise, assign the cell with 0.
+
+```python
+import numpy as np
+import arcpy
+from arcpy.sa import Raster, RasterCellIterator
+# read the elevation model
+dem = Raster("elevation")
+arcpy.env.overwriteOutput = True
+
+#get knowledge about the input raster
+raster_info = dem.getRasterInfo()
+cell_x = dem.meanCellWidth
+cell_y = dem.meanCellHeight
+
+# change the raster info so the output type is 32bit unsigned integer
+raster_info.setPixelType("U32")
+#create a new raster based on the raster info
+elev_relcass = Raster(raster_info)
+#update the raster using cell iterator
+with RasterCellIterator({'rasters':[dem,elev_reclas]}) as rci:
+    for r, c in rci:
+        # modify this block here to do the classification of elevation to 1 or 0
+
+elev_relcass.save('elev_relcass')
+```
+
+- Provide explanations of the Cell Iterator.
 
 ## Part 4: NumPy and Raster Integration
 
 ### NumPy Array Conversion: (15 pnts)
 
-- Convert the chosen raster dataset to a NumPy array using the arcpy.RasterToNumPyArray() function.
+- Convert the 'elevation' dataset to a NumPy array using the arcpy.RasterToNumPyArray() function.
 - Use the min(), max(), mean(), and std() functions from Numpy to compute the raster data statistics.
 - Discuss the advantages and applications of using NumPy arrays for raster data processing in GIS.
 

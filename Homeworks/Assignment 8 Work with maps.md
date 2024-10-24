@@ -196,3 +196,4 @@ lyt.exportToPDF(os.path.join(pathname, 'downtown.pdf'))
 - In a markdown block following each step, answer questions if any
 - Make sure all the outputs are correct in each block in the Jupyter notebook
 - Submit your notebook and the pdf map expored from the last step to your Github page and provide the link for the TA to evaluate
+- Submit the report ontime (10 pnts)

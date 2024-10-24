@@ -4,9 +4,9 @@
 
 ### Raster Dataset preparation: (10 pnts)
 
-- From the ../data folder in this repository, find the Ex10.zip file as the input datasets
-- Extract the zip file to a folder,for example, "c:/Documents/ex10"
-- Check the files in the ex10 folder
+- From the ../data folder in this repository, find the Ex8.zip file as the input datasets
+- Extract the zip file to a folder,for example, "c:/Documents/ex8"
+- Check the files in the ex8 folder
 - In ArcGIS Pro, create a new notebook for this exercise,
 - In the first block, Use arcpy.Walk() function to list all raster datasets in the folder.
 - Make sure the output of this code block shows correct results

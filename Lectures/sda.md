@@ -351,7 +351,11 @@ arcpy.Geometry(geometry, inputs, {spatial_reference}, {has_z}, {has_m})
 ```
 
 - The type of the geometry class can be point, polyline, polygon,etc.
+
+#### Copy to geometries from a feature class
+
 - The following code uses the Geometry class to calculate the total length of the roads
+- The geometry objects are copied from a feature class by `arcpy.CopyFeatures_management`
 
 ```python
 import arcpy
@@ -364,10 +368,11 @@ print(length)
 ```
 
 - The four types of geometry are: MultiPoint, PointGeometry, Polygon, Polyline
+- Read the spatial reference from a geometry object by using `spatialReference`
 
-### Point object
+### Createing a Point geometry from a Point object
 
-- A point is defined by arcpy.Point class
+- A Point object is defined by arcpy.Point class
   
 ```arcpy.Point({X}, {Y}, {Z}, {M}, {ID})```
 
@@ -375,7 +380,7 @@ print(length)
 point = arcpy.Point(4.900160, 52.378424)
 ```
 
-- A point object is not a geometry object, but it can be used to construct a PointGeometry object
+- A Point object is not a geometry object, but it can be used to construct a PointGeometry object
 
 ```python
 point = arcpy.Point(4.900160, 52.378424)
@@ -394,8 +399,10 @@ print(pnt)
 ### Polyline and polygon geometry
 
 - Polyline and Polygon geometries have more than one points
-- The points are put to a list and converted to an Array class
-- The array can be used to define polyline or polygon
+- The points are put to a list and converted to an Array object
+- The Array object can be used to define polyline or polygon
+  - The Array class can be created from a list
+  - Array can be appended with new elemetns by the `append()` function
 - The following code defines a polyline with two points
 
 ```python
@@ -419,27 +426,12 @@ polygon = arcpy.Polygon(array)
 print(polygon.area)
 ```
 
-### Compare geometries
-  
-- You can compare geometry objects using the methods of geometry objects, such as crosses()
-
-```python
-import arcpy
-point1a = arcpy.Point(0,0)
-point1b = arcpy.Point(100, 100)
-point2a = arcpy.Point(100, 0)
-point2b = arcpy.Point(0, 100)
-array1 = arcpy.Array([point1a, point1b])
-array2 = arcpy.Array([point2a, point2b])
-polyline1 = arcpy.Polyline(array1)
-polyline2 = arcpy.Polyline(array2)
-print(polyline1.crosses(polyline2))
-```
-
 ### Read geometries from features
 
-- Using the search cursor, the geometry field can return the geometry object from the feature
+- Feature classes in ArcGIS contains features defined by geometries
+- Using the search cursor, the geometry field can return the geometry object from the features
 - Use a geometry token in the geometry field to retrieve geometry properties
+- Specifically, use the `SHAPE@` token to return a geometry object
 
 ```python
 import arcpy
@@ -453,6 +445,7 @@ with arcpy.da.SearchCursor(fc, ["SHAPE@XY"]) as cursor:
 
 - Polyline and polygon features returns an Array object of points
 - Therefore, to read the points, you need to iterate in the Array object
+- Geometry might has multiple parts. Use getPart to get a part from the multipart feature
 
 ```python
 import arcpy
@@ -466,9 +459,84 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 ```
 
-### Get the spatial refeference
+### Work with multi-part features
 
-- You can get the SpatialReference object from the geomoetry by using `spatailReference`
+- Features in a feature class can have multiple parts, making them multipart features. 
+- A classic example of a multipart feature is the state of Hawaii: each of the islands is its own part, but for Hawaii to be shown as a single record in the attribute table, these parts must form a single feature.
+
+![Alt text](images/image-4.png)
+
+- Another example is massive lidar dataset created as multipoint feature class
+
+#### Use isMultipart and partCount
+
+- isMultipart can determine is the feature is multipart
+- partCount returns the number of parts
+- getPart returns the part by the index
+- Iterate the parts in a feature
+
+```python
+import arcpy
+arcpy.env.workspace = "C:/Data/Demo.gdb"
+fc = "multipart_features"
+with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
+    for row in cursor:
+        if row[1].isMultipart:
+            print("Feature {0} is a multipart feature ".format(row[0]))
+            partnum = 1
+            for part in row[1]:
+                print("Part {0}:".format(partnum))
+                for point in part:
+                    print("{0}, {1}".format(point.X, point.Y))
+                partnum += 1
+        else:
+            print("Feature {0} is a single-part feature")
+            for pointArray in row[1]:
+                for point in pointArray:
+                    print(f"{point.X},{point.Y}")
+```
+
+#### getPart()
+
+- The method returns only the part of the geometry by the index value in the argument
+- For a single-part feature, only the index 0 is valid
+- For a multi-part feature, getPart can return other parts
+- Each part is returned as an array of Point objects
+- Use an iteration to print the point coordinates from the Array object
+
+#### Interior rings of a polygon
+
+- Create a polygon with holes by using interior rings
+
+```python
+
+# Create an empty array to store the rings
+polygon_array = arcpy.Array()
+
+# Define the exterior ring (outer boundary) as a list of points
+outer_ring = arcpy.Array([arcpy.Point(0, 0), arcpy.Point(10, 0), arcpy.Point(10, 10),
+                          arcpy.Point(0, 10), arcpy.Point(0, 0)])
+
+# Define the interior ring (hole) as a list of points
+inner_ring = arcpy.Array([arcpy.Point(3, 3), arcpy.Point(7, 3), arcpy.Point(7, 7),
+                          arcpy.Point(3, 7), arcpy.Point(3, 3)])
+
+# Add the rings to the array: first the outer ring, then the inner ring
+polygon_array.add(outer_ring)  # Add exterior ring first
+polygon_array.add(inner_ring)  # Add interior ring
+
+# Create a polygon from the array of rings
+polygon_with_hole = arcpy.Polygon(polygon_array)
+
+```
+
+- An interior ring will be indicated by a None value in the array obtained from the polygon geometry. Therefore, be prepared if your data have interior rings
+
+```python
+for part in polygon_with_hole:
+    for pnt in part:
+        print(pnt)
+```
 
 ### Printing with precision 
 
@@ -486,59 +554,106 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
             print("{0:.2f}, {1:.2f}".format(point.X, point.Y))
 ```
 
-### Work with multi-part features
+### Geometry functions
 
-- Features in a feature class can have multiple parts, making them multipart features. 
-- A classic example of a multipart feature is the state of Hawaii: each of the islands is its own part, but for Hawaii to be shown as a single record in the attribute table, these parts must form a single feature.
+- Geometries can be use to perform spatial computations such as:
 
-![Alt text](images/image-4.png)
+```
+Buffer
+Intersect
+Union
+Difference
+Convex Hull
+Spatial relationships: contain, within, overlaps, touches, crosses
+Boundary, centroid, extent
+Project: projectAs
+```
+#### Buffer
 
-- Another example is massive lidar dataset created as multipoint feature class
+```python
+point = arcpy.PointGeometry(arcpy.Point(0, 0))
 
-#### USe isMultipart and partCount
+# Create a buffer around the point with a radius of 10 units
+buffer = point.buffer(10)
 
-- isMultipart can determine is the feature is multipart
-- partCount returns the number of parts
-- getPart returns the part by the index
-- Iterate the parts in a feature
+```
+
+#### Create two geometries for the following examples
 
 ```python
 import arcpy
-arcpy.env.workspace = "C:/Data/Demo.gdb"
-fc = "multipart_features"
-with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
-    for row in cursor:
-        print("Feature {0}: ".format(row[0]))
-        partnum = 1
-        for part in row[1]:
-            print("Part {0}:".format(partnum))
-            for point in part:
-                print("{0}, {1}".format(point.X, point.Y))
-            partnum += 1
+
+utm_sr = arcpy.SpatialReference(26915)  # UTM Zone 15N
+polygon1 = arcpy.Polygon(arcpy.Array([arcpy.Point(0, 0), arcpy.Point(5, 0), arcpy.Point(5, 5), arcpy.Point(0, 5), arcpy.Point(0, 0)]),utm_sr)
+polygon2 = arcpy.Polygon(arcpy.Array([arcpy.Point(3, 3), arcpy.Point(8, 3), arcpy.Point(8, 8), arcpy.Point(3, 8), arcpy.Point(3, 3)]),utm_sr)
+
 ```
 
-#### getPart()
-
-- The method returns only the part of the geometry by the index value in the argument
-- For a single-part feature, only the index 0 is valid
-- For a multi-part feature, getPart can return other parts
-- The returned object is an array of Point objects
-- Use an iteration to print the point coordinates
+#### Intersect, union, and difference
 
 ```python
-for point in row[1].getPart(0):
-    if point:
-        print(point)
-    else:
-        print("Interior ring")
+
+# Find the intersection of the two polygons
+intersection = polygon1.intersect(polygon2, 2)  # 2 indicates the dimension (2D)
+union = polygon1.union(polygon2)
+difference = polygon1.difference(polygon2)
+
+
 ```
 
-### Writing geometries
+#### Convex hull
+
+```python
+convex_hull = polygon1.convexHull()
+
+```
+
+#### Spatial relationships
+
+```python
+# Spatial relationships
+print(polygon1.contains(polygon2))  # False
+print(polygon1.within(polygon2))    # False
+print(polygon1.overlaps(polygon2))  # True
+print(polygon1.touches(polygon2))   # False
+print(polygon1.crosses(polygon2))   # False
+```
+
+#### Boundary, centroid, and extent
+
+```python
+
+# Get the boundary of the polygon
+boundary = polygon1.boundary()
+
+# Get the centroid of the polygon
+centroid = polygon1.centroid
+
+# Get the extent (bounding box) of the polygon
+extent = polygon1.extent
+
+print("Centroid:", centroid)
+print("Extent:", extent.XMin, extent.YMin, extent.XMax, extent.YMax)
+```
+
+#### Project as 
+
+```python
+# Define the spatial reference for UTM Zone 15N and GCS (WGS 84)
+utm_sr = arcpy.SpatialReference(26915)  # UTM Zone 15N
+gcs_sr = arcpy.SpatialReference(4326)   # WGS 84 (GCS)
+
+# Project the geometry from UTM to GCS
+projected_geometry = polygon1.projectAs(gcs_sr)
+
+```
+
+### Writing geometries to feature classes along with attributes
 
 - Geometries can be created using the Geometry classes
 - Use InsertCursor of the arcpy.da module to create a new feature
 - Use InsertRow to save the feature in the feature class
-- Use CreateFeatureCLass() function to create a new feature class
+- Use CreateFeatureClass() function to create a new feature class
 
 ```
 CreateFeatureclass(out_path, out_name, {geometry_type}, {template}, 
@@ -551,17 +666,18 @@ CreateFeatureclass(out_path, out_name, {geometry_type}, {template},
 
 ```python
 import arcpy
-fgdb = "C:/Data/Demo.gdb"
-arcpy.env.workspace = fgdb
+
+wk = arcpy.env.workspace 
 fc = "newpoints"
-arcpy.CreateFeatureclass_management(fgdb, fc, "Point", 
-                                    "", "", "", 4326)
+sr = arcpy.SpatialReference(4326)
+arcpy.CreateFeatureclass_management(wk, fc, "Point", 
+                                    "", "", "", sr)
 point = arcpy.Point(4.900160, 52.378424)
-with arcpy.da.InsertCursor(fc, "SHAPE@") as cursor:
+with arcpy.da.InsertCursor(fc, "SHAPE@", spatail_reference = sr) as cursor:
     cursor.insertRow([point])
 ```
 
-- Alternatively, you can create a geometry class object and use CopyFeatures() to add the geometry to the feature class
+- Alternatively, you can create a geometry class object and use CopyFeatures() to add the geometry to a new feature class
 
 ```python
 import arcpy
@@ -619,7 +735,7 @@ with arcpy.da.InsertCursor(fc, ["SHAPE@"]) as cursor:
 
 ```
 
-### Using geometry objects to work with the geoprocessing tool
+### Create features from geoprocessing tools that work with geometries
 
 - Geoprocessing tools can directly use Geometry objects 
 - For example, the Buffer tool can work with some PointGeometry objects

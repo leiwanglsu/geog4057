@@ -314,6 +314,8 @@ string literal
 - F-strings is short for formatted Strings, which allow you to interpolate values into your strings and format them
 - To build an f-string, use the prefix f or F to the string literal.
 - Use **replace field** as place holders for the values you want to embed in the string literal. Replace fields are created by the curly brackets{}
+- Use formmatting modifiers such as {:.2f}
+- You can also use string format like string.format() to format strings. However, it is not as convenient as the f-string literal
 
 ```python
 name = Joshua
@@ -322,6 +324,22 @@ income = 123.123
 print(f"Income: ${income:.2f}")
 ```
 
+- More about formatting modifiers
+> 
+‘d’ for integers
+
+‘f’ for floating-point numbers
+
+‘b’ for binary numbers
+
+‘o’ for octal numbers
+
+‘x’ for octal hexadecimal numbers
+
+‘s’ for string
+
+‘e’ for floating-point in an exponent format
+  
 ## Booleans
 
 - Booleans in Python are represented by True and False

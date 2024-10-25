@@ -3,7 +3,7 @@
 
 ## Data preparation 
 
-- Extract data from the zip file "ex8"
+- Extract data from the zip file "ex8.zip"
 - Locate the Austin.aprx file and open it with ArcGIS Pro. Check the maps and databases in the project.
 - Close the project without saving
 

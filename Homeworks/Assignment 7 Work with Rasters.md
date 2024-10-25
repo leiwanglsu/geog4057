@@ -4,7 +4,7 @@
 
 ### Raster Dataset preparation: (10 pnts)
 
-- From the ../data folder in this repository, find the Ex8.zip file as the input datasets
+- From the ../data folder in this repository, find the Ex7.zip file as the input datasets
 - Extract the zip file to a folder,for example, "c:/Documents/ex7"
 - Check the files in the ex7 folder
 - In ArcGIS Pro, create a new notebook for this exercise,
@@ -38,14 +38,14 @@
 ### Map Algebra Operators: (10 pnts)
 
 - Use bands in "tm.img" as rasters to perform a raster calculator with the formula: "(band 3 - band 1) / (band 3 + band 1)"
-- Note, in the above formula, you need to create raster from the tm.img file
+- Note, in the above formula, you need to create arcpy.Raster objects from the tm.img file
 - Show the result in the notebook
-- Save the data to your workspace by using .save() function of the raster
+- Save the data to your workspace by using .save() function of the Raster object
 - Document and explain the transformation carried out, and discuss the purpose or utility of the operation.
 
 ### Raster Cell Iterator: (15 pnts)
 
-- Modify Cell Iterator example below to create a new raster called 'elev_reclass' based on the "elevation" dataset if the elevation is greater than 2000, assigned the cell with 1; otherwise, assign the cell with 0.
+- Modify Cell Iterator example below to create a new raster called 'elev_reclass' based on condition: if the elevation is greater than 2000, assigned the cell with 1; otherwise, assign the cell with 0.
 
 ```python
 import numpy as np
@@ -72,7 +72,7 @@ with RasterCellIterator({'rasters':[dem,elev_reclas]}) as rci:
 elev_relcass.save('elev_relcass')
 ```
 
-- Provide explanations of the Cell Iterator.
+- Provide explanations of the RasterCellIterator class and how to use it.
 
 ## Part 4: NumPy and Raster Integration
 
@@ -82,11 +82,12 @@ elev_relcass.save('elev_relcass')
 - Use the min(), max(), mean(), and std() functions from Numpy to compute the raster data statistics.
 - Discuss the advantages and applications of using NumPy arrays for raster data processing in GIS.
 
-## Submission Guidelines:
+## Submission Guidelines
 
 - Present a well-documented Jupyter Notebook containing all your code, outputs, observations, and analysis for each part of the assignment. 
 - Use the markdown blocks to include detailed explanations and interpretations of the results obtained from various raster operations.
 - Provide visualizations wherever necessary to support your analysis.
+- Submit the report ontime (10 pnts)
 
 ## Evaluation Criteria:
 

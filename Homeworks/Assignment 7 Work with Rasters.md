@@ -14,7 +14,7 @@
 
 ### Basic Properties Documentation: (20 pnts)
 
-- Document and discuss the basic properties of the raster datasets in the ex10 folder.
+- Document and discuss the basic properties of the raster datasets in the ex7 folder.
   - Determine and record the number of bands in the raster dataset using the bandCount property.
   - Explore the spatial resolution, cell size, and pixel bit depth using relevant properties provided by ArcPy.
   - Print the spatial reference information of the rasters

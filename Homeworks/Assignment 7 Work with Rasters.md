@@ -11,7 +11,6 @@
 - In the first block, Use arcpy.Walk() function to list all raster datasets in the folder.
 - Make sure the output of this code block shows correct results
 
-
 ### Basic Properties Documentation: (20 pnts)
 
 - Document and discuss the basic properties of the raster datasets in the ex7 folder.
@@ -30,7 +29,7 @@
 ### Clipping Operation: (10 pnts)
 
 - Perform a Clipping operation on the elevation dataset using the arcpy.sa.Clip tool using the "watershed_HUC12.shp" feature class as the clip layer
-- Save and analyze the clipped raster. 
+- Save and analyze the clipped raster.
 - Discuss the importance and relevance of the clipped raster in relation to the original dataset.
 
 ## Part 3: Raster Manipulation
@@ -84,12 +83,12 @@ elev_relcass.save('elev_relcass')
 
 ## Submission Guidelines
 
-- Present a well-documented Jupyter Notebook containing all your code, outputs, observations, and analysis for each part of the assignment. 
+- Present a well-documented Jupyter Notebook containing all your code, outputs, observations, and analysis for each part of the assignment.
 - Use the markdown blocks to include detailed explanations and interpretations of the results obtained from various raster operations.
 - Provide visualizations wherever necessary to support your analysis.
 - Submit the report ontime (10 pnts)
 
-## Evaluation Criteria:
+## Evaluation Criteria
 
 - Accuracy and completeness of the documentation regarding raster properties and functionalities utilized.
 - Effective use of geoprocessing tools and libraries (arcpy.sa and NumPy) for raster manipulation and analysis.

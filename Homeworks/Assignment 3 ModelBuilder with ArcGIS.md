@@ -24,13 +24,11 @@ The database and folder look like these below:
 
 The *Iterate Feature Classes* tool iterates over feature classes in a workspace or feature dataset.
 
-
-
 #### Add tools
 
 - Go to the Catalog pane, find the toolboxes item, and right-click it to create a new model
 - Right-click the model and select properties
-- Modify the name and description of the model to: 
+- Modify the name and description of the model to:
 
 ![Alt text](images/image-2.png)
 
@@ -81,7 +79,7 @@ The *Iterate Feature Classes* tool iterates over feature classes in a workspace 
 #### Run the model
 
 - Click the Run button Run on the ModelBuilder tab to run the model.
-- Check the table of contents of your map for the new data layers added by the model 
+- Check the table of contents of your map for the new data layers added by the model
 - Check the geodatabase where the output workspace is for the new feature classes
 
 ![Alt text](images/image-8.png)
@@ -114,7 +112,7 @@ In this workflow, you'll create a model to iterate over features grouped by regi
   > Click the open button and browse for the States data in the ToolData geodatabase
   Leave the rest of the parameters empty and click OK
   
-  >Right-click the Feature Selection iterator and click Create Variable > From Parameter > Group By Fields 
+  >Right-click the Feature Selection iterator and click Create Variable > From Parameter > Group By Fields
 
   >Double-click the Group By Fields model variable and from the drop-down list, select Region.
   
@@ -122,8 +120,9 @@ In this workflow, you'll create a model to iterate over features grouped by regi
 - Right-click and rename "states" to "Input Feature Class"
 - Right-click and rename "I_States" to "Selected features"
 
-- Double-click the Calculate Value tool 
+- Double-click the Calculate Value tool
   >For the Expression parameter, type "%Value%".replace(" ","") and change Data type to String. (This will remove the spaces from the region values)
+  >
  >![Alt text](images/image-10.png)
  > Click OK to close the dialog box.
 
@@ -132,11 +131,9 @@ In this workflow, you'll create a model to iterate over features grouped by regi
   
 ![Alt text](images/image-12.png)
 
-- Double-click the Copy Features tool 
+- Double-click the Copy Features tool
   >Choose "Selected Features" from the drop-down list.
   >For the Output Feature Class parameter, browse to the project default geodatabase .gdb and type %Name%
-
-  
 
   >Rename the output to "CopiedFeature"
 
@@ -155,7 +152,7 @@ In this workflow, you'll create a model to iterate over features grouped by regi
 
 ![Alt text](images/image-13.png)
 
-- Each of the feature classes was a subregion in the input feature class. 
+- Each of the feature classes was a subregion in the input feature class.
 - This concludes the task 2
 
 #### Reporting
@@ -183,13 +180,13 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 - Specify the parameters for the For iterator
     > Double-click the For iterator to open the iterator's dialog box.
     >For From Value, To Value, and By Value, type 500, 1500, and 500, respectively.
-![Alt text](images/image-14.png)    
+![Alt text](images/image-14.png)
 
     >Click OK to close the dialog box.
 
 - Specify the parameters for the Buffer tool
     >Double-click the Buffer tool to open the tool's dialog box.
-    
+
     >For the Input Features parameter, click the browse button to find SanDiego/PlanA_Roads feature layer in the ToolData geodatabase
 
     >For the Output Feature Class parameter, browse to the project geodatabase and type BufferedFC_%Value%
@@ -214,21 +211,20 @@ In this workflow, you'll create a simple model that identifies the impact of pro
     >Double-click the Summary Statistics tool to open the tool's dialog box.
 
     >For the Input Table parameter, click the drop-down arrow and select ClippedFC_%Value%.
-    
+
     >For the Output Table parameter, browse to the geodatabase and type AffectedVegetation%Value%.
-    
+
     >For the Statistics Field(s) parameter, select Shape_area for the Field column, and Sum for the Statistic Type column.
-    
+
     >For the Case field parameter, select VEG_TYPE.
 
     >Click OK to close the dialog box.
 
     ![Alt text](images/image-17.png)
 
-
 #### Link to the Collect Values tool and refine the outlook
 
-- Hover over the Clip tool output variable. Click and drag to draw a connector line to the Collect Values tool. Release the mouse and click Input Value on the pop-up menu. 
+- Hover over the Clip tool output variable. Click and drag to draw a connector line to the Collect Values tool. Release the mouse and click Input Value on the pop-up menu.
 - Follow the same procedure to connect the Summary Statistics tool output variable and the Collect Values tool.
 - Click Auto Layout
 - Rename some the items to let the model match the screenshot below
@@ -249,4 +245,5 @@ In this workflow, you'll create a simple model that identifies the impact of pro
 
 - Screen capture each step of your work
 - Capture the final model graph
-- Capture the database with updated feature classes created from the model
+- Capture the database with updated feature classes created from the model.
+-

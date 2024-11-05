@@ -275,8 +275,8 @@ mf = lyt.createMapFrame(MakeRec_LL(0.5,0.5,10,7.5), m, "New Map Frame")
 
 - Surround elements of a map frame include legend, north arrow, scale bar elements
 - The constants are "LEGEND", "NORTH_ARROW", "SCALE_BAR" [esri](https://pro.arcgis.com/en/pro-app/latest/arcpy/mapping/alphabeticallistofconstants.htm)
-- `createMapSurroundElement(geometry, mapsurround_type, mapframe=None, style_item=None, name=None)` 
-    Layout.createMapSurroundElement(geometry, mapsurround_type, {mapframe},
+- `createMapSurroundElement(geometry, mapsurround_type, mapframe=None, style_item=None, name=None)`
+- Layout.createMapSurroundElement(geometry, mapsurround_type, {mapframe},
     {style_item}, {name})
 - For example,create a north arrow:
 

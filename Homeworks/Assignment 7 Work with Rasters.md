@@ -6,6 +6,7 @@
 
 - From the ../data folder in this repository, find the Ex7.zip file as the input datasets
 - Extract the zip file to a folder,for example, "c:/Documents/ex7"
+- **Note for the above step, do not use a path name that contains spaces or other special characters because some datasets do not like such characters!**
 - Check the files in the ex7 folder
 - In ArcGIS Pro, create a new notebook for this exercise,
 - In the first block, Use arcpy.Walk() function to list all raster datasets in the folder.

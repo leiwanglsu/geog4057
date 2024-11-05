@@ -234,16 +234,66 @@ lyr.symbology = sym
 - the Layout objects refer to individual single-page layouts in the project
 - Layouts are identified by their ```name``` property. Therefore, it is a good practice to name layouts uniquely
 - Layout elements include mapframe, legend, north arrow, title, etc.
-- Use Layout.listElements() to list all elements in a layout
+- Use project.createLayout() to create a layout in a project
+
+```python
+p = arcpy.mp.ArcGISProject("CURRENT")
+lyt = p.createLayout(8.5,11,'INCH')
+```
+
+#### The Layout class
+
+- Properties: pageHeight, pageWidth, name, mapSeries
+- Methods: listElements, exportPDF, createMapFrame, createMapSurroundElement, openView, deleteElement
+- Create a map frame
+
+```python
+m = p.listMaps("Map7")[0] 
+def MakeRec_LL(llx, lly, w, h):
+    xyRecList = [[llx, lly], [llx, lly+h], [llx+w,lly+h], [llx+w,lly], [llx,lly]]
+    array = arcpy.Array([arcpy.Point(*coords) for coords in xyRecList])
+    rec = arcpy.Polygon(array)
+    return rec
+
+mf = lyt.createMapFrame(MakeRec_LL(0.5,0.5,10,7.5), m, "New Map Frame")
+```
 
 #### Adjusting map frames in a layout
 
 - A map frame is a container for a map on the layout
+- MapFrame class
+  - Properties: anchor, camera, locked, longName, map, name
 - A MapFrame object has a map object by ```MapFrame.map```
 - The other important property of a map frame is the ```camera``` property to access a ```Camera``` object
-- For a 2D map frame, the Camera object is controlled by X, Y, and scale properties
-- Also, the extent of a map frame can be accessed by getExtent() and setExtent() functions
-- Useful attributes of a map frame include anchor, camera, map, name, type, visible
+- The Camera class
+  - Properties: X, Y, Z, heading, mode, pitch, roll, scale
+  - Methods: setExtent
+  - For a 2D map frame, the Camera object is controlled by X, Y, and scale properties
+  - Also, the extent of a map frame can be accessed by getExtent() and setExtent() functions
+
+#### Surround elements of a map frame
+
+- Surround elements of a map frame include legend, north arrow, scale bar elements
+- The constants are "LEGEND", "NORTH_ARROW", "SCALE_BAR" [esri](https://pro.arcgis.com/en/pro-app/latest/arcpy/mapping/alphabeticallistofconstants.htm)
+- `createMapSurroundElement(geometry, mapsurround_type, mapframe=None, style_item=None, name=None)` 
+    Layout.createMapSurroundElement(geometry, mapsurround_type, {mapframe},
+    {style_item}, {name})
+- For example,create a north arrow:
+
+```python
+naStyle = aprx.listStyleItems('ArcGIS 2D', 'North_Arrow', 'Compass North 1')[0]
+na = lyt.createMapSurroundElement(arcpy.Point(9.5,7.5), 'North_Arrow', mf,
+                                      naStyle, "Compass North Arrow")
+na.elementWidth = 0.5 
+```
+
+#### Styles in a project
+
+- In ArcGIS, styles are used to store symbols, colors, color schemes, label placements, and layout items
+- Use project.listStyleItems to list the style items in your project
+- The default system styles are ArcGIS 2D, ArcGID 3D, ArcGIS Colors, and ColorBrewer Schemes (RGB)
+- Use Catelog to check the available styles in the project
+- The style classes in each style include Point symbols, Colors, Nroth arrows, Legends, etc.
 
 #### Exporting a layout
 

@@ -26,14 +26,15 @@ Below is a graphic of the `gis` module and its various classes:
 
 ## Installation of ArcGIS API for Python
 
-- The ArcGIS API for Python is distributed as a Python package called arcgis. 
+- The ArcGIS API for Python is distributed as a Python package called arcgis.
 - The arcgis package is installed as part of the arcgispro-py3 default environment of ArcGIS Pro, which makes it easy to get started using the API.
-- In older versions of ArcGIS Pro, you were required to install the arcgis package using either the Python Package Manager or conda using command prompt
+- In older versions of ArcGIS Pro, you were required to install the arcgis package using either the Python Package Manager or conda using command prompt. Staring from version 2.1, ArcGIS API for Python is installed along with the ArcPy package in the ArcGIS python enviornment.
 - The API is platform agnostic, which means you can install it on Windows, Linux, or macOS operating systems
-- ArcGIS API can run without ArcGIS Pro. 
+- ArcGIS API can run without ArcGIS Pro and be installed separately.
 - To take full advantage of the API, however, it is beneficial to have Esri user credentials.
+- To install it in Linux, for example, you can run `pip install arcgis`
 
-## Using arcgis
+## Using the arcgis module
 
 - To start using arcgis
 
@@ -53,9 +54,6 @@ print("arcgis API version:" + arcgis.__version__)
 ### the GIS class
 
 - The GIS class is the main class in the arcgis module
-- you can import it by ```from arcgis import GIS```
-- Create an object from GIS: ```mygis = GIS()```
-- The syntax is
 
 ```python
 class arcgis.gis.GIS(url=None, username=None, password=None, 
@@ -64,24 +62,15 @@ class arcgis.gis.GIS(url=None, username=None, password=None,
                      client_id=None, profile=None, **kwargs)
 ```
 
+- The constructor uses a url and user credentials to connect to ArcGIS Online (default) or an ArcGIS enterprise portal
+- Import the GIS class from the arcgis module by ```from arcgis import GIS```
 - The **kwargs stands for keyworded or named arguments. The double * means the argument can have variable length of inputs. If multiple arguments are supplied, they will be passed to the functions as a  dictionary with the argument name as the key and the supplied values as values
-- Another variable length argument is *args.
-  
-```python
-def myFun(*argv):
-    for arg in argv:
-        print(arg)
- 
- 
-myFun('Hello', 'Welcome', 'to', 'GeeksforGeeks')
-```
+- If no parameter is supplied, it is an anonymous login to ArcGIS online: `gis = GIS()'
 
 ### Credentials
 
 - The GIS class have several optional arguments: URL, user name, and password
-- If the optional arguments are used, you are using an anonymous login to ArcGIS Online
 - Without credential, you have limited access to the ArcGIS Online resources
-- Alternative ways to authenticate your user credentials are provided
 - One useful alternative is the connect using pro authentication, with ArcGIS Pro installed locally and running concurrently, known as the pro authentication scheme.
 
 ```python
@@ -120,6 +109,8 @@ mymap.basemap = "streets-vector"
 ### Search for contents
 
 - To add contents to a map, you can find items from your content search function
+- GIS.content will return a ContentManager object that allow users to search for contents
+- the `search` function takes a query string and a content type string as input arguments
 
 ```python
 from IPython.display import display
@@ -127,7 +118,25 @@ mygis = GIS()
 items = mygis.content.search('NYC taxi', item_type='feature layer')
 for item in items:
     display(item)
+    print(item.id)
 ```
+
+### The ContentManager class
+
+- The ContentManager class is a helper class for managing content in ArcGIS Online
+- Users call methods on the content object to manipulate (create, get, search, etc) items
+- Methods include search, import_data, add, analyze, delete_items, etc.
+
+### Items and item type
+
+- An item is a unit of content in the GIS
+- Each item has a unique ID and a well-known URL
+- The ID is provided in the item.id property
+- The server responds to a REST request with a data as html, json or pjson:
+`https://www.arcgis.com/sharing/rest/content/items/64b9325940b14f3192dc148583019800?f=pjson
+`
+- Items types are listed here: https://developers.arcgis.com/rest/users-groups-and-items/items-and-item-types.htm
+- Web Map, Feature Serivce, Feature Collection, CSV, etc.
 
 ### Get layers from the searched contents
 
@@ -240,8 +249,6 @@ tree_feature_layer = tree_item.publish(overwrite=True)
 print("Hosted Feature Layer URL:", tree_feature_layer.url)
 ```
 
-
-
 ## Using features
 
 - In a GIS, 'features' refer to entities located in space with a set of properties.
@@ -264,9 +271,7 @@ print("Hosted Feature Layer URL:", tree_feature_layer.url)
 from arcgis.gis import GIS
 from IPython.display import display
 gis = GIS() # anonymous connection to www.arcgis.com
-```
 
-```python
 # Search for 'USA major cities' feature layer collection
 search_results = gis.content.search('title: USA Major Cities',
                                     'Feature Layer')
@@ -274,10 +279,10 @@ search_results = gis.content.search('title: USA Major Cities',
 # Access the first Item that's returned
 major_cities_item = search_results[0]
 
-major_cities_item
+display(major_cities_item)
 ```
 
-### the FeatureLayer class
+### The FeatureLayer class
 
 - The FeatureLayer class is the primary concept for working with Feature objects in a GIS
 - FeatureLayer objects can be added and visualized using maps
@@ -552,11 +557,12 @@ map1
 - To add a layer, call the `add_layer()` method and pass the layer object as an argument.
 
 ```python
-gis = GIS(profile="pro")
+gis = GIS("pro")
 usa_map = gis.map('USA', zoomlevel=4)  
-usa_map
 flayer_search_result = gis.content.search("owner:esri","Feature Layer", outside_org=True)
-usa_map.add_layer(flayer_search_result[2])
+print(flayer_search_result[1])
+usa_map.add_layer(flayer_search_result[0])
+usa_map
 ```
 
 ### Adding an Item object to the map
@@ -585,22 +591,11 @@ landsat_item
 usa_map.add_layer(landsat_item)
 ```
 
-### Add a Spatially-Enabled Data Frame (SeDF)
-
-- We can read feature layers into a `Spatially Enabled DataFrame (SeDF)`
-- Display seDF on the map
+### Remove layers
 
 ```python
-census_item = gis.content.get("85d0ca4ea1ca4b9abf0c51b9bd34de2e")
-census_flayer = census_item.layers[0]
-
-# Specify a SQL query and get a sub-set of the original data as a DataFrame
-census_df = census_flayer.query(where="AGE_45_54 < 450").sdf
-
-# Visualize the top 5 records
-census_df.head()
-census_df.spatial.plot(map_widget= usa_map)
-``` 
+usa_map.remove_layers(usa_map.layers)
+```
 
 ### Add a feature layer and display it with a renderer
 
@@ -621,6 +616,51 @@ map5.add_layer(freeway_fset, {'renderer':'ClassedSizeRenderer',
                               'field_name':'DIST_KM',
                               'opacity':0.75})
 ```
+
+### Understanding SeDF
+
+- We can read feature layers into a `Spatially Enabled DataFrame (SeDF)`
+- SeDF creates a simple, intuitive object to manipulate geometric and attribute data
+- It is derived from the popular Pandas DataFrame by inserting a spatial component to it
+- The dataframe can be read from many sources, including shapefiles, GeoJSON, and Feature Layers
+- You can use ArcPy, pyshp, shapely, and fiona as the geometry engine to work with SeDF
+- SeDF can be exported to ArcGIS feature clases when needed.
+
+#### Add a Spatially-Enabled Data Frame (SeDF)
+
+- Display an SeDF on the map
+
+```python
+census_item = gis.content.get("85d0ca4ea1ca4b9abf0c51b9bd34de2e")
+census_flayer = census_item.layers[0]
+
+# Specify a SQL query and get a sub-set of the original data as a DataFrame
+census_df = census_flayer.query(where="AGE_45_54 < 450").sdf
+
+# Visualize the top 5 records
+census_df.head()
+census_df.spatial.plot(map_widget= usa_map)
+```
+
+#### Reading from local files
+
+- You can read SeDF from a shapefile or geodatabase feature class
+  
+```python
+sdf = pd.DataFrame.spatial.from_featureclass(
+    "path\to\your\data\census_example\cities.shp")
+
+sdf.tail()
+```
+
+#### Saving to a feature class
+
+```python
+sdf.spatial.to_featureclass(location=r"c:\output_examples\census.shp")
+
+```
+
+
 
 ## Use ArcGIS Online API to perform analysis
 
@@ -661,19 +701,18 @@ airport_map.add_layer(airport_buf)
 airport_map
 ```
 
-
 ## Advanced topic: Performing network analyses using ArcGIS Online
 
 - `Network Analysis`, in ArcGIS API for Python, is designed to help users answer questions like the following:
 
-   - What is the quickest way to get from Manhattan to Brooklyn?
-   - If a fire incident is reported in downtown San Fransisco, what are the closest fire stations that can respond to the incident within five minutes' drive time?
-   - What are the market areas covered by the warehouses in various cities?
-   - What is the nearest coffee shop from my current location?
-   - How can we route our fleet of delivery vehicles to minimize overall transportation costs and improve customer service?
-   - Where should we open a new branch of our business to maximize market share?
-   - Our company needs to downsize—which stores should we close to maintain the most overall demand?
-   - What are live or historical traffic conditions like, and how do they affect my network analysis results?
+  - What is the quickest way to get from Manhattan to Brooklyn?
+  - If a fire incident is reported in downtown San Fransisco, what are the closest fire stations that can respond to the incident within five minutes' drive time?
+  - What are the market areas covered by the warehouses in various cities?
+  - What is the nearest coffee shop from my current location?
+  - How can we route our fleet of delivery vehicles to minimize overall transportation costs and improve customer service?
+  - Where should we open a new branch of our business to maximize market share?
+  - Our company needs to downsize—which stores should we close to maintain the most overall demand?
+  - What are live or historical traffic conditions like, and how do they affect my network analysis results?
 
 - The types of network analyses include route, closest facility, service area, vehicle routing, location-allocation, and OD cost matrix
 
@@ -689,9 +728,15 @@ airport_map
 
 ### Find route
 
-Run this [notebook](../examples/part2_find_routes.ipynb)
+- Run this [notebook](../examples/part2_find_routes.ipynb)
+- Explain this code in the notebook
 
-### lambda function 
+```python
+re_ordered_stops_cities = list(map(lambda x: x.attributes['NAME'], re_ordered_stops_cities_fset))
+print(re_ordered_stops_cities)
+```
+
+### lambda function
 
 - A lambda function is a small anonymous function
 - It can take any number of arguments, but can only have one expression
@@ -717,21 +762,16 @@ print(x(5,6))
 - the map() function returns a map object of the result after applyging the given function to each item of the given iterable (tuple, list, ect)
 - Syntax ```map(fun, iter)```
   
-For example, this code will return a list of the result from the function addition
+For example, this code will return a list of the result from the function twice
 
 ```python
-def addition(n):
+def twice(n):
     return n + n
  
 # We double all numbers using map()
 numbers = (1, 2, 3, 4)
-result = map(addition, numbers)
+result = map(twice, numbers)
 print(list(result))
-```
-
-Explain this code in the notebook
-
-```python
-re_ordered_stops_cities = list(map(lambda x: x.attributes['NAME'], re_ordered_stops_cities_fset))
-print(re_ordered_stops_cities)
+# Use the lambda function
+result = list(map(lambda x: x + x,numbers))
 ```

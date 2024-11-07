@@ -2,7 +2,7 @@
 
 ## What is Google Earth Engine (GEE)
 
-### Definition 
+### Definition
 
 - Earth Engine is a platform for scientific analysis and visualization of geospatial datasets, for academic, non-profit, business and government users.
 - Earth Engine hosts satellite imagery and stores it in a public data archive that includes historical earth images going back more than forty years. The images, ingested on a daily basis, are then made available for global-scale data mining.
@@ -34,7 +34,6 @@ Another example:
 Script: https://colab.research.google.com/drive/1_3qG7-xj2ahQ9xTb_e2GiIB3JTQ-Yrm_?usp=sharing
 
 Data: https://drive.google.com/file/d/19y6As5AYd8minRU9Alfx30X1M6xcPean/view?usp=sharing
-
 
 ### Google Colab
 
@@ -128,8 +127,8 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
 
 - Landsat and Sentinel satellite collections: Contain images captured by the Landsat and Sentinel satellite systems, respectively.
 - MODIS (Moderate Resolution Imaging Spectroradiometer) collections: Provide daily global observations at moderate spatial resolutions.
+- This code will return an imageCollection object of Landsat 7, collection 1, and tier 1 collection of images
 
-This code will return an imageCollection object of Landsat 7, collection 1, and tier 1 collection of images
 ```javascript
 var collection = ee.ImageCollection('LANDSAT/LE07/C01/T1')
 ```
@@ -176,7 +175,7 @@ Try the codes from this [page](https://developers.google.com/earth-engine/tutori
 
 - Returns an image with the selected bands.
 
-```
+```javascript
 print(image1.select('SR_B2').bandNames().getInfo())
 print(image1.select(['SR_B7', 'SR_B5', 'SR_B3'], ['SWIR1', 'NIR', 'Green']).bandNames().getInfo())
 ```
@@ -199,7 +198,8 @@ Map.addLayer(ndviImage)
 ```
 
 - the b() function in an expression can be used to get a band from the image
-```
+
+```javascript
 var ndviExpression = "(b('B5') - b('B4')) / (b('B5') + b('B4'))";
 var ndviImage = LandsatImage.expression(ndviExpression);
 ```
@@ -230,7 +230,7 @@ var formattedDate = parsedDate.format('YYYY-MM-dd');
 ```var point = ee.Geometry.Point([-122.0838, 37.4220]);```
 - Geometries can be created from GeoJSON objects
 
-```
+```javascript
 var geojsonObject = { "type": "Polygon", "coordinates": [ [ [-122.085,37.423],[ -122.092, 37.424],[ -122.085, 37.418], [-122.085,37.423]] ]}
 var p1 = ee.Geometry(geojsonObject)
 print(p1.area().getInfo())
@@ -238,7 +238,7 @@ print(p1.area().getInfo())
 
 - Visualization of geometries
 
-```
+```javascript
 var point = ee.Geometry.Point([-122.0838, 37.4220]);
 Map.centerObject(point, 10); // Center the map on the point
 Map.addLayer(point, {color: 'red'}, 'Point');
@@ -269,7 +269,7 @@ Export.image.toDrive({
 
 ### getInfo()
 
-Return a collection description whose fields include 
+- Return a collection description whose fields include 
   - features: a list containing metadata about the images in the collection.
   - bands: a dictionary describing the bands of the images in this collection.
   - properties: an optional dictionary containing the collection's metadata properties.
@@ -282,11 +282,13 @@ Return a collection description whose fields include
 - To define visParams for a multiband image, you need bands, min, and max
 - ```vis = {'bands': ['B4', 'B3', 'B2'],'min': [0, 0, 0], 'max': [10000,10000, 10000]}```
 - For single band visParams, you need min, max, and color progression
-```
+
+```pytyon
 singleBandVis = { min: 0, max: 3000, palette: ['blue', 'yellow', 'green']}
 ```
 
 Try this example:
+
 ```javascript
 var landsatImage = ee.Image('LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318');
 var ndviExpression = '(B5 - B4) / (B5 + B4)';

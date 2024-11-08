@@ -135,214 +135,9 @@ for item in items:
 - The server responds to a REST request with a data as html, json or pjson:
 `https://www.arcgis.com/sharing/rest/content/items/64b9325940b14f3192dc148583019800?f=pjson
 `
+- The request returns from the server a JSON data to describe the item properties
 - Items types are listed here: https://developers.arcgis.com/rest/users-groups-and-items/items-and-item-types.htm
 - Web Map, Feature Serivce, Feature Collection, CSV, etc.
-
-### Get layers from the searched contents
-
-- If an item found by search is a feature layer, you can use .layers to get individual layers from the item
-
-```python
-from IPython.display import display
-mygis = GIS()
-items = mygis.content.search('NYC taxi', item_type='feature layer')
-for item in items:
-    display(item)
-for layer in items[0].layers:
-    print(layer)
-mymap = mygis.map("New York City")
-mymap.basemap = "satellite"
-mymap.add_layer(items[2].layers[0])
-mymap
-
-```
-
-### Creating a content in ArcGIS Online
-
-- You can create your own content on your account of ArcGIS online
-- For example, you can convert a .csv file to a feature content
-- Download the tree database from here:
-https://data.nola.gov/Parks-Parkways/Tree-Locations/g94y-wr47
-
-```python
-from arcgis.gis import GIS
-mygis = GIS("pro")
-van_map = mygis.map("Vancouver, BC Canada")
-import pandas as pd
-df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
-sample_df = df.sample(100)
-sample_df['Shape'] = sample_df['Shape'].apply(lambda x: eval(x))
-sample_df['Latitude'] = sample_df['Shape'].apply(lambda x: x[0])  # Extract latitude
-sample_df['Longitude'] = sample_df['Shape'].apply(lambda x: x[1])  # Extract longitude
-
-tree_df = sample_df[["TREE_ID", "COMMON", "Longitude","Latitude"]]
-tree_fc = mygis.content.import_data(tree_df)
-tree_fc
-```
-
-### Publish and use the new content
-
-```python
-import json
-tree_fc_dict = dict(tree_fc.properties)
-trees_json = json.dumps({"featureCollection":{"layers":[tree_fc_dict]}})
-tree_item_properties = {"title":"Street trees in New Orleans",
-                        "description":"100 trees for testing",
-                        "tags":"trees,New Orleans,csv",
-                        "text":trees_json,
-                        "type":"Feature Collection"}
-tree_items = mygis.content.add(tree_item_properties)
-tree_items.publish()
-
-```
-
-### Deleting a content item
-
-- To delete an item on your GIS account, use the delete function
-- Be careful when using this function, because it might remove something still useful
-
-```python
-from arcgis.gis import GIS
-mygis = GIS("pro")
-items = mygis.content.search("New Orleans Trees")
-for itm in items:
-    result = itm.delete()
-    print(result)
-
-```
-
-### Publish the entire csv without using GeoJSON
-
-- As GeoJSON has a limited number of records for uploading to ArcGIS, we can use the csv file directly to ArcGIS
-
-```python
-from datetime import datetime
-from arcgis.gis import GIS
-mygis = GIS("pro")
-no_map = mygis.map("New Orleans")
-no_map.basemap = "satellite"
-# define the properties of the item
-csv = r"C:\Users\leiwang\Downloads\Tree_locations.csv"
-df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
-df['Shape'] = df['Shape'].apply(lambda x: eval(x)) # Convert this shape string to a tuple and then put it back to shape as numbers (lat and long)
-df['Latitude'] = df['Shape'].apply(lambda x: x[0])  # Extract latitude
-df['Longitude'] = df['Shape'].apply(lambda x: x[1])  # Extract longitude
-df.drop('Shape',axis = 1,inplace = True)
-df.to_csv(r"C:\Users\leiwang\Downloads\Tree_locations_new.csv")
-# Get the current timestamp to ensure a unique title
-timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-new_title = f"New Orleans Trees {timestamp}"
-
-csv = r"C:\Users\leiwang\Downloads\Tree_locations_new.csv"
-item_properties = {
-    "title": new_title,
-    "description": "New Orleans trees from nola.gov",
-    "tags": "trees, New Orleans, urban forestry",
-    "type": "CSV",
-    "overwrite": True  # Set to True if you want to overwrite an existing item with the same name
-}
-tree_item = mygis.content.add(item_properties, data=csv)
-
-tree_feature_layer = tree_item.publish(overwrite=True)
-
-# Print the URL of the hosted feature layer
-print("Hosted Feature Layer URL:", tree_feature_layer.url)
-```
-
-## Using features
-
-- In a GIS, 'features' refer to entities located in space with a set of properties.
-- Each city in a cities dataset, for example, is a feature object
-- The features module also include classes "FeatureSet", "FeatureLayer", and "FeatureCollection" that allow you to represent grouping of Feature data at different levels
-- The set of all point features in a layer (cities, for example) would be represetned by a "FeatureSet" object
-- In WebGIS, the cities data is stored either as a web feature layer or a feature collection
-- Querying the "FeatureLayer" or "FeatureCollection" objects will return "FeatureSet" objects
-- The following figure shows the concepts and their relationship
-
-![](images/image-5.png)
-
-### Searching the GIS for feature layers 
-
-- You can search the GIS for feature layer collections
-- The examples below will clarify this further:
-
-```python
-# Establish a connection to your GIS.
-from arcgis.gis import GIS
-from IPython.display import display
-gis = GIS() # anonymous connection to www.arcgis.com
-
-# Search for 'USA major cities' feature layer collection
-search_results = gis.content.search('title: USA Major Cities',
-                                    'Feature Layer')
-
-# Access the first Item that's returned
-major_cities_item = search_results[0]
-
-display(major_cities_item)
-```
-
-### The FeatureLayer class
-
-- The FeatureLayer class is the primary concept for working with Feature objects in a GIS
-- FeatureLayer objects can be added and visualized using maps
-- They can act as inputs and outputs for feature analysis tools
-- Supported functions: append, calculate, delet_features, edit_features, query, etc. 
-- Feature layer collection items are available as content in the GIS. You can get them using their item id, and query their layers property to get to the feature layers:
-
-```python
-freeways = gis.content.get('91c6a5f6410b4991ab0db1d7c26daacb')
-freeways
-```
-
-### Understanding the url of feature layers
-
-- The urls are made by the servers with the REST API interface
-- It is called the *well-known endpoint*
-- The well-known endpoint is the site root from which the rest of the API can be accessed
-- It contains three components: <host>, <context>, and <rest/serices>
-- The <host> has three parts to its structure
-  - The name of the ArcGIS server
-  - The domain
-  - The top-level domain(.com)
-- The <context> component is either the name of the web adaptor configured for ArcGIS server or the site name (arcgis)
-- The directory endpoint <rest/services> provide access to the site root, allowing you to see any top-level operations, services, and folders
-- An example: https://services2.arcgis.com/gdINAmBigW8mQbzB/arcgis/rest/services/AllClear_prod/FeatureServer
-- This defines a rest service called "AllClear_prod" with feature layers in it.
-- Open the url in the browser can show the feature layers hosted by the service
-
-### Accessing feature layers and tables from feature services
-
-- A feature service serves a collection of feature layers and tables
-- It is represented by `arcgis.features.FeatureLayerCollection` in the ArcGIS Python API.
-- Instances of FeatureLayerCollection can be constructed using a feature service url, as shown below:
-
-```python
-from arcgis.features import FeatureLayerCollection
-fs_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer'
-sanfran = FeatureLayerCollection(fs_url)
-sanfran.layers
-```
-
-[<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">]
-
-- In the feature service directory, there is also a table:
-```python
-sanfran.tables
-```
-[<Table url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/1">]
-
-### Accessing feature layers from a feature layer url
-
-- Instances of FeatureLayers can also be constructed using a url to the REST endpoint of a feature layer:
-
-```python
-from arcgis.features import FeatureLayer
-lyr_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0'
-layer = FeatureLayer(lyr_url)
-layer
-```
-<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">
 
 ### Understanding JSON
 
@@ -436,9 +231,237 @@ except Exception as e:
     print(f"An error occurred: {e}")
 ```
 
+### Get layers from the searched contents
+
+- If an item found by search is a feature layer, you can use .layers to get individual layers from the item
+
+```python
+from IPython.display import display
+mygis = GIS()
+items = mygis.content.search('NYC taxi', item_type='feature layer')
+for item in items:
+    display(item)
+for layer in items[0].layers:
+    print(layer)
+mymap = mygis.map("New York City")
+mymap.basemap = "satellite"
+mymap.add_layer(items[2].layers[0])
+mymap
+
+```
+
+### Creating a content in ArcGIS Online with a JSON format
+
+- You can create your own content on your account of ArcGIS online
+- For example, you can convert a .csv file to a feature content as the JSON format
+- Use import_
+- Download the tree database from here:
+https://data.nola.gov/Parks-Parkways/Tree-Locations/g94y-wr47
+
+```python
+from arcgis.gis import GIS
+mygis = GIS("pro")
+van_map = mygis.map("Vancouver, BC Canada")
+import pandas as pd
+df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
+sample_df = df.sample(100)
+sample_df['Shape'] = sample_df['Shape'].apply(lambda x: eval(x))
+sample_df['Latitude'] = sample_df['Shape'].apply(lambda x: x[0])  # Extract latitude
+sample_df['Longitude'] = sample_df['Shape'].apply(lambda x: x[1])  # Extract longitude
+
+tree_df = sample_df[["TREE_ID", "COMMON", "Longitude","Latitude"]]
+tree_fc = mygis.content.import_data(tree_df)
+tree_fc
+```
+
+### Upload the data by converting it to GeoJSON
+
+- GeoJSON is the extended JSON by adding a spatial component to it
+
+```python
+import json
+tree_fc_dict = dict(tree_fc.properties)
+trees_json = json.dumps({"featureCollection":{"layers":[tree_fc_dict]}})
+tree_item_properties = {"title":"Street trees in New Orleans",
+                        "description":"100 trees for testing",
+                        "tags":"trees,New Orleans,csv",
+                        "text":trees_json,
+                        "type":"Feature Collection"}
+tree_items = mygis.content.add(tree_item_properties)
+tree_items.publish()
+
+```
+
+### Deleting a content item
+
+- To delete an item on your GIS account, use the delete function
+- Be careful when using this function, because it might remove something still useful
+
+```python
+from arcgis.gis import GIS
+mygis = GIS("pro")
+items = mygis.content.search("New Orleans Trees")
+for itm in items:
+    result = itm.delete()
+    print(result)
+
+```
+
+### Publish the entire csv without using GeoJSON
+
+- As GeoJSON has a limited number of records for uploading to ArcGIS, we can use the csv file directly to ArcGIS
+
+```python
+from datetime import datetime
+from arcgis.gis import GIS
+mygis = GIS("pro")
+no_map = mygis.map("New Orleans")
+no_map.basemap = "satellite"
+# define the properties of the item
+csv = r"C:\Users\leiwang\Downloads\Tree_locations.csv"
+df = pd.read_csv(r"C:\Users\leiwang\Downloads\Tree_locations.csv")
+df['Shape'] = df['Shape'].apply(lambda x: eval(x)) # Convert this shape string to a tuple and then put it back to shape as numbers (lat and long)
+df['Latitude'] = df['Shape'].apply(lambda x: x[0])  # Extract latitude
+df['Longitude'] = df['Shape'].apply(lambda x: x[1])  # Extract longitude
+df.drop('Shape',axis = 1,inplace = True)
+df.to_csv(r"C:\Users\leiwang\Downloads\Tree_locations_new.csv")
+# Get the current timestamp to ensure a unique title
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+new_title = f"New Orleans Trees {timestamp}"
+
+csv = r"C:\Users\leiwang\Downloads\Tree_locations_new.csv"
+item_properties = {
+    "title": new_title,
+    "description": "New Orleans trees from nola.gov",
+    "tags": "trees, New Orleans, urban forestry",
+    "type": "CSV",
+    "overwrite": True  # Set to True if you want to overwrite an existing item with the same name
+}
+tree_item = mygis.content.add(item_properties, data=csv)
+
+tree_feature_layer = tree_item.publish(overwrite=True)
+
+# Print the URL of the hosted feature layer
+print("Hosted Feature Layer URL:", tree_feature_layer.url)
+```
+
+## Using the features module
+
+- In a GIS, 'features' refer to entities located in space with a set of properties.
+- Each city in a cities dataset, for example, is a feature object
+- The features module also include classes "FeatureSet", "FeatureLayer", and "FeatureCollection" that allow you to represent grouping of Feature data at different levels
+- The set of all point features in a layer (cities, for example) would be represetned by a "FeatureSet" object
+- In WebGIS, the cities data is stored either as a web feature layer or a feature collection
+- Querying the "FeatureLayer" or "FeatureCollection" objects will return "FeatureSet" objects
+- The following figure shows the concepts and their relationship
+
+![](images/image-5.png)
+
+### Feature, featurelayer, featureset, featurecollection
+
+- A Feature is a entity located in space with a set of properties
+`class arcgis.features.Feature(geometry=None, attributes=None`
+- A FeatureLayer is where users work with features by visualizing, editing, or analyzing features
+`class arcgis.features.FeatureLayer(url, gis=None, container=None, dynamic_layer=None)`
+- A FeatureLayerCollection is a collection of featurelayers in an item
+`class arcgis.features.FeatureLayerCollection(url, gis=None)`
+- A featureset is a set of features with similar definitions of geometry and attributes
+`class arcgis.features.FeatureSet(features, fields=None, has_z=False, has_m=False, geometry_type=None, spatial_reference=None, display_field_name=None, object_id_field_name=None, global_id_field_name=None)`
+- A featurecollection is a featureset with a layer definition
+`class arcgis.features.FeatureCollection(dictdata)`
+
+### Searching the GIS for feature layers 
+
+- You can search the GIS for feature layer collections
+- The examples below will clarify this further:
+
+```python
+# Establish a connection to your GIS.
+from arcgis.gis import GIS
+from IPython.display import display
+gis = GIS() # anonymous connection to www.arcgis.com
+
+# Search for 'USA major cities' feature layer collection
+search_results = gis.content.search('title: USA Major Cities',
+                                    'Feature Layer')
+
+# Access the first Item that's returned
+major_cities_item = search_results[0]
+
+display(major_cities_item)
+```
+
+### The FeatureLayer class
+
+- The FeatureLayer class is the primary concept for working with Feature objects in a GIS
+- FeatureLayer objects can be added and visualized using maps
+- They can act as inputs and outputs for feature analysis tools
+- Supported functions: append, calculate, delet_features, edit_features, query, etc.
+- Feature layer collection items are available as content in the GIS. You can get them using their item id, and query their layers property to get to the feature layers:
+
+```python
+freeways = gis.content.get('91c6a5f6410b4991ab0db1d7c26daacb')
+freeways
+```
+
+### Understanding the url of feature layers
+
+- The urls are made by the servers with the REST API interface
+- It is called the *well-known endpoint*
+- The well-known endpoint is the site root from which the rest of the API can be accessed
+- It contains three components: <host>, <context>, and <rest/serices>
+- The <host> has three parts to its structure
+  - The name of the ArcGIS server (e.g. services2)
+  - The domain (arcgis)
+  - The top-level domain(.com)
+- The <context> component is either the name of the web adaptor configured for ArcGIS server or the site name (arcgis)
+- The directory endpoint <rest/services> provide access to the site root, allowing you to see any top-level operations, services, and folders
+- An example: https://services2.arcgis.com/gdINAmBigW8mQbzB/arcgis/rest/services/AllClear_prod/FeatureServer
+- This defines a rest service called "AllClear_prod" with feature layers in it.
+- Open the url in the browser can show the feature layers hosted by the service
+
+### Accessing feature layers and tables from feature services
+
+- A feature service serves a collection of feature layers and tables
+- It is represented by `arcgis.features.FeatureLayerCollection` in the ArcGIS Python API.
+- Instances of FeatureLayerCollection can be constructed using a feature service url, as shown below:
+
+```python
+from arcgis.features import FeatureLayerCollection
+fs_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer'
+sanfran = FeatureLayerCollection(fs_url)
+sanfran.layers
+```
+
+[<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">]
+
+- In the feature service directory, there is also a table:
+
+```python
+sanfran.tables
+```
+[<Table url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/1">]
+
+### Accessing feature layers from a feature layer url
+
+- Instances of FeatureLayers can also be constructed using a url to the REST endpoint of a feature layer
+- Use the the subscription number e.g. 0, 1, 2... to get the specific layer in the layer collection
+
+```python
+from arcgis.features import FeatureLayer
+lyr_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0'
+layer = FeatureLayer(lyr_url)
+layer
+```
+<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">
+
+
+
 ### Properties of FeatureLayer
 
-- The `properties` field on a `FeatureLayer` object provides a dictionary representation of all its properties. 
+- The `properties` field on a `FeatureLayer` object provides a dictionary representation of all its properties.
+- It returns a PropertyMap object that can be printed in the dictionary format
+- Access each property by the dot notation, like .extent, .fields, .geometryType, .capabilities, etc.
 
 ```python
 feature_layer = major_cities_item.layers[0]
@@ -457,18 +480,18 @@ feature_layer.properties.extent
 }
 
 - The `capabilities` property is useful to know what kinds of edits and operations be performed on the feature layer
-
+- The following code shows the layer supports 'Query'
 
 ```python
 feature_layer.properties.capabilities
 ```
-'Query'
 
 - You can access the rendering information from the `drawingInfo` property
 
 ```python
 feature_layer.properties.drawingInfo.renderer.type
 ```
+
 'classBreaks'
 
 ### Querying feature layers
@@ -489,9 +512,19 @@ query_geographic = feature_layer.query(where='POP2010 > 1000000', out_sr='4326')
 query_geographic.features[0].geometry
 ```
 
+- Using the 'LIKE' keyword for matching patterns
+
+```python
+itm = mygis.content.get('85d0ca4ea1ca4b9abf0c51b9bd34de2e') #get the item USA Major Cities
+feature_layer = itm.layers[0] # Get the first feature layer
+fset = feature_layer.query(where="NAME LIKe 'A%'", out_sr='4326') #Query using the where clause
+for ft in fset:
+    print(ft.attributes['NAME'])
+```
+
 ### FeatureSet properties
 
-- A `FeatureSet` is returned by a `query()` operation. 
+- A `FeatureSet` is returned by a `query()` operation.
 - The `FeatureSet` object packs a bunch of useful properties that help us discern useful information about the features under access
 - One of the most powerful operation on a `FeatureSet` is accessing the features not as `Feature` objects, but as pandas dataframe objects. The `sdf` property, returns a dataframe object
 
@@ -506,7 +539,11 @@ query2.sdf
 
 ### Accessing Features from query results
 
-- We can execute the `query()` method on the first `FeatureLayer` object and get a `FeatureSet`. 
+- We can execute the `query()` method on the first `FeatureLayer` object and get a `FeatureSet`.
+- A FeatureSet is a collection of Features and can be converted to a list if needed
+- A Feature has `geometry` and `attributes`
+- `geoometry` refers to a dictionary object that defines the geometry of a feature
+- `attributes` refers to a dictionary object that contains the attributes about the feature
 
 ```python
 query_geographic = feature_layer.query(where='POP2010 > 1000000', out_sr='4326')
@@ -520,12 +557,10 @@ type(major_cities_l1_features)
 - The featureset is a list of features
 - Each of the features contains geometry and other attributes presented as 
 
-
 ### Accessing Feature geometry and attributes
 
 - The `Feature` object is a fine grained representation of spatial information.
 - Two important properties of a `Feature` object are its `geometry` and `attributes`:
-
 
 ```python
 major_cities_l1_features[0].geometry

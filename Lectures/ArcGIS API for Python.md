@@ -44,7 +44,7 @@ import arcgis
 
 - The following code print the arcgis version
 
-```python
+```run-python
 import arcgis
 import sys
 print("Python version: ", + sys.version)
@@ -73,12 +73,12 @@ class arcgis.gis.GIS(url=None, username=None, password=None,
 - Without credential, you have limited access to the ArcGIS Online resources
 - One useful alternative is the connect using pro authentication, with ArcGIS Pro installed locally and running concurrently, known as the pro authentication scheme.
 
-```python
+```run-python
 from arcgis.gis import GIS
 mygis = GIS("pro")
 ```
 
-```python
+```run-python
 playground_gis = GIS(url="https://pythonapi.playground.esri.com/portal", username='arcgis_python', password='amazing_arcgis_123',
                      profile='python_playground_prof')
 print("profile defined for {}".format(playground_gis))
@@ -88,7 +88,7 @@ print("profile defined for {}".format(playground_gis))
 
 - You can view a map in the Jupyter Notebook by defining a GIS object and the map class associated with it
 
-```python
+```run-python
 from arcgis.gis import GIS
 mygis = GIS("pro")
 mymap = mygis.map("Baton Rouge")
@@ -370,12 +370,12 @@ print("Hosted Feature Layer URL:", tree_feature_layer.url)
 - A featurecollection is a featureset with a layer definition
 `class arcgis.features.FeatureCollection(dictdata)`
 
-### Searching the GIS for feature layers 
+### Searching the GIS for feature layers
 
 - You can search the GIS for feature layer collections
 - The examples below will clarify this further:
 
-```python
+```run-python
 # Establish a connection to your GIS.
 from arcgis.gis import GIS
 from IPython.display import display
@@ -409,14 +409,14 @@ freeways
 - The urls are made by the servers with the REST API interface
 - It is called the *well-known endpoint*
 - The well-known endpoint is the site root from which the rest of the API can be accessed
-- It contains three components: <host>, <context>, and <rest/serices>
-- The <host> has three parts to its structure
+- It contains three components: 'host', 'context', and 'rest/serices'
+- The 'host' has three parts to its structure
   - The name of the ArcGIS server (e.g. services2)
   - The domain (arcgis)
   - The top-level domain(.com)
-- The <context> component is either the name of the web adaptor configured for ArcGIS server or the site name (arcgis)
+- The 'context' component is either the name of the web adaptor configured for ArcGIS server or the site name (arcgis)
 - The directory endpoint <rest/services> provide access to the site root, allowing you to see any top-level operations, services, and folders
-- An example: https://services2.arcgis.com/gdINAmBigW8mQbzB/arcgis/rest/services/AllClear_prod/FeatureServer
+- An example: `https://services2.arcgis.com/gdINAmBigW8mQbzB/arcgis/rest/services/AllClear_prod/FeatureServer`
 - This defines a rest service called "AllClear_prod" with feature layers in it.
 - Open the url in the browser can show the feature layers hosted by the service
 
@@ -426,18 +426,18 @@ freeways
 - It is represented by `arcgis.features.FeatureLayerCollection` in the ArcGIS Python API.
 - Instances of FeatureLayerCollection can be constructed using a feature service url, as shown below:
 
-```python
+
+```run-python
 from arcgis.features import FeatureLayerCollection
 fs_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer'
 sanfran = FeatureLayerCollection(fs_url)
 sanfran.layers
 ```
 
-[<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">]
 
 - In the feature service directory, there is also a table:
 
-```python
+```run-python
 sanfran.tables
 ```
 [<Table url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/1">]
@@ -447,15 +447,12 @@ sanfran.tables
 - Instances of FeatureLayers can also be constructed using a url to the REST endpoint of a feature layer
 - Use the the subscription number e.g. 0, 1, 2... to get the specific layer in the layer collection
 
-```python
+```run-python
 from arcgis.features import FeatureLayer
 lyr_url = 'https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0'
 layer = FeatureLayer(lyr_url)
-layer
+display(layer)
 ```
-<FeatureLayer url:"https://services2.arcgis.com/ZQgQTuoyBrtmoGdP/arcgis/rest/services/SF_311_Incidents/FeatureServer/0">
-
-
 
 ### Properties of FeatureLayer
 
@@ -463,7 +460,7 @@ layer
 - It returns a PropertyMap object that can be printed in the dictionary format
 - Access each property by the dot notation, like .extent, .fields, .geometryType, .capabilities, etc.
 
-```python
+```run-python
 feature_layer = major_cities_item.layers[0]
 feature_layer.properties.extent
 ```
@@ -482,8 +479,8 @@ feature_layer.properties.extent
 - The `capabilities` property is useful to know what kinds of edits and operations be performed on the feature layer
 - The following code shows the layer supports 'Query'
 
-```python
-feature_layer.properties.capabilities
+```run-python
+print(feature_layer.properties.capabilities)
 ```
 
 - You can access the rendering information from the `drawingInfo` property
@@ -500,21 +497,23 @@ feature_layer.properties.drawingInfo.renderer.type
 - We need to know the names of fields present in the layer. This can be determined by calling the `fields` property:
 
 
-```python
+```run-python
 for f in feature_layer.properties.fields:
     print(f['name'])
 ```
 
 - Query the data using a different spatial reference 
 
-```python
+```run-python
 query_geographic = feature_layer.query(where='POP2010 > 1000000', out_sr='4326')
-query_geographic.features[0].geometry
+print(query_geographic.features[0].geometry)
 ```
 
 - Using the 'LIKE' keyword for matching patterns
+- The '%' symbol is a wildcard character to represent the unrestricted part of the pattern
+- The follow SQL statement will return all the states with a name starting with 'A'
 
-```python
+```run-python
 itm = mygis.content.get('85d0ca4ea1ca4b9abf0c51b9bd34de2e') #get the item USA Major Cities
 feature_layer = itm.layers[0] # Get the first feature layer
 fset = feature_layer.query(where="NAME LIKe 'A%'", out_sr='4326') #Query using the where clause
@@ -549,9 +548,11 @@ query2.sdf
 query_geographic = feature_layer.query(where='POP2010 > 1000000', out_sr='4326')
 query_geographic.features[0].geometry
 major_cities_l1 = major_cities_item.layers[0]
-major_cities_l1_fset = major_cities_l1.query(where= 'FID < 11')
+major_cities_l1_fset = major_cities_l1.query(where= "FID < 11")
+
 major_cities_l1_features = major_cities_l1_fset.features
 type(major_cities_l1_features)
+```
 ```
 
 - The featureset is a list of features

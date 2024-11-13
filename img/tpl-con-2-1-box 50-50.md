@@ -1,4 +1,4 @@
-<grid drag="60 20" drop="20 0" bg="white" align="left" pad="0 20px">
+<grid drag="100 10" drop="top" bg="white" align="top" pad="0 20px">
  <% title %>
 </grid>
 

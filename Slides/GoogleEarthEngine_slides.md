@@ -1,9 +1,10 @@
 ---
-height: "1200"
+height: "1080"
 theme: white
 slideNumber: "true"
 transition: slide
-width: "1800"
+width: "1920"
+css: css/slides.css
 ---
 
 <!-- slide bg="white" -->
@@ -136,15 +137,20 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
 :::
 
 ---
-<!-- slide template="[[tpl-con-default-box]]" -->
+<!-- slide template="[[tpl-con-2-1-box 50-50]]" -->
 ::: title
 ### JavaScript code editor interface 
 
 :::
-::: block
+::: left
 
 ![image|1200](https://lh7-rt.googleusercontent.com/slidesz/AGV_vUdo3vwbNLGLH9_EZ4I58hl8QA7o4EvboW0QexnpU1t-KvtbohOCklAEPsl-6jDUTbC-QETsnwuIhT1pH70VkUBKHNh0Q5P0sbuyZ6tpFjj2Awhb2UKEyD51sGhC3IMsXnRFcw9Y=s2048?key=sffCi16zpU89kJIJvIFY975H)
 
+:::
+::: right
+- The left Panel gives access to a list of assets, scripts, Docs, and code examples
+- The center Panel is an Editor Panel for code editing and debugging
+- The Right Panel shows messages of Inspector or code output, and a list of tasks running on the server
 :::
 
 ---
@@ -209,8 +215,8 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
   - function: `filterBounds() `
 - Temporal filtering: use time to filter images
   - function: `filterDate()`
-- Use a ee.Filter
-  `filter(ee.Filter.eq('CLOUD_COVER', 0))`
+- Use a ee.Filter: 
+  `image.filter(ee.Filter.eq('CLOUD_COVER', 0))`
 
 
 :::
@@ -525,3 +531,45 @@ Map.addLayer(ndviImage,vis);
 
 ::: 
 
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+
+#### Use Python for Gee
+:::
+::: block
+- You can select to use Python instead of JavaScript and run code on different platforms
+- Install the Python API: `pip install earthengine-api`
+- After installation, use `import ee` to import the modules
+- At the first time of running the module, you need to authenticate your Google account to use gee on your computer
+- Use `ee.Authenticate()` to authenticate or run 
+- Before running authentication, make sure your account has been registered as Google developer by going to this site: `https://code.earthengine.google.com/`
+
+:::
+
+
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+
+#### Use the map module `geemap`
+:::
+::: block
+- Unlike the code interface of Gee in JavaScript, the Gee Python module does not provide a module to show map in Jupyter notebooks
+- You can install a third-party package `geemap` to display Google data on a map
+```run-python
+import geemap
+
+# Create a map centered at a specific location
+Map = geemap.Map(center=[40, -100], zoom=4) 
+
+# Add a basemap from Google Maps
+Map.add_basemap('HYBRID')
+
+# Display the map
+Map
+```
+
+:::

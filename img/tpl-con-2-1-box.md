@@ -2,9 +2,8 @@
  <% title %>
 </grid>
 
-<grid drag="28 75" drop="69 15" bg="white" style="border-radius:15px"/>
 
-<grid drag="57 70" drop="3 15" align="topleft">
+<grid drag="57 70" drop="3 20" align="topleft">
 
 <% left %>
 

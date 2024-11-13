@@ -63,8 +63,8 @@
   
   /* code styles */
   .reveal code {
-    /*max-height: fit-content !important; /* disable this if you want scrollable code blocks */
-    color: hsl(249, 75%, 29%);
+    max-height: fit-content !important; /* disable this if you want scrollable code blocks */
+    color: #ffad00;
   }
   
   
@@ -160,7 +160,7 @@
     color: #B22222;
   }
   .reveal h4 {
-    font-size: 4em;
+    font-size: 3em;
     color: #B22222;
   }
   .reveal h5 {

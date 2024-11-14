@@ -567,6 +567,26 @@ major_cities_l1_features[0].geometry
 major_cities_l1_features[0].attributes
 ```
 
+```python
+itm = mygis.content.get('85d0ca4ea1ca4b9abf0c51b9bd34de2e')
+feature_layer = itm.layers[0]
+query_name = feature_layer.query(where="NAME LIKe 'A%'", out_sr='4326')
+for ft in query_name:
+    print(ft.geometry)
+```
+
+```python
+for key,value in list(query_name)[0].geometry.items():
+    print(key,value)
+for key,value in list(query_name)[0].attributes.items():
+    print(key,value)
+```
+
+```python
+for ft in fs:
+    print(ft.attributes['ROUTE_NUM'])
+```
+
 ## Visualizing data with map widget
 
 - The `arcgis.widgets` module offers components for managing maps and scenes to visualize GIS data 

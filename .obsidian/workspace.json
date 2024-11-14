@@ -8,7 +8,7 @@
         "type": "tabs",
         "children": [
           {
-            "id": "a253e82799f52940",
+            "id": "f4aee48aeb0cb98b",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -19,6 +19,22 @@
               },
               "icon": "lucide-file",
               "title": "GoogleEarthEngine_slides"
+            }
+          }
+        ]
+      },
+      {
+        "id": "c30ae68e18788f4f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "62996d334d1c86cf",
+            "type": "leaf",
+            "state": {
+              "type": "reveal-preview-view",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Slide Preview"
             }
           }
         ]
@@ -163,29 +179,29 @@
       "obsidian-advanced-slides:Show Slide Preview": false
     }
   },
-  "active": "a253e82799f52940",
+  "active": "f4aee48aeb0cb98b",
   "lastOpenFiles": [
-    "Tutorials/gee.ipynb",
-    "Lectures/ArcGIS API for Python.md",
-    "img/tpl-con-default-box.md",
-    "Lectures/Geoprocessing.md",
-    "img/tpl-con-default-slide.md",
-    "Slides/GoogleEarthEngine_slides.md",
-    "img/tpl-con-2-1-box.md",
-    "img/tpl-con-2-1-box 50-50.md",
-    "Slides/css/slides.css",
-    "Slides/css",
-    "Slides/Untitled.md",
     "Lectures/GoogleEarthEngine.md",
+    "img/tpl-con-default-box.md",
+    "Lectures/GoogleEarthEngine_slides.md",
+    "Tutorials/gee.ipynb",
+    "Slides/css/slides.css",
+    "Slides/GoogleEarthEngine_slides.md",
+    "Slides/css",
+    "Slides",
     "Tutorials/Work with VS Code.md",
     "Tutorials/Work_with_Anaconda.md",
     "Tutorials/Work_with_git.md",
     "Tutorials/Work_with_Jupyter_Notebook.md",
     "Tutorials/CloneArc.md",
+    "img/tpl-con-2-1-box 50-50.md",
+    "img/tpl-con-2-1-box.md",
     "Lectures/images/image-7.png",
     "img/tpl-con-3-2.md",
     "img/tpl-con-splash.md",
+    "img/tpl-con-default-slide.md",
     "img/tpl-footer.md",
-    "img/tpl-con-title.md"
+    "img/tpl-con-title.md",
+    "Lectures/ArcGIS API for Python.md"
   ]
 }

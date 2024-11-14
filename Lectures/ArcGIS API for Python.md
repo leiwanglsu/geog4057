@@ -553,7 +553,6 @@ major_cities_l1_fset = major_cities_l1.query(where= "FID < 11")
 major_cities_l1_features = major_cities_l1_fset.features
 type(major_cities_l1_features)
 ```
-```
 
 - The featureset is a list of features
 - Each of the features contains geometry and other attributes presented as 
@@ -610,7 +609,7 @@ usa_map.add_layer(world_timezones_item)
 
 ### Adding layer objects to the map
 
-- You can add a number of different layer objects, such as `FeatureLayer`, `FeatureCollection`, `ImageryLayer`, `MapImageLayer`, to the map. 
+- You can add a number of different layer objects, such as `FeatureLayer`, `FeatureCollection`, `ImageryLayer`, `MapImageLayer`, to the map.
 
 ```python
 world_countries_item = gis.content.get('ac80670eb213440ea5899bbf92a04998')

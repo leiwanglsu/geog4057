@@ -559,6 +559,7 @@ Map.addLayer(ndviImage,vis);
 ::: block
 - Unlike the code interface of Gee in JavaScript, the Gee Python module does not provide a module to show map in Jupyter notebooks
 - You can install a third-party package `geemap` to display Google data on a map
+
 ```run-python
 import geemap
 
@@ -573,3 +574,76 @@ Map
 ```
 
 :::
+
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+
+#### Example code: download an image
+:::
+::: block
+
+```run-python
+import ee
+import ee.mapclient
+
+ee.Initialize()
+
+# Get a download URL for an image.
+image1 = ee.Image('CGIAR/SRTM90_V4')
+path = image1.getDownloadUrl({
+    'scale': 30,
+    'crs': 'EPSG:4326',
+    'region': '[[-120, 35], [-119, 35], [-119, 34], [-120, 34]]'
+})
+print(path)
+```
+
+- A link will be returned from the code for downloading the image directly: [link](https://earthengine.googleapis.com/v1/projects/earthengine-legacy/thumbnails/b169f7284281b474cf924744d932a2f5-8da95e06c4a60879b877c52b0bf198cb:getPixels)
+:::
+
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+
+#### Example code: display hillshade
+:::
+::: block
+
+```run-python
+import math
+import ee
+import ee.mapclient
+
+ee.Initialize()
+ee.mapclient.centerMap(-121.767, 46.852, 11)
+
+
+def Radians(img):
+  return img.toFloat().multiply(math.pi).divide(180)
+
+
+def Hillshade(az, ze, slope, aspect):
+  """Compute hillshade for the given illumination az, el."""
+  azimuth = Radians(ee.Image(az))
+  zenith = Radians(ee.Image(ze))
+  # Hillshade = cos(Azimuth - Aspect) * sin(Slope) * sin(Zenith) +
+  #     cos(Zenith) * cos(Slope)
+  return (azimuth.subtract(aspect).cos()
+          .multiply(slope.sin())
+          .multiply(zenith.sin())
+          .add(
+              zenith.cos().multiply(slope.cos())))
+
+terrain = ee.Algorithms.Terrain(ee.Image('CGIAR/SRTM90_V4'))
+slope_img = Radians(terrain.select('slope'))
+aspect_img = Radians(terrain.select('aspect'))
+
+# Add 1 hillshade at az=0, el=60.
+ee.mapclient.addToMap(Hillshade(0, 60, slope_img, aspect_img))
+```
+:::
+
+---

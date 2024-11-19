@@ -1,12 +1,15 @@
 <grid drag="60 10" drop="20  5" bg="white" align="top" pad="0 20px">
  <% title %>
+
+<!-- element style="font-size: 48px" -->
 </grid>
 
 
-<grid drag="90 80" drop="3 20" align="topleft">
+<grid drag="90 80" drop="3 20" align="top" >
 
 <% content %>
 
+<!-- element style="font-size: 36px" -->
 </grid>
 
 <style>

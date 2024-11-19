@@ -4,9 +4,53 @@
 - Handling exceptions
 - Debugging
 - Lambda functions
-- Numpy array
-- Pandas dataframe
+
+## lambda and map functions
+
+### lambda function
+
+- A lambda function is a small anonymous function
+- Some functions are only used once in your code. They then can be defined as a lambda function to make your code mort compact
+- A lambda function can take any number of arguments, but can only have one expression
+- Syntax: ```lambda arguments: expression```
+
+Example:
+This will add 10 to an argument and return the result
+
+```python
+x = lambda a: a + 10
+print(x(5))
+```
+
+This will multiply a and b in the argument
+
+```python
+x = lambda a, b: a * b
+print(x(5,6))
+```
+
+### Python map() function
+
+- the map() function returns a map object of the result after applyging the given function to each item of the given iterable (tuple, list, ect)
+- Syntax ```map(fun, iter)```
   
+For example, this code will return a list of the result from the function `twice`
+
+```python
+def twice(n):
+    return 2 * n
+ 
+# We double all numbers using map()
+numbers = (1, 2, 3, 4)
+result = map(twice, numbers)
+print(list(result))
+```
+
+```python
+# Use the lambda function and map function
+result = list(map(lambda x: x + x,numbers))
+print(list(result))
+```
 
 ## Work with syntax errors
 
@@ -31,7 +75,6 @@ for fc in fclist
 
 - In the notebook, you can toggle the line numbers
 - Read the error message and figure out which line caused that error
-
 
 ### Exceptions
 
@@ -105,6 +148,18 @@ for fc in fcs:
 - A more general approach is to use a Python debugger
 - The package "pdb" is a built-in debugger package in python
 
+```python
+def example_function(x, y):
+    result = x + y
+    import pdb; pdb.set_trace()  # Start debugger here
+
+    result *= 2
+    print(result)
+    return result
+
+print('pdb debugging')
+example_function(3, 4)
+```
 
 ## Error handling for exceptions
 
@@ -125,7 +180,6 @@ print(shape_exists)
 - The Exist() function can be used for feature classes, tables, datasets, shapefiles, workspaces, ect.
 - Even the data exist, there are other situations such as incorrect data type. The function expects a polygon but the input data is a point feature class
 - Use da.Describe() to get the datasetType property and determine if the data type is correct
-
 
 ### Usin the try-except statement
 
@@ -166,9 +220,9 @@ except ValueError:
     print("Only integers are valid entries.")
 ```
 
-- Or specify them as the tuple:
+- Or specify them as a tuple:
   
-```
+```python
 except (ZeroDivisionError, ValueError):
     print("Your entries were not valid.")
 ```
@@ -258,12 +312,20 @@ except:
 
 ### Using python traceback
 
-- In larger scripts, it can be difficult to determine the precise location of an error. You can use the Python traceback module to isolate the location and cause of an error.
+- In larger scripts, it can be difficult to determine the precise location of an error.
+- You can use the Python traceback module to isolate the location and cause of an error.
 
 ```python
+import arcpy,sys,traceback
+arcpy.env.workspace = "C:/Data"
+in_features = "streams.shp"
+out_features = "streams.shp"
+try:
+    arcpy.CopyFeatures_management(in_features, out_features)
 except:
     tb = sys.exc_info()[2]
     tbinfo = traceback.format_tb(tb)[0]
-    pymsg = ("PYTHON ERRORS:\nTraceback info:\n" + tbinfo + 
-             "\nError Info:\n" + str(sys.exc info() [1]))
+    print("PYTHON ERRORS:\nTraceback info:\n")
+    print(tbinfo)
+    print(f"Error Info:\n {str(sys.exc_info() [1])}")
 ```

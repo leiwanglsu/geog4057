@@ -1,17 +1,17 @@
 ---
-height: "1080"
 theme: white
 slideNumber: "true"
 transition: slide
-width: "1920"
 css: css/slides.css
+height: "1000"
+width: "1500"
 ---
 
 <!-- slide bg="white" -->
 ::: block
 # Google Earth Engine programming
 
-
+<!-- element style="font-size: 80px" -->
 :::
 <grid drag="100 6" drop="bottom">
 ###### GEOG 4057 GIS Programming<!-- element style="font-weight:300" -->
@@ -182,8 +182,42 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
 - Examples are satellite imagery, DEM, and other global datasets
 :::
 ---
-<!--slide-->
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
 ## classes and functions in GEE
+
+:::
+::: block
+
+```mermaid <!-- element style="width:600%; height:auto" align="left"-->
+graph LR
+    A[ImageCollection] --> B[Image]
+    A[ImageCollection] --> D[Export]
+    A[ImageCollection] --> E[FeatureCollection]
+    B[Image] --> C[Map]
+    B[Image] --> D[Export]
+    B[Image] --> F[Reducer]
+    C[Map] --> B[Image]
+    D[Export] --> A[ImageCollection]
+    D[Export] --> B[Image]
+    D[Export] --> E[FeatureCollection]
+    F[Reducer] --> B
+    E[FeatureCollection] --> G[Feature]
+    E[FeatureCollection] --> H[Geometry]
+    G[Feature] --> H[Geometry]
+    H[Geometry] --> C
+    C --> G[Feature]
+    C --> H[Geometry]
+    J[ui] --> C
+    J[ui] --> B[Image]
+    J[ui] --> A[ImageCollection]
+    J[ui] --> E[FeatureCollection]
+```
+
+:::
+
+
+
 
 ---
 <!-- slide template="[[tpl-con-default-box]]" -->
@@ -197,6 +231,7 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
 - Images within a collection are usually related by a common theme, such as being captured by the same sensor or covering the same geographical area.
 - Images in the collection are organized along a temporal dimension, representing the time of acquisition.
 - Users can filter and manipulate the collection based on temporal criteria, such as date ranges or specific time points.
+- Use `.getInfo()['features']` to get a list of images in the collection
 
 :::
 
@@ -204,24 +239,73 @@ Map.addLayer(composite, {bands: ['B6', 'B5', 'B4'], max: [0.3, 0.4, 0.3]});
 
 <!-- slide template="[[tpl-con-default-box]]" -->
 ::: title
-#### Filtering images:
+#### Filtering ImageCollection:
 :::
 ::: block
 
-
 - Users can filter the ImageCollection based on various criteria, including time, location, and metadata attributes.
 - This allows for the extraction of subsets of images that meet specific conditions.
-- Spatial filtering: use locations and geometries to filter images
-  - function: `filterBounds() `
-- Temporal filtering: use time to filter images
-  - function: `filterDate()`
-- Use a ee.Filter: 
-  `image.filter(ee.Filter.eq('CLOUD_COVER', 0))`
+- Because the number of images are countless in an ImageCollection, users must apply filters to reduce the number of images in the collection to a manageable range
 
+```python
+collection = ee.ImageCollection('LANDSAT/LE07/C02/T1_TOA')
+    .filterDate('2002-11-01', '2002-12-01')
+```
+- `.filterDate()` function takes two parameters: start time and end time. 
+	- If the end time parameter is not specified, a 1 million second range (about 11.5 days) will be added to the start time as the end time 
+:::
+
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+### `filterBounds()`
+:::
+::: block
+- `filterBound()` function uses a ee.Geometry to define a spatial filter to find images in a collection
+- The geometry can be a point, a line, or a polygon
+- Construct a geometry using the following example code
+
+```python
+polygon = ee.Geometry.Polygon({
+  coords: [[[-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0], // Colorado
+            [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0], // Utah
+            [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]],
+  geodesic: false
+})
+
+# Create a Landsat 7 composite for Spring of 2000, and filter by
+# the bounds of the FeatureCollection.
+collection = ee.ImageCollection('LANDSAT/LE07/C02/T1')
+    .filterDate('2000-04-01', '2000-07-01')
+    .filterBounds(polygon)
+```
 
 :::
 
 ---
+
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+### Using `ee.Filter`
+:::
+::: block
+- The module `ee.Filter` contains many options to construct filters
+- `ee.Filter.lt(name, value)` compare a metadata item of an image to a value
+
+```python
+ee.ImageCollection('COPERNICUS/S2')
+	.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',20))
+```
+
+- will return images in the Sentinel-2 image collection with cloud cover less than 20 percent
+:::
+
+
+---
+
+
 <!-- slide template="[[tpl-con-default-box]]" -->
 ::: title
 #### Sorting image:
@@ -283,6 +367,58 @@ Try the codes from this [page](https://developers.google.com/earth-engine/tutori
 :::
 
 ---
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+### Create an Image object
+:::
+::: block
+- You can get an image from an ImageCollection or directly from an URL
+```run-python
+import ee 
+ee.Initialize()
+image = ee.Image(ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA')
+  .filterDate('2017-01-01', '2017-12-31')
+  .filterBounds(ee.Geometry.Point(-122.0808, 37.3947))
+  .sort('CLOUD_COVER')
+  .first())
+```
+
+
+```run-python
+import ee
+ee.Initialize()
+img = ee.Image('LANDSAT/LT05/C02/T1_TOA/LT05_031034_20110619')
+print(img.getInfo())
+```
+
+:::
+
+---
+
+<!-- slide template="[[tpl-con-default-box]]" -->
+::: title
+### Get image properties
+:::
+::: block
+- Image contains properties such as unique id, number of bands, spatial extent, etc.
+- Use `.getInfo()['properties']` to read the properties of the image
+- Use `.getInfo()['id']` to get the unique ID of the image
+- Use `.getInfo()['bands']` to get a list of bands
+- For example, the following code will read from the image's system:footprint and compute its x and y range
+
+```python
+gjson = img.getInfo()['properties']['system:footprint']
+coords = gjson['coordinates']
+
+# Calculate the extreme values
+x_min = min(coords)
+x_max = max(coords)
+y_min = min(coords)
+y_max = max(coords)
+```
+:::
+
+---
 
 <!-- slide template="[[tpl-con-default-box]]" -->
 ::: title
@@ -291,31 +427,17 @@ Try the codes from this [page](https://developers.google.com/earth-engine/tutori
 ::: block
 - Users can perform various operations and analyses on images, including mathematical transformations, filtering, compositing, and statistical computations.
 - The operations can be applied to individual bands or the entire image.
+
+```python
+img = ee.Image('MODIS/006/MOD09GA/2012_03_09')
+#Use the normalizedDifference(A, B) to compute (A - B) / (A + B)
+ndvi = img.normalizedDifference(['sur_refl_b02', 'sur_refl_b01'])
+```
 :::
 
----
-<!-- slide template="[[tpl-con-default-box]]" -->
-::: title
-#### Visualization:
-:::
-::: block
-- Images can be visualized using the Google Earth Engine Code Editor or other visualization tools. 
-- A map class is used to work with the visualization
-- Visualization often involves assigning colors to different bands and displaying the result as a map.
-::: 
 
 ---
 
-<!-- slide template="[[tpl-con-default-box]]" -->
-::: title
-#### Export:
-:::
-::: block
-- Processed images or derived information can be exported from Google Earth Engine for further analysis or external use.
-
-::: 
-
----
 
 <!-- slide template="[[tpl-con-default-box]]" -->
 ::: title
@@ -345,8 +467,10 @@ Try the codes from this [page](https://developers.google.com/earth-engine/tutori
 print(image1.select('SR_B2').bandNames().getInfo())
 print(image1.select(['SR_B7', 'SR_B5', 'SR_B3'], ['SWIR1', 'NIR', 'Green']).bandNames().getInfo())
 ```
+
 - SR_B2 is the band name defined by the ImageCollection for the second band of the image. SR means "Surface Reflectance"
 - getInfo() retrieves information from the server about the object
+
 ::: 
 ---
 

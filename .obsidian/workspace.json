@@ -20,21 +20,29 @@
               "icon": "lucide-file",
               "title": "GoogleEarthEngine_slides"
             }
-          }
-        ]
-      },
-      {
-        "id": "c30ae68e18788f4f",
-        "type": "tabs",
-        "children": [
+          },
           {
-            "id": "62996d334d1c86cf",
+            "id": "0fb1b5b81d55adf5",
             "type": "leaf",
             "state": {
-              "type": "reveal-preview-view",
+              "type": "markdown",
+              "state": {
+                "file": "Slides/GoogleEarthEngine_slides.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "GoogleEarthEngine_slides"
+            }
+          },
+          {
+            "id": "6105f1cad08936bf",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
               "state": {},
               "icon": "lucide-file",
-              "title": "Slide Preview"
+              "title": "New tab"
             }
           }
         ]
@@ -93,7 +101,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 297.5
   },
   "right": {
     "id": "40f99fff3233fde0",
@@ -179,14 +187,57 @@
       "obsidian-advanced-slides:Show Slide Preview": false
     }
   },
-  "active": "f4aee48aeb0cb98b",
+  "floating": {
+    "id": "be4c874748b6e378",
+    "type": "floating",
+    "children": [
+      {
+        "id": "ba0c0389b6372bff",
+        "type": "window",
+        "children": [
+          {
+            "id": "c65c5503dcdc1dad",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f977bfbcbdfc42bb",
+                "type": "leaf",
+                "state": {
+                  "type": "reveal-preview-view",
+                  "state": {},
+                  "icon": "lucide-file",
+                  "title": "Slide Preview"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "vertical",
+        "x": 1076,
+        "y": 20,
+        "width": 600,
+        "height": 1064,
+        "maximize": false,
+        "zoom": 0
+      }
+    ]
+  },
+  "active": "f977bfbcbdfc42bb",
   "lastOpenFiles": [
-    "Lectures/GoogleEarthEngine.md",
     "img/tpl-con-default-box.md",
+    "Lectures/GoogleEarthEngine.md",
+    "Slides/GoogleEarthEngine_slides.md",
+    "Slides/Templates/slide-box.md",
+    "Slides/Templates",
+    "Slides/example.md",
+    "img/tpl-con-2-1-box 50-50.md",
+    "examples/test_pdb.py",
+    "examples/__pycache__/pdb.cpython-311.pyc",
+    "examples/__pycache__",
+    "examples/pdb.py",
     "Lectures/GoogleEarthEngine_slides.md",
     "Tutorials/gee.ipynb",
     "Slides/css/slides.css",
-    "Slides/GoogleEarthEngine_slides.md",
     "Slides/css",
     "Slides",
     "Tutorials/Work with VS Code.md",
@@ -194,7 +245,6 @@
     "Tutorials/Work_with_git.md",
     "Tutorials/Work_with_Jupyter_Notebook.md",
     "Tutorials/CloneArc.md",
-    "img/tpl-con-2-1-box 50-50.md",
     "img/tpl-con-2-1-box.md",
     "Lectures/images/image-7.png",
     "img/tpl-con-3-2.md",

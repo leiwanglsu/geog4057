@@ -1,15 +1,14 @@
-/* .slides {
+/*.slides {
   height: 120% !important;
   width: 120% !important;
-} */
+} 
+  */
 
-.container {
-  column-count: 2;
-}
+
 
 /* font size */
 .reveal {
-    font-size: 1.5em; /* for mobile use 1.5em */
+    font-size: 1em; /* for mobile use 1.5em */
   }
   
   /* zoom level for (mobile) landscape mode */
@@ -25,14 +24,14 @@
   /* adds scrollbar */
   .slides {
     overflow-x: hidden !important;
-    overflow-y: show !important;
+    overflow-y: auto !important;
     pointer-events: auto !important;
   }
   
   
   /* hide scroll bar */
   .slide ::-webkit-scrollbar {
-    display: true !important;
+    display: none !important;
   }
   
   
@@ -85,7 +84,7 @@
   .slide .copy-code-button {
     position: absolute;
     top: 4px;
-    right: 100px;
+    right: 4px;
     /* display: none !important; // hides the copy button */
   }
   
@@ -109,7 +108,7 @@
   /* adds border to table */
   
   .reveal table {
-    font-size: 2em; 
+    /* font-size: 2em;   */
     width: 80%;
   }
   
@@ -145,98 +144,16 @@
     right: 15em !important;
   }
 
-  /*This changes the size and font colour of the headings.
-*/
-  .reveal h1 {
-    font-size: 5em;
-    color: #B22222;
+  body {
+    --h1-size: 2em;
+    --h2-size: 1.80em;
+    --h3-size: 1.50em;
+    --h4-size: 1.5em;
+    --h5-size: 1.3em;
+    --h6-size: 1.3em;
   }
-  .reveal h2 {
-    font-size: 5em;
-    color: #B22222;
-  }
-  .reveal h3 {
-    font-size: 4em;
-    color: #B22222;
-  }
-  .reveal h4 {
-    font-size: 3em;
-    color: #B22222;
-  }
-  .reveal h5 {
-    font-size: 2em;
-    color: #B22222;
-  }
-  .reveal h6 {
-    font-size: 1.5em;
-    color: #B22222;
-  }
-  /*This changes the font size of the paragraphs, colours them black and justifies them.
-*/
 
-  .reveal p {
-    font-size: 1.5em;
-    color: black;
-    text-align: justify;
-}
-
-/*
-CSS snippet that adds scrollbars on Obsidian slideshow slides in cases where content
-would normally overflow and be hidden
-*/
-
-/* Apply styles to containing divs for slides */
-.slides {
-  /* Set overflows to allow for auto vertical scroll bar and no horizontal scroll bar */
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  
-  /* Enable pointer events so users can click and drag on scrollbars */
-  pointer-events: auto !important;
-  }
-  
-  /* Apply styles that apply directly to slides */
-  .slides > section {
-  /* Create flex container to arrange auto-generated elements by Obsidian on each slide */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  }
-  
-  /*
-  Snippet to make slideshow slides take up full height of slides' container div
-  */
-  .slides {
-  height: 100% !important;
-  }
-  
-  /*
-  Snippet to make slideshow slides take up full height of slides' container div
-  */
-  .slides {
-  height: 100% !important;
-  }
-  
-  /*
-  Stylesheet to change the color of the slide controls to purple to better match the rest of the interface
-  */
-  
-  /* Change progress bar color to be purple */
-  .progress span {
-  background-color: var(--text-accent) !important;
-  }
-  
-  /* Change default slide control button colors to purple */
-  .reveal .controls {
-  color: var(--text-accent)
-  }
-  
-  /* Set control hover color to be a slightly lighter purple */
-  .reveal .controls:hover {
-  color: var(--text-accent-hover)
-  }
-  
-  .slides-close-btn {
-  color: #48474494;
+  .mermaid svg { 
+    max-width: 100%; 
+    height: auto;
   }

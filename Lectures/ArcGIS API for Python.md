@@ -609,14 +609,16 @@ map1
 ### Adding layers to the map
 
 - The map widget can add and render web layers. 
-- To add a layer, call the `add_layer()` method and pass the layer object as an argument.
+- To add a layer, call the `content.add()` method and pass the layer object as an argument.
+  - Note: in previous versions, it was `add_layer()`
 
 ```python
 gis = GIS("pro")
-usa_map = gis.map('USA', zoomlevel=4)  
+usa_map = gis.map('USA')  
+usa_map.zoom = 4
 flayer_search_result = gis.content.search("owner:esri","Feature Layer", outside_org=True)
 print(flayer_search_result[1])
-usa_map.add_layer(flayer_search_result[0])
+usa_map.content.add(flayer_search_result[0])
 usa_map
 ```
 
@@ -624,7 +626,7 @@ usa_map
 
 ```python
 world_timezones_item = gis.content.get('312cebfea2624e108e234220b04460b8')
-usa_map.add_layer(world_timezones_item)
+usa_map.content.add(world_timezones_item)
 ```
 
 ### Adding layer objects to the map
@@ -635,7 +637,7 @@ usa_map.add_layer(world_timezones_item)
 world_countries_item = gis.content.get('ac80670eb213440ea5899bbf92a04998')
 world_countries_layer = world_countries_item.layers[0]
 world_countries_layer
-usa_map.add_layer(world_countries_layer, options={'opacity':0.4})
+usa_map.content.add(world_countries_layer, options={'opacity':0.4})
 ```
 
 ### Adding a raster layer object to the map
@@ -643,7 +645,7 @@ usa_map.add_layer(world_countries_layer, options={'opacity':0.4})
 ```python
 landsat_item = GIS().content.search("Landsat 8 Views", "Imagery Layer", max_items=2)[0]
 landsat_item
-usa_map.add_layer(landsat_item)
+usa_map.content.add(landsat_item)
 ```
 
 ### Remove layers
@@ -667,7 +669,7 @@ freeway_fset
 map5 = gis.map('USA', 10)
 map5.center=[34.05,-118.2]
 map5.zoom=12
-map5.add_layer(freeway_fset, {'renderer':'ClassedSizeRenderer',
+map5.content.add(freeway_fset, {'renderer':'ClassedSizeRenderer',
                               'field_name':'DIST_KM',
                               'opacity':0.75})
 ```
@@ -752,7 +754,7 @@ airport_lyr = airports.layers[0]
 from arcgis.features import use_proximity
 airport_buf = use_proximity.create_buffers(airport_lyr,distances=[50],units="Miles")
 airport_map = mygis.map("USA",zoomlevel=4)
-airport_map.add_layer(airport_buf)
+airport_map.content.add(airport_buf)
 airport_map
 ```
 
@@ -789,44 +791,4 @@ airport_map
 ```python
 re_ordered_stops_cities = list(map(lambda x: x.attributes['NAME'], re_ordered_stops_cities_fset))
 print(re_ordered_stops_cities)
-```
-
-### lambda function
-
-- A lambda function is a small anonymous function
-- It can take any number of arguments, but can only have one expression
-- Syntax: ```lambda arguments: expression```
-
-Example:
-This will add 10 to argument a and return the result
-
-```python
-x = lambda a: a + 10
-print(x(5))
-```
-
-This will multiply a and b in the argument
-
-```python
-x = lambda a, b: a * b
-print(x(5,6))
-```
-
-### Python map() function
-
-- the map() function returns a map object of the result after applyging the given function to each item of the given iterable (tuple, list, ect)
-- Syntax ```map(fun, iter)```
-  
-For example, this code will return a list of the result from the function twice
-
-```python
-def twice(n):
-    return n + n
- 
-# We double all numbers using map()
-numbers = (1, 2, 3, 4)
-result = map(twice, numbers)
-print(list(result))
-# Use the lambda function
-result = list(map(lambda x: x + x,numbers))
 ```

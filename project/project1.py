@@ -43,3 +43,7 @@ field_names = [field.replace(" ","_") for field in field_names]
 field_names = [field.replace(".","_") for field in field_names]
 field_names
 
+
+for ind,field_name in enumerate(field_names):
+    arcpy.management.AddField(fc_fullname,field_name=field_name,field_type=field_type[ind])
+

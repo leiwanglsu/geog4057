@@ -47,3 +47,19 @@ field_names
 for ind,field_name in enumerate(field_names):
     arcpy.management.AddField(fc_fullname,field_name=field_name,field_type=field_type[ind])
 field_names.append('SHAPE@')
+
+
+
+## Write data to the shapefile
+
+with arcpy.da.InsertCursor(fc_fullname,field_names=field_names) as cursor:
+    for row in tax_json['data']:
+        new_row = []
+        for ind, value in enumerate(row):
+            if ind == 8:
+                continue
+            if value == None:
+                value = ""
+            new_row.append(value)
+        new_row.append(row[8])
+        cursor.insertRow(new_row)

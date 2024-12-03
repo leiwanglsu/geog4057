@@ -23,3 +23,23 @@ desc = arcpy.da.Describe(fc_fullname)
 for field in desc['fields']:
     print(field.name)
 
+
+## add field names
+fields = tax_json['meta']['view']['columns']
+for field in fields:
+    print(field['name'])
+field_type = ['TEXT','TEXT','LONG','LONG','TEXT','LONG','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT']
+field_names = []
+for ind,field in enumerate(fields):
+    name = field['name']
+    if name == 'the_geom':
+        continue
+    if name.lower() == 'id':
+        name = f'id_{ind}'
+    max_len = min(10,len(name))
+    name = name[:max_len]
+    field_names.append(name)
+field_names = [field.replace(" ","_") for field in field_names]
+field_names = [field.replace(".","_") for field in field_names]
+field_names
+

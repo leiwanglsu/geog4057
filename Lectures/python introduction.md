@@ -982,3 +982,203 @@ cat1 = Cat()
 print(dog1.speak())
 print(cat1.speak())
 ```
+### The object class in ArcGIS ArcPy
+
+- The object class is the parent class for all other ArcPy classes
+- The toolbox class is also inherited from the object class
+
+
+### Toolbox class
+
+- The Toolbox class is used by ArcGIS to define the properties and  behaviors of a toolbox, including the alias, label, and description.
+- The name of the Toolbox is defined by the name of the .pyt file
+- The tools property must be set to a list containing all tool classes defined in the toolbox
+- The Toolbox class is inherited from the object class in ArcPy that defines the toolbox label, alias, and the tools it contains
+- self.tools stores a list of Tools defined in the .pyt file
+
+```python
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+        self.tools = [MyTool]
+```
+
+#### Editing the toolbox class generated from a template
+
+- When creating a new toolbox, the python code is copied from a template with a stubbed-out tool named Tool
+- The Tool should be renamed, and can be duplicated and edited to create additional tools in your toolbox
+- The tool name and the toolbox alias must begin with a letter and only consist of letters and numbers
+
+### The Tool Class:
+
+- Each tool class within the toolbox also inherits from object.
+- It defines the tool's label, description, parameters, and execution logic
+- You can override some methods such as getParameterInfo(), isLicensed(), updateParameters(), updateMessages()
+- Override the execute() is always needed, as it defines the behavior of a tool
+
+```python
+class MyTool(object):
+    def __init__(self):
+        self.label = "My Tool"
+        self.description = "Description of my tool"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        # Define parameters here
+        return parameters
+
+    def execute(self, parameters, messages):
+        # Tool execution logic here
+        pass
+```
+
+- Define as many Tool classes as you need, and add them in the Toolbox class's self.tool attribute list
+
+```python
+class Toolbox(object):
+    def __init__(self):
+        self.label = "My Cool Tools"
+        self.alias = "mycooltools"
+        self.tools = [CoolTool1, CoolTool2]
+class CoolTool1(object):
+    def __init__(self):
+        self.label = "Cool Tool 1"
+    def getParameterInfo(self)
+        # Parameter definition
+    def execute(self, parameters, messages):
+        # Source code
+class CoolTool2(object):
+    def __init__(self):
+        self.label = "Cool Tool 2"
+    def getParameterInfo(self)
+        # Parameter definition
+    def execute(self, parameters, messages):
+        # Source code
+```
+
+#### Defining parameters in a python toolbox
+
+- Override the getParameterInfo() function and create arcpy.Parameter objects and setting their properties
+- arcpy.Parameter class properties
+  - name: the name of parameter as shown in the tool's syntax 
+  - datatype: define the the valid parameter type such as "GPCoordinateSystem", "GPLayer", "DERasterDataset", etc. For a complete list of the datatypes, go to: <https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm>
+
+  - parameterType: Required, Optional, or Derived
+  - direction: Input or Output
+  - multivalue: True or False 
+- Parameters are returned by getParameterInfo() as a list
+
+```python
+def getParameterInfo(self):
+    input_features = arcpy.Parameter(
+        name="input_features",
+        displayName="Input Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Input")
+    parameters = [input_features]
+    return parameters
+```
+
+### Define a parameter
+
+- Use the arcpy.Parameter class
+- Arguments include name, displayName, datatype,parameterType, direction
+- Define filters for a parameter: type and list
+  - type defines the type of the input that user can enter in the box
+  - list can be defined by a ValueList, Range, FeatureClass, File, Field, or Workspace type
+- Refer to this page for paramter types: https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm
+
+
+```python
+import arcpy
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+class Toolbox(object):
+    def __init__(self):
+        self.label = "Random Sampling Tools"
+        self.alias = "randomsampling"
+        self.tools = [RandomSample]
+class RandomSample(object):
+    def __init__(self):
+        self.label = "Random Sample"
+    def getParameterInfo(self):
+        input_features = arcpy.Parameter(
+        name="input_features",
+        displayName="Input Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Input")
+    output_features = arcpy.Parameter(
+        name="output_features",
+        displayName="Output Features",
+        datatype="GPFeatureLayer",
+        parameterType="Required",
+        direction="Output")
+    no_of_features = arcpy.Parameter(
+        name="number_of_features",
+        displayName="Number of Features",
+        datatype="GPLong",
+        parameterType="Required"
+        direction="Input")
+    no_of_features.filter.type = "Range"
+    no_of_features.filter.list = [1, 1000000000]
+    parameters = [input_features, output_features, no_of_features]
+    return parameters
+
+```
+
+#### Accessing parameters in the execute() function
+
+- The main body of the tool is found in the execute method
+- You can call other tools and access ArcPy other custom or third party python functionality
+- the syntax is ```def execue(self, parameters, messages):```
+- Each parameter's value can be access from the list using the valueAsText method like ```parameters[0].valueAsText```
+
+```python
+def execute(self, parameters, messages):
+    in_fc = parameters[0].valueAsText
+    out_fc = parameters[1].valueAsText
+```
+
+#### Python toolbox messages
+
+- When a tool is run, ArcPy defines the application it is called from and reads the messages from it and display them in the tool dialog box of ArcGIS Pro
+- In a python toolbox, a message object can be accessed in the execute method to add messages back to the tool
+- The five methods for writing the messages are:
+  - addMessage(message)
+  - addWarningMessage(message): a warning message will be shown in ArcGIS
+  - addErrorMessage(message): an error message is added to the tool's message
+  - addIDMessage: using geoprocessing message codes
+  - addGPMessages(): message from the last geoprocessing tool run are added to the tools' messages
+
+```python
+def execute(self, parameters, messages):
+    inputfc = parameters[0].valueAsText
+    outputfc = parameters[1].valueAsText
+    outcount = parameters[2].value
+    inlist = []
+    with arcpy.da.SearchCursor(inputfc, "OID@") as cursor:
+        for row in cursor:
+            id = row[0]
+            inlist.append(id)
+    randomlist = random.sample(inlist, outcount)
+    desc = arcpy.da.Describe(inputfc)
+    fldname = desc["OIDFieldName"]
+    sqlfield = arcpy.AddFieldDelimiters(inputfc, fldname)
+    sqlexp = f"{sqlfield} IN {tuple(randomlist)}"
+    arcpy.Select_analysis(inputfc, outputfc, sqlexp)
+    messages.addMessage(f"Random features are selected and written to {outputfc}")
+```
+
+### Comparison between script tools and python toolboxes
+
+- Both script tools and Python toolboxes can be used to create custom tools using Python
+- Both are integrated in the geoprocessing framework
+- A script tool is a part of a custom toolbox (.tbx) and an associated python script file (.py)
+- The design of the script tool is saved in the tbx file
+- A single python toolbox (.pyt) stores both the tools design and functionality by the tools
+- .pyt can standalone without an ArcGIS toolbox (.tbx)

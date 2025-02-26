@@ -21,9 +21,9 @@ print(arcpy.Exists("C:/Data/streams.shp"))
 ### System path and catalog path
 
 - System paths - recognized by the Windows system
-- The existence of a system path can be determined by os.path.exists()
+  - The existence of a system path can be determined by os.path.exists()
 - Catalog paths - recognized by ArcGIS Pro
-- For example, the path: "C:/data/study.gdb/final/streets" is a catalog path and cannot be understood by system path functions
+  - For example, the path: "C:/data/study.gdb/final/streets" is a catalog path and cannot be understood by system path functions
 
 ### Base name of a path
 
@@ -150,21 +150,8 @@ for row in cursor:
 
 - The SQL expression takes the form of FieldName = value. 
 - For example, STATE_NAME = 'Louisiana'
-- For the field name, some versions of ArcGIS use a different format such as "Field_Name" or [Field_Name] with delimiters.
-- Therefore, a function arcpy.AddFieldDelimiters() can help to ensure the correctness of the field names in the SQL expression
-
-```python
-import arcpy
-fc = "GWR_obesity"
-fieldname = "STATE_NAME"
-delimfield = arcpy.AddFieldDelimiters(fc,fieldname) 
-cursor = arcpy.da.SearchCursor(fc, ["Name","POP00_SQMI"],
-        where_clause=delimfield + " = 'Louisiana'")
-for row in cursor:
-    print("County: {0}, Population Density = {1}".format(row[0],row[1]))
-```
-
-- In some versions of ArcGIS, the SQL expression should be "STATE_NAME" = 'Louisiana'. But it is impossible to type the double quote in a string with double quotation marks
+  
+- The SQL expression should be "STATE_NAME" = 'Louisiana'. But it is impossible to type the double quote in a string with double quotation marks
 - A solution is type \\" to get the " in the expression
 
 ```python
@@ -177,6 +164,21 @@ print(whereclause)
 ```python
 whereclause =  """"STATE_NAME" = 'Louisiana'"""
 print(whereclause)
+
+```
+
+- For the field name, some versions of ArcGIS use a different format such as "Field_Name" or [Field_Name] with delimiters.
+- Therefore, a function arcpy.AddFieldDelimiters() can help to ensure the correctness of the field names in the SQL expression
+
+```python
+import arcpy
+fc = "GWR_obesity"
+fieldname = "STATE_NAME"
+delimfield = arcpy.AddFieldDelimiters(fc,fieldname) 
+cursor = arcpy.da.SearchCursor(fc, ["Name","POP00_SQMI"],
+        where_clause=delimfield + " = 'Louisiana'")
+for row in cursor:
+    print("County: {0}, Population Density = {1}".format(row[0],row[1]))
 ```
 
 - Finally, if you want to use the returned values as a list, here is an example
@@ -461,7 +463,7 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 ### Work with multi-part features
 
-- Features in a feature class can have multiple parts, making them multipart features. 
+- Features in a feature class can have multiple parts, making them multipart features.
 - A classic example of a multipart feature is the state of Hawaii: each of the islands is its own part, but for Hawaii to be shown as a single record in the attribute table, these parts must form a single feature.
 
 ![Alt text](images/image-4.png)
@@ -538,7 +540,7 @@ for part in polygon_with_hole:
         print(pnt)
 ```
 
-### Printing with precision 
+### Printing with precision
 
 - The coordinate values often contain long decimals
 - To keep only several decimal places, you can use the format code such as (0:.2f)
@@ -558,7 +560,7 @@ with arcpy.da.SearchCursor(fc, ["OID@", "SHAPE@"]) as cursor:
 
 - Geometries can be use to perform spatial computations such as:
 
-```
+```text
 Buffer
 Intersect
 Union
@@ -568,6 +570,7 @@ Spatial relationships: contain, within, overlaps, touches, crosses
 Boundary, centroid, extent
 Project: projectAs
 ```
+
 #### Buffer
 
 ```python

@@ -89,11 +89,11 @@ arcpy.env.workspace = "c:/data"
   - The Clip tool in the Analysis toolbox is referenced as Clip_analysis()
   - The Clip tool in the data management toolbox is rferenced as Clip_management()
 - The syntax to call a function is ArcPy is:
-  >arcpy.<toolname_toolboxalias>(<parameters>)
+  >`arcpy.<toolname_toolboxalias>(<parameters>)`
 - An alternative way to call a function is through its module name
-    > arcpy.<toolboxalias>.<toolname>(<parameters>)
+    > `arcpy.<toolboxalias>.<toolname>(<parameters>)`
     
-    > For example: arcpy.analysis.Clip()
+    > For example: `arcpy.analysis.Clip()`
 
 ## Issues in writing python code for geoprocessing
 
@@ -107,7 +107,7 @@ arcpy.env.workspace = "c:/data"
 
 ## Understanding the python syntax documents in ArcGIS
 
-  ### Tool arguments (parameters)
+### Tool arguments (parameters)
 
 - Name
 - Type: feature class, integer, string, or raster
@@ -138,7 +138,7 @@ arcpy.Buffer_analysis("roads", "buffer", "100 METERS", None, None,
 
 ### Python argument types
 
-- non-default vs. default arguments: 
+- non-default vs. default arguments:
   - a default argument is defined in the function with a default value assignment
   - the default value is used if the caller does not provide one
   - None-default arguments must be provided by the caller
@@ -312,6 +312,7 @@ wkt = "GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,29
               PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]];\
               -400 -400 1000000000;-100000 10000;-100000 10000;8.98315284119522E-09;\
               0.001;0.001;IsHighPrecision"
+sr = arcpy.SpatailReference(text=wkt)
 ```
 
 ### projection names

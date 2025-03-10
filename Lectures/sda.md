@@ -427,7 +427,22 @@ array = arcpy.Array([point1, point2, point3, point1])
 polygon = arcpy.Polygon(array)
 print(polygon.area)
 ```
-
+```python
+#create a multipart polygon
+import arcpy
+point1 = arcpy.Point(0,0)
+point2 = arcpy.Point(100, 0)
+point3 = arcpy.Point(100, 100)
+point4 = arcpy.Point(0, 100)
+array1 = arcpy.Array([point1, point2, point3, point4, point1])
+point5 = arcpy.Point(50, 50)
+point6 = arcpy.Point(60, 50)
+point7 = arcpy.Point(60, 60)
+point8 = arcpy.Point(50, 60)
+array2 = arcpy.Array([point5, point6, point7, point8, point5])
+multipart_polygon = arcpy.Polygon(arcpy.Array([array1, array2]))
+multipart_polygon
+```
 ### Read geometries from features
 
 - Feature classes in ArcGIS contains features defined by geometries

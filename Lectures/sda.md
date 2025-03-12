@@ -427,6 +427,7 @@ array = arcpy.Array([point1, point2, point3, point1])
 polygon = arcpy.Polygon(array)
 print(polygon.area)
 ```
+
 ```python
 #create a multipart polygon
 import arcpy
@@ -691,7 +692,7 @@ sr = arcpy.SpatialReference(4326)
 arcpy.CreateFeatureclass_management(wk, fc, "Point", 
                                     "", "", "", sr)
 point = arcpy.Point(4.900160, 52.378424)
-with arcpy.da.InsertCursor(fc, "SHAPE@", spatail_reference = sr) as cursor:
+with arcpy.da.InsertCursor(fc, "SHAPE@") as cursor:
     cursor.insertRow([point])
 ```
 
@@ -774,17 +775,15 @@ arcpy.Buffer_analysis(pointlist, "buffer.shp", "10 METERS")
 
 ```
 
-- Geometries can also be used as the output of geoprocessing tools
+### Add fields
 
-```python
-import arcpy
-fc = "C:/Data/roads.shp"
-geolist = arcpy.CopyFeatures_management(fc, arcpy.Geometry())
-length = 0
-for geometry in geolist:
-    length += geometry.length
-print(f"Total length: {length}")
-```
+- Fields will be added after the feature class is created
+- Use arcpy.AddField_management to add fields
+- Fields are defined by name, type, etc.
+
+`arcpy.management.AddField(in_table, field_name, field_type, {field_precision}, {field_scale}, {field_length}, {field_alias}, {field_is_nullable}, {field_is_required}, {field_domain})`
+
+
 
 ## Work with text file for geometries
 

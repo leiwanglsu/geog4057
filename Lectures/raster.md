@@ -1,6 +1,11 @@
 # Working with Rasters
 
 - ArcPy includes two modules arcpy.sa and arcpy.ia to work with raster and imagery data
+- Modules in ArcPy for raster analyasis and image processing: arcpy.ia and arcpy.sa
+
+`from arcpy.sa import *`
+`from arcpy.ia import *`
+
 
 ## Raster data structure
 
@@ -240,6 +245,23 @@ if bandcount > 1:
         counter += 1
 ```
 
+### Multidimensional Raster
+
+- Contains spatial, temporal, and vertical dimensions
+- Contains one or multiple variables in one file
+  - One variable is a cube
+  - Has atime and/or depth
+  - Each slice is a 2D array
+
+### Raster management in ArcGIS
+
+- Raster dataset: presents a single dataset 
+- Mosaic dataset
+  - Dynamic mosaic of imagery collection
+  - Table of records
+  - A raster Dataset
+  - Lives in Geodatabase 
+
 ### List rasters
 
 - Previously, we learned the List functions in ArcPy, which includes ListRasters()
@@ -333,6 +355,35 @@ elev_clip = Clip(elev, "bh_wshds83")
 elev_clip
 ```
 
+#### Viewshed
+
+- determines the locations visible to a set of observer locations
+
+```python
+import arcpy
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Visibility"
+dem = Raster("elevation")
+obs = "summits.shp"
+view = Viewshed(dem, obs)
+view.save("view.tif")
+```
+
+#### Tabulate Area
+
+- Not all raster tools create raster datasets as outputs.
+- Tabulate Area tool, which creates a cross tabulation between two datasets and outputs the results as a table
+- A typical application of this tool is to use a raster of elevation zones (e.g., low, medium, high) and land cover (water, grassland, forest, and so on) and determine the area of each land cover class in each elevation zone. 
+
+```python
+import arcpy
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Raster/Study.gdb"
+zones = Raster("elev_zones")
+lc = Raster("landcover")
+TabulateArea(zones, "VALUE", lc, "VALUE", "crosstab")
+```
+
 #### Map algebra operators
 
 - The Math toolset in the geoprocessing toolboxes have python script in arcpy.sa and arcpy.ia to do map algebra
@@ -370,6 +421,38 @@ goodelev = (elev < 1000) | (elev > 1500)
 ```
 
 - Remember to put parentheses around the relational operators
+
+#### Reclassify
+
+- raster cells are given a new value on the basis of a remap table, also referred to as a “reclassification table.” 
+- The remap table shows how each old value is mapped to a new value. 
+
+```python
+import arcpy
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Raster"
+myremap = RemapValue([["Brush/transitional", 2],
+                      ["Water", 0], ["Barren land", 1],
+                      ["Built up", 1], ["Agriculture", 3],
+                      ["Forest", 5], ["Wetlands", 4]])
+outreclass = Reclassify("landuse", "LANDUSE", myremap)
+outreclass.save("lu_reclass")
+```
+
+#### Focal statistics
+
+- Defines a neighborhood object and uses it in the FocalStatistics function
+- FocalStatistics calculates the statistics in the neighborhood
+  
+```python
+import arcpy
+from arcpy.sa import *
+arcpy.env.workspace = "C:/Raster"
+mynbr = NbrRectangle(5, 5, "CELL")
+outraster = FocalStatistics("landuse", mynbr, "VARIETY")
+outraster.save("lu_var")
+```
+
 
 #### Using Raster Cell Iterator
 
@@ -413,6 +496,62 @@ t = "temperature.tif"
 ws = "windspeed.tif"
 chill = WindChill(t, ws)
 chill.save("windchill.tif")
+```
+
+### Python Raster Function
+
+- Python raster functions are not part of ArcPy or ArcGIS API for Python
+- The functions are defined by Python classes implementing image processing and analysis algorithms
+- ArcGIS invokes python code through built-in python runtime and a Python Adapter Function
+- Can be combined with other built-in raster Functions to create Raster Function Template
+- A Raster function template is like a model that contains one or more raster functions chained to produce a processing workflow
+- You can build a raster function template using the Function Editor and the Raster Functions pane.
+- Check out the ESRI's raster functions repository on Github: https://github.com/Esri/raster-functions/tree/master
+
+#### Class defintion of a raster function
+
+- The `__init__` function
+  - Customize the function object
+  - Define raster function name & descripton
+- getParameterInfo()
+  - Defines all input parameters to the function
+  - Parameters are defined by
+    - Name
+    - Display Name
+    - Data Type
+    - Default Value
+    - Required vs Optional
+- getCOnfiguration()
+  - How are input Rasters read - Padding, Mask, or others?
+  - How is the output Raster constructed - NoData, Metadata, ...
+- selectRaster()
+  - Define a subset of input Rasters
+  - Pixels read from selected Rasters
+- updateRasterInfo()
+  - Defines the output raster
+  - returns the Raster Info of the output raster
+- updatePixels()
+  - Main operation of the function
+  - Process Pixels of the input Rasters
+  - returns Pixels+ mask of requested pixel blocks
+
+#### An example of the Raster function class
+
+```python
+imoprt numpy as np
+class HelloWorld():
+  def __init__(self):
+    self.name = "Hello World Function"
+    self.description = "An example of raster functions"
+  def getParameterInfo(self):
+    return[{
+      'name':'r',
+      'dateType':'raster'
+    }]
+  def updatePixels(self,tlc,shape,props,**pixelBlocks):
+    r = pixelBlocks['r_pixels'] + 10
+    pixelBlocks['output_pixels'] = r.astype(props['pixelType'])
+    return pixelBlocks
 ```
 
 ### Work with NumPy arrays

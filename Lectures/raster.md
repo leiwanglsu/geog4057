@@ -425,7 +425,10 @@ goodelev = (elev < 1000) | (elev > 1500)
 #### Reclassify
 
 - raster cells are given a new value on the basis of a remap table, also referred to as a “reclassification table.” 
-- The remap table shows how each old value is mapped to a new value. 
+- The remap table shows how each old value is mapped to a new value.
+- The remap table can be a RemapValue or RemapRange
+- Define a RemapValue: [value_in, value_out]
+- Define a RemapRange: [value_in_1, value_in_2, value_out]
 
 ```python
 import arcpy

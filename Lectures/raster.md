@@ -481,6 +481,48 @@ for i, j in vegras:
 slopecon.save()
 ```
 
+- Class RasterCellIterator
+  - Defines an iterator object to iterate through the cells of one or more rasters.
+  - The input is a dictionary containing single or multiple Raster objects
+  - A RasterCellIterator object enumerates row and column pairs for given Raster objects in a loop
+
+
+```python
+# This script calculates the maximumm downslope for the raster cells 
+import numpy as np
+import arcpy
+from arcpy.sa import Raster, RasterCellIterator
+# read the elevation model
+dem = Raster("elevation")
+arcpy.env.overwriteOutput = True
+
+#get knowledge about the input raster
+raster_info = dem.getRasterInfo()
+cell_x = dem.meanCellWidth
+cell_y = dem.meanCellHeight
+
+# change the raster info so the output type is float 32bit
+raster_info.setPixelType("F32")
+#create a new raster based on the raster info
+new_slope = Raster(raster_info)
+#update the raster using cell iterator
+with RasterCellIterator({'rasters':[dem,new_slope]}) as rci:
+    for r, c in rci:
+        ## Get a list of slopes in the 8 neighbors
+        slopes = []
+        for x,y in [(-1,1),(-1,0),(-1,-1), (0,1),(0,-11),(1,-1),(1,1),(1,0)]:
+            #check if the elevation is larger than the neighbor
+            if dem[r,c] >= dem[r+x, c+y]:
+                slope = abs(dem[r,c]- dem[r+x, c+y]) / np.sqrt((x*cell_x)**2 + (y*cell_y)**2)
+                slopes.append(slope)
+        if len(slopes) != 0:
+            new_slope[r,c] = max(slopes)
+        else:
+            new_slope[r,c] = 0 #0 is undetermined
+new_slope.save('new_slope')
+```
+
+
 ### Using arcpy.ia and arcpy.sa functions
 
 - Additional functions in the two modules provide functionalities for Raster

@@ -210,6 +210,47 @@ lyr.symbology = sym
 - For categorical raster, such as Land use data, use RasterUniqueValueColorizer.
 - For continuous raster, such as elevation, use RasterClassifyColorizer
 - RasterClassifyColorizer works similarly to the GraduatedColorRenderer for polygon data
+
+##### RasterStretchColorizer
+
+- Documentation: https://pro.arcgis.com/en/pro-app/latest/arcpy/mapping/rasterstretchcolorizer-class.htm
+- Properties: band, colorRamp, gamma, inverColorRamp, maxLabel, maxPercent, minLabel, minPercent, standardDeviation, stretchType, type
+
+###### ColorRamp
+
+- Documentation: https://pro.arcgis.com/en/pro-app/latest/arcpy/mapping/colorramp-class.htm
+- Properties: name
+- Obtain the ColorRamp object by project.listColorRamps("color ramp name")
+
+
+```python
+
+p =  arcpy.mp.ArcGISProject("CURRENT")
+m = arp.listMaps("Map")[0]
+for l in m.listLayers():
+    
+  if l.isRasterLayer:
+    sym = l.symbology
+    if hasattr(sym, 'colorizer'):
+      if sym.colorizer.type == 'RasterStretchColorizer':
+
+        #Set StretchType = PercentClip
+        if l.name == "topo30m":
+          sym.colorizer.stretchType = "PercentClip"
+          sym.colorizer.minPercent = 1.0
+          sym.colorizer.maxPercent = 1.0
+          cr = p.listColorRamps('Bathymetry #2')[0]
+          sym.colorizer.colorRamp = cr
+          sym.colorizer.invertColorRamp = True
+          sym.colorizer.gamma = 2
+          sym.colorizer.minLabel = "Min: " + sym.colorizer.minLabel
+          sym.colorizer.maxLabel = "Max: " + sym.colorizer.maxLabel
+
+          l.symbology = sym
+```
+
+##### RasterUniqueColorizer
+
 - The following example is to colorize a land use raster using the RasterUniqueValueColorizer
 - It assumes your project contains a map called "Study" with a raster layer "landcover"
 - The groups attribute of the colorizer returns the group of unique labels of each category in the raster

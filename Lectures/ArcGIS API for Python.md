@@ -132,12 +132,22 @@ for item in items:
 - An item is a unit of content in the GIS
 - Each item has a unique ID and a well-known URL
 - The ID is provided in the item.id property
-- The server responds to a REST request with a data as html, json or pjson:
+- The server responds to a REST GET request with a data as html, json or pjson:
 `https://www.arcgis.com/sharing/rest/content/items/64b9325940b14f3192dc148583019800?f=pjson
 `
 - The request returns from the server a JSON data to describe the item properties
 - Items types are listed here: https://developers.arcgis.com/rest/users-groups-and-items/items-and-item-types.htm
 - Web Map, Feature Serivce, Feature Collection, CSV, etc.
+
+### REST API 
+
+- A REST (Representational State Transfer) API is an protocal for programming with server that uses HTTP requests to access data
+- A REST-compliant system is often called RESTful system
+- Methods:
+  - GET: retrieve a resource
+  - POST: Create a new resoure
+  - PUT: Updates an existing resource
+  - DELTE: Delete a resource
 
 ### Understanding JSON
 

@@ -247,6 +247,7 @@ except Exception as e:
 
 ```python
 from IPython.display import display
+from arcgis.gis import GIS
 mygis = GIS()
 items = mygis.content.search('NYC taxi', item_type='feature layer')
 for item in items:
@@ -254,8 +255,7 @@ for item in items:
 for layer in items[0].layers:
     print(layer)
 mymap = mygis.map("New York City")
-mymap.basemap = "satellite"
-mymap.add_layer(items[2].layers[0])
+mymap.content.add(items[2].layers[0])
 mymap
 
 ```

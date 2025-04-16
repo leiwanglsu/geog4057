@@ -161,6 +161,15 @@ print('pdb debugging')
 example_function(3, 4)
 ```
 
+#### Cheating sheet for pdb
+
+- n(ext) Step over
+- s(tep) Step into
+- r(eturn) Continue until the function returns
+- c(continue) Continue until the next breakpoint is encountered
+- a(rgs) Print arguments of the current function
+- 
+
 ## Error handling for exceptions
 
 - Although your code is error free, but exceptions still could occur, such as no internet connection, file locked by another process, no enough computer memory, etc.
@@ -329,3 +338,23 @@ except:
     print(tbinfo)
     print(f"Error Info:\n {str(sys.exc_info() [1])}")
 ```
+
+#### Understanding sys.exc_info()
+
+- This function will return errors and exceptions that occur during execution of a script
+- A tuple is returned by this function including three elements:
+  - The type of error (the Exception Class)
+  - The exception value (an object from the Exception class)
+  - The traceback object
+  - Use sys.exc_info()[2] to retrieve the traceback value
+
+#### Understanding the traceback object
+
+- The traceback class contains many functions to work with system execution errors
+- Use traceback.print_exc() to print the information as traceback format
+- Or use traceback.print_exeption(exc_type, exc_value, exc_tb) 
+
+`traceback.print_exception(*sys.exc_info())` 
+
+- Function format_exception will format the traceback info as a list of information
+

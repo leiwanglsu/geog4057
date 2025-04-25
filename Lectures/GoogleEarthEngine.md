@@ -227,7 +227,11 @@ var formattedDate = parsedDate.format('YYYY-MM-dd');
 
 - ee.Geometry allows users to work with geometries
 - Geometries include point, polygon, Rectangle, LineString, BBox
-```var point = ee.Geometry.Point([-122.0838, 37.4220]);```
+- Point geometry: `ee.Geometry.Point(coords, proj)`
+- The projection is optional and can be defined as the EPSE:code in a string format
+
+```var point = ee.Geometry.Point([-122.0838, 37.4220], 'EPSG:4326');```
+
 - Geometries can be created from GeoJSON objects
 
 ```javascript
@@ -243,6 +247,13 @@ var point = ee.Geometry.Point([-122.0838, 37.4220]);
 Map.centerObject(point, 10); // Center the map on the point
 Map.addLayer(point, {color: 'red'}, 'Point');
 ```
+
+### Extract values from images
+ 
+ - Image values can be extracted by sampleRegions function
+ - Image.sampleRegions(collection, properties, scale, projection, tileScale, geometries)
+ - Converts each pixel of an image (at a given scale) that intersects one or more regions to a Feature, returning them as a FeatureCollection.
+
 
 ### Export
 

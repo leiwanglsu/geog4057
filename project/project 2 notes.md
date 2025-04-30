@@ -39,3 +39,26 @@ gdf.set_geometry(
     inplace=True, crs=f'EPSG:{ra1.spatialReference.factoryCode}')`
 
 
+### Step 4 obtain elevations from GEE with the coordinates from the shapefile
+
+- Add a new field
+  
+```
+shapefile = r'E:\tmp\boundary1.shp'
+
+arcpy.management.AddField(shapefile,'elevation',field_type='FLOAT')
+```
+
+- Use the update cursor to get and put data to the shapefile
+
+```
+with arcpy.da.UpdateCursor(shapefile,['SHAPE@XY','elevation'],spatial_reference = 4326) as cursor:
+    for row in cursor:
+        X,Y = row[0]
+        geom = ee.Geometry.Point([X,Y])
+        geom_col = ee.FeatureCollection([geom])
+        elev = dem.sampleRegions(geom_col).getInfo()
+        row[1] = elev['features'][0]['properties']['elevation']
+        cursor.updateRow(row)
+```
+

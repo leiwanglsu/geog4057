@@ -1,0 +1,33 @@
+{
+  "inputs": [],
+  "servers": {
+    "arcgis": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "McpServer/ArcGisMcpServer/ArcGisMcpServer.csproj"
+      ],
+      "env": {}
+    },
+    "arcpy-gis": {
+      "type": "stdio",
+      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\python.exe",
+      "args": [
+        "-u",
+        "F:\\workspace\\MCP-Server-ArcGIS-Pro-AddIn\\PythonMcpServer\\server.py"
+      ],
+      "env": {}
+    },
+    "earthengine": {
+      "type": "stdio",
+      "command": "G:\\envs\\arcpy_clone\\python.exe",
+      "args": [
+        "-u",
+        "F:\\workspace\\MCP-Server-ArcGIS-Pro-AddIn\\PythonMcpServer\\ee_server.py"
+      ],
+      "env": {}
+    }
+  }
+}
